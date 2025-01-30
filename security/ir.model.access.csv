@@ -1,0 +1,18 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cda_cosmeticos,CDA Cosmeticos,arsante.model_arsante_cda_cosmetico_dm,base.group_user,1,1,1,1
+access_marcas,Marcas,arsante.model_arsante_marcas,base.group_user,1,1,1,1
+access_modif_cosmeticos,Modificación Cosmeticos,arsante.model_arsante_modificacion_cosmeticos,base.group_user,1,1,1,1
+access_registro_cosmeticos,Registro Cosmeticos,arsante.model_arsante_registro_cosmetico,base.group_user,1,1,1,1
+access_inscripciones,Inscripciones,arsante.model_arsante_inscripciones,base.group_user,1,1,1,1
+access_rectificaciones,Rectificaciones,arsante.model_arsante_rectificaciones,base.group_user,1,1,1,1
+access_cda_uyd_alimentos,CDA-UYD Alimentos,arsante.model_arsante_cda_uyd_alimentos,base.group_user,1,1,1,1
+access_dm,Dispositivos Medicos,arsante.model_arsante_dispositivos_medicos,base.group_user,1,1,1,1
+access_exim_cosmeticos,Eximición Cosméticos,arsante.model_arsante_eximiciones_cosmeticos,base.group_user,1,1,1,1
+access_renovaciones_cosmeticos,Renovaciones Cosméticos,arsante.model_arsante_renovaciones_cosmeticos,base.group_user,1,1,1,1
+access_registro_desinfectantes,Registro Desinfectantes,arsante.model_arsante_registro_desinfectantes,base.group_user,1,1,1,1
+access_modificaciones_desinfectantes,Modificaciones Desinfectantes,arsante.model_arsante_modificaciones_desinfectantes,base.group_user,1,1,1,1
+access_renovaciones_desinfectantes,Renovaciones Desinfectantes,arsante.model_arsante_renovaciones_desinfectantes,base.group_user,1,1,1,1
+access_hds_hechas,Hds Hechas,arsante.model_arsante_hds_hechas,base.group_user,1,1,1,1
+access_registro_isp,Registro ISP,arsante.model_arsante_exim_proceso_cosmeticos,base.group_user,1,1,1,1
+access_tipo_registro,Tipo de Registro,arsante.model_arsante_tipo_registro,base.group_user,1,1,1,1
+access_tipo_registro_admin,Tipo de Registro Responsable,arsante.model_arsante_tipo_registro,sales_team.group_sale_manager,1,1,1,1

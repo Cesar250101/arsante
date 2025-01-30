@@ -1,0 +1,152 @@
+<odoo>
+  <data>
+
+    <!-- Vista Kanban -->
+    <record id="tipo_registro_kanban_view" model="ir.ui.view">
+      <field name="name">tipo.registro.kanban.view</field>
+        <field name="model">arsante.tipo_registro</field>
+        <field name="arch" type="xml">
+        <kanban class="o_res_partner_kanban">
+          <field name="id"/>
+          <field name="name"/>
+          <field name="total_record_count"/>
+          <field name="facturados"/>
+          <field name="no_facturados"/>
+          <field name="cotizados"/>
+          <field name="no_cotizados"/>
+          <field name="estado_listos"/>
+          <field name="estado_no_listos"/>
+          <field name="documentacion_completa"/>
+          <field name="documentacion_completa_no_completa"/>
+          <field name="tipo"/>
+          <field name="para_renovar"/>
+
+          <templates>
+            <t t-name="kanban-box" t-on-click="arsante.cda_cosmetico_action_window">
+              <div t-attf-class="oe_kanban_global_click">
+                <div class="oe_kanban_details">
+                  <a name="open_tree_cda_cosmeticos" title="Placeholder" type="object" class="text-center">
+<!--                    context="{'tipo_registro':tipo }"-->
+                      <h3><field name="name"/></h3>
+                  </a><br></br>
+
+                  <i class="fa fa-check"></i>
+                  <span>Total Registros: </span> <t t-esc="record.total_record_count.value"/><br></br>
+                  <i class="fa fa-check"></i>
+                  <span class="text-primary">Facturados: </span> <t t-esc="record.facturados.value"/><br></br>
+                  <i class="fa fa-check"></i>
+                  <span>No Facturados: </span> <t t-esc="record.no_facturados.value"/><br></br>
+                  <i class="fa fa-check"></i>
+                  <span>Cotizados: </span> <t t-esc="record.cotizados.value"/><br></br>
+                  <i class="fa fa-check"></i>
+                  <span>No Cotizados: </span> <t t-esc="record.no_cotizados.value"/><br></br>
+                  <i class="fa fa-check"></i>
+                  <span>Listos: </span> <t t-esc="record.estado_listos.value"/><br></br>
+                  <i class="fa fa-check"></i>
+                  <span>No Listos: </span> <t t-esc="record.estado_no_listos.value"/><br></br>
+                  <i class="fa fa-check"></i>
+                  <span>Doc. Completa: </span> <t t-esc="record.documentacion_completa.value"/><br></br>
+                  <i class="fa fa-check"></i>
+                  <span>Doc. No Completa: </span> <t t-esc="record.documentacion_completa_no_completa.value"/><br></br>
+                  <i class="fa fa-check"></i>
+                  <span  class="text-success">Para Renovar: </span> <t t-esc="record.para_renovar.value"/><br></br>
+
+                </div>
+              </div>
+            </t>
+                        <!-- For purchase and sale -->
+            <div class="row">
+                             <div class="col-4 o_kanban_card_manage_section o_kanban_manage_view">
+                                <div class="o_kanban_card_manage_title">
+                                    <span>View</span>
+                                </div>
+                                <div>
+                                    <a t-if="journal_type == 'sale'" type="object" name="open_action" context="{'use_domain': [('type', '=', 'out_invoice')]}">Invoices</a>
+                                    <a t-if="journal_type == 'purchase'" type="object" name="open_action" context="{'use_domain': [('type', '=', 'in_invoice')]}">Bills</a>
+                                </div>
+                                <div>
+                                    <a t-if="journal_type == 'sale'" type="object" name="open_action" context="{'use_domain': [('type', '=', 'out_refund')], 'invoice_type': 'refund'}">Credit Notes</a>
+                                    <a t-if="journal_type == 'purchase'" type="object" name="open_action" context="{'use_domain': [('type', '=', 'in_refund')], 'invoice_type': 'refund'}">Credit Notes</a>
+                                </div>
+                                <div>
+                                    <a type="object" name="action_open_reconcile">Payments Matching</a>
+                                </div>
+                                <div>
+                                    <a type="object" name="open_action" context="{'action_name': 'action_account_moves_all_a'}" groups="base.group_no_one">Journal Items</a>
+                                </div>
+                            </div>
+
+                             <div class="col-4 o_kanban_card_manage_section o_kanban_manage_new">
+                                <div class="o_kanban_card_manage_title">
+                                    <span>New</span>
+                                </div>
+                                <div>
+                                    <a type="object" name="action_create_new">
+                                        <span t-if="journal_type == 'sale'">Invoice</span>
+                                        <span t-if="journal_type == 'purchase'">Bill</span>
+                                    </a>
+                                </div>
+                                <div>
+                                    <a type="object" name="action_create_new" context="{'refund':True}">
+                                        <span t-if="journal_type == 'sale'">Credit Note</span>
+                                        <span t-if="journal_type == 'purchase'">Credit Note Bill</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                             <div class="col-4 o_kanban_card_manage_section o_kanban_manage_reports">
+                                <div class="o_kanban_card_manage_title">
+                                    <span>Reporting</span>
+                                </div>
+                                <div>
+                                    <a t-if="journal_type == 'sale'" type="action" name="362" groups="account.group_account_manager">Invoices Analysis</a>
+                                    <a t-if="journal_type == 'purchase'" type="action" name="361" groups="account.group_account_manager">Bills Analysis</a>
+                                </div>
+                            </div>
+                        </div>
+
+          </templates>
+        </kanban>
+        </field>
+    </record>
+
+     <!-- explicit list view definition -->
+    
+    <record model="ir.ui.view" id="arsante.tipos_registro_tree_view">
+      <field name="name">Tipos de Registro</field>
+      <field name="model">arsante.tipo_registro</field>
+      <field name="arch" type="xml">
+        <tree editable ='bottom'>
+          <field name="name" required="1"/>
+          <field name="tipo" required="1"/>
+          <field name="total_record_count"/>
+          <field name="facturados"/>
+            <field name="no_facturados"/>
+            <field name="cotizados"/>
+            <field name="no_cotizados"/>
+            <field name="estado_listos"/>
+            <field name="estado_no_listos"/>
+            <field name="documentacion_completa"/>
+            <field name="documentacion_completa_no_completa"/>
+        </tree>
+      </field>
+    </record>
+
+    <!-- actions opening views on models -->
+    
+    <record model="ir.actions.act_window" id="arsante.tipo_registro_action_window">
+      <field name="name">Tipos de Registro</field>
+      <field name="res_model">arsante.tipo_registro</field>
+      <field name="view_mode">kanban,tree</field>
+    </record>
+
+   
+    <!-- actions -->
+    <menuitem name="DashBoard"
+              id="arsante.tipo_registro_menu_list"
+              sequence="1"
+              parent="arsante.arsante_menu_root"
+              action="arsante.tipo_registro_action_window"/>
+   
+  </data>
+</odoo>

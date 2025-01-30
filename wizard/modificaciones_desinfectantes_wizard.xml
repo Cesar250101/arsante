@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="arsante.modificaciones_desinfectantes_wizard_form" model="ir.ui.view">
+        <field name="name">arsante.modificaciones.desinfectantes.wizard.form</field>
+        <field name="model">arsante.modificaciones_desinfectantes_wizard</field>
+        <field name="arch" type="xml">
+            <form string="Crear nota de venta">
+                <group>
+                    <!--<field name="action" />-->
+                    <div>
+                        Se crear una nota de venta con las registros seleccionados
+                    </div>
+                </group>
+                <footer>
+                        <button string="Aceptar" name="create_so" type="object" class="oe_highlight" />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+            </form>
+        </field>
+    </record>
+    <act_window
+        id="action_modificaciones_desinfectantes_wizard"
+        multi="True"
+        key2="client_action_multi"
+        name="Crear nota de venta"
+        res_model="arsante.modificaciones_desinfectantes_wizard"
+        src_model="arsante.modificaciones_desinfectantes"
+        view_mode="form"
+        target="new"
+        view_type="form"
+    />
+</odoo>

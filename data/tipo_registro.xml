@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record model='arsante.tipo_registro' id='cda_cosmetico_id'>
+            <field name='name'>CDA Cosméticos</field>
+            <field name='tipo'>cda_cosmetico</field>
+            <field name='active'>True</field>
+        </record>
+        <record model='arsante.tipo_registro' id='cda_uyd_alimento_id'>
+            <field name='name'>CDA UYD Alimentos</field>
+            <field name='tipo'>cda_uyd_alimentos</field>
+            <field name='active'>True</field>
+        </record>
+        <record model='arsante.tipo_registro' id='dispositivos_medicos_id'>
+            <field name='name'>Dispositivos Medicos</field>
+            <field name='tipo'>dispositivos_medicos</field>
+            <field name='active'>True</field>
+        </record>
+        <record model='arsante.tipo_registro' id='exim_proceso_cosmeticos_id'>
+            <field name='name'>Exim. Proceso Cosméticos</field>
+            <field name='tipo'>exim_proceso_cosmeticos</field>
+            <field name='active'>True</field>
+        </record>
+        <record model='arsante.tipo_registro' id='eximiciones_cosmeticos_id'>
+            <field name='name'>Eximición Cosméticos</field>
+            <field name='tipo'>eximiciones_cosmeticos</field>
+            <field name='active'>True</field>
+        </record>
+        <record model='arsante.tipo_registro' id='hds_hechas_id'>
+            <field name='name'>HDS Hechas</field>
+            <field name='tipo'>hds_hechas</field>
+            <field name='active'>True</field>
+        </record>
+        <record model='arsante.tipo_registro' id='inscripciones_id'>
+            <field name='name'>Inscripciones</field>
+            <field name='tipo'>inscripciones</field>
+            <field name='active'>True</field>
+        </record>
+        <record model='arsante.tipo_registro' id='modificacion_cosmeticos_id'>
+            <field name='name'>Modificacion Cosmeticos</field>
+            <field name='tipo'>modificacion_cosmeticos</field>
+            <field name='active'>True</field>
+        </record>
+        <record model='arsante.tipo_registro' id='modificaciones_desinfectantes_id'>
+            <field name='name'>Modificaciones Desinfectantes</field>
+            <field name='tipo'>modificaciones_desinfectantes</field>
+            <field name='active'>True</field>
+        </record>
+        <record model='arsante.tipo_registro' id='rectificaciones_id'>
+            <field name='name'>Rectificaciones</field>
+            <field name='tipo'>rectificaciones</field>
+            <field name='active'>True</field>
+        </record>
+        <record model='arsante.tipo_registro' id='registro_cosmetico_id'>
+            <field name='name'>Registro Cosmeticos</field>
+            <field name='tipo'>registro_cosmetico</field>
+            <field name='active'>True</field>
+        </record>
+        <record model='arsante.tipo_registro' id='registro_desinfectantes_id'>
+            <field name='name'>Registro Desinfectantes</field>
+            <field name='tipo'>registro_desinfectantes</field>
+            <field name='active'>True</field>
+        </record>
+        <record model='arsante.tipo_registro' id='renovaciones_cosmeticas_id'>
+            <field name='name'>Renovacion Cosmeticos</field>
+            <field name='tipo'>renovaciones_cosmeticas</field>
+            <field name='active'>True</field>
+        </record>
+        <record model='arsante.tipo_registro' id='renovaciones_desinfectantes_id'>
+            <field name='name'>Renovaciones Desinfectantes</field>
+            <field name='tipo'>renovaciones_desinfectantes</field>
+            <field name='active'>True</field>
+        </record>
+
+     </data>
+</odoo>

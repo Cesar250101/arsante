@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="arsante.registro_cosmetico_wizard_form" model="ir.ui.view">
+        <field name="name">arsante.registro.cosmetico.wizard.form</field>
+        <field name="model">arsante.registro_cosmetico_wizard</field>
+        <field name="arch" type="xml">
+            <form string="Crear nota de venta">
+                <group>
+                    <!--<field name="action" />-->
+                    <div>
+                        Se crear una nota de venta con las registros seleccionados
+                    </div>
+                </group>
+                <footer>
+                        <button string="Aceptar" name="create_so" type="object" class="oe_highlight" />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+            </form>
+        </field>
+    </record>
+    <act_window
+        id="action_registro_cosmetico_wizard_wizard_form"
+        multi="True"
+        key2="client_action_multi"
+        name="Crear nota de venta"
+        res_model="arsante.registro_cosmetico_wizard"
+        src_model="arsante.registro_cosmetico"
+        view_mode="form"
+        target="new"
+        view_type="form"
+    />
+</odoo>

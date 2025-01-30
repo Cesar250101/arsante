@@ -1,0 +1,162 @@
+<odoo>
+  <data>
+<!--      Vista de busqqueda-->
+        <record id="arsante.cda_cosmetico_dm_filter" model="ir.ui.view">
+            <field name="name">view.arsante.arsante.cda.cosmetico.dm.filter</field>
+            <field name="model">arsante.cda_cosmetico_dm</field>
+            <field name="priority" eval="15"/>
+            <field name="arch" type="xml">
+                <search string="Search Sales Order">
+                    <field name="partner_id"/>
+                    <field name="au"/>
+                    <field name="nro_cda"/>
+                    <field name="product_id"/>
+                    <field name="proveedor_id"/>
+                    <field name="agente_aduana_id"/>
+                    <field name="cda_marca_id"/>
+                    <filter string="Facturado" domain="[('facturado','=',True)]" name="facturado_filter"/>
+                    <filter string="No Facturado" domain="[('facturado','=',False)]" name="no_facturado_filter"/>
+                    <filter string="No Cotizado" domain="[('sale_order_id','=',False)]" name="no_catizado_filter"/>
+                    <filter string="Cotizado" domain="[('sale_order_id','!=',False)]" name="catizado_filter"/>
+                    <filter string="Docu. Completa" domain="[('documentacion','=','completa')]" name="completa_filter"/>
+                    <filter string="Docu. Incompleta" domain="['|',('documentacion','=','incompleta'),('documentacion','=',False)]" name="incompleta_filter"/>
+                    <filter string="Estado: Listo" domain="[('estado','=','listo')]" name="listo_filter"/>
+                    <filter string="Estado: No Listo" domain="['|',('estado','=','no_listo'),('estado','=',False)]" name="no_listo_filter"/>
+                    <filter string="Para Renovar" domain="[('alerta_renovacion','=',True)]" name="para_renovar"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Cliente" name="cliente" domain="[]" context="{'group_by':'partner_id'}"/>
+                        <filter name="product_id" string="Producto" domain="[]" context="{'group_by':'product_id'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+
+
+
+    <!-- explicit form view definition -->    
+    <record model="ir.ui.view" id="arsante.cda_cosmetico_dm_form_view">
+      <field name="name">CDA Cosméticos DM</field>
+      <field name="model">arsante.cda_cosmetico_dm</field>
+      <field name="arch" type="xml">
+        <form string="">
+          <header>
+           <!-- <button string="Obtener Facturas" name="get_invoice_ids" type="object" class="oe_highlight"/>  -->
+          </header>
+          <sheet>
+            <group>
+              <group>
+                <!-- <field name="tipo_registro_id" required="1"/> -->
+                <field name="tipo_registro_id" required="1"/>
+                <field name="name" placeholder="Este dato es importante para las busquedas, por esto debe ingresar un nombre que identifique el registro" required="1"/>
+                <field name="date" required="1"/>
+                <field name="partner_id" required="1"/>
+                <field name="product_id" required="1"/>
+                <field name="au"/>
+                <field name="nro_cda"/>
+                <field name="item"/>
+                <field name="agente_aduana_id"/>
+                <field name="ref_tramite"/>
+                <field name="proveedor_id"/>
+                <field name="cda_marca_id"/>
+                <field name="fecha_llegada"/>
+                <field name="exim_ctrl_calidad"/>
+                <field name="sale_order_id" attrs="{'invisible': [('sale_order_id', '=', False)]}" readonly="1"/>
+                <field name="nro_resolucion"/>
+                <field name="pdf_nro_resolucion" attrs="{'invisible': [('nro_resolucion','=',False)]}"/>
+                  <field name="no_cotizado"/>
+                  <field name="espera_resolucion"/>
+                  <field name="estado"/>
+                  <field name="documentacion"/>
+                  <field name="alerta_renovacion" invisible="1"/>
+                            
+              </group>
+              <group>
+                <field name="va_cesmec"/>
+                <label for="enviar_colilla"/>
+                <div class="o_row">
+                  <field name="enviar_colilla" placeholder="Envíar colilla?" />
+                  <field name="enviar_colilla_fecha" placeholder="Fecha enviar colilla" attrs="{'invisible': [('enviar_colilla','=',False)]}"/>
+                </div>
+                <field name="enviar_cda"/>  
+                <!-- <field name="enviar_uyd"/>   -->
+                <field name="enviar_subir"/>  
+                
+                <field name="facturado"/>  
+                <field name="subir_cloud"/>  
+                <field name="requiere_renovacion"/>
+                <field name="fecha_renovacion" attrs="{'invisible': [('requiere_renovacion','=',False)]}"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+     
+    <!-- explicit list view definition -->
+    
+    <record model="ir.ui.view" id="arsante.cda_cosmetico_dm_tree_view">
+      <field name="name">CDA cosméticos DM</field>
+      <field name="model">arsante.cda_cosmetico_dm</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="tipo_registro_id" required="1"/>
+          <field name="name" required="1"/>
+          <field name="date" required="1"/>
+          <field name="partner_id" required="1"/>
+          <field name="au"/>
+          <field name="nro_cda"/>
+          <field name="item"/>
+          <field name="agente_aduana_id"/>
+          <field name="ref_tramite"/>
+          <field name="proveedor_id"/>
+          <field name="cda_marca_id"/>
+          <field name="fecha_llegada"/>
+          <field name="sale_order_id"/>
+          <field name="exim_ctrl_calidad"/>
+          <field name="facturado"/>
+          <field name="no_cotizado"/>
+          <field name="espera_resolucion"/>
+          <field name="estado"/>
+          <field name="documentacion"/>
+          <field name="alerta_renovacion"/>
+        </tree>
+      </field>
+    </record>
+   
+       <!-- explicit pivot definition -->
+    
+    <record model="ir.ui.view" id="arsante.cda_cosmetico_dm_pivot_view">
+      <field name="name">CDA Cosméticos DM</field>
+      <field name="model">arsante.cda_cosmetico_dm</field>
+      <field name="arch" type="xml">
+        <pivot>
+          <field name="partner_id" type="row"/>
+        </pivot>
+      </field>
+    </record>
+
+    <!-- actions opening views on models -->
+    
+    <record model="ir.actions.act_window" id="arsante.cda_cosmetico_action_window">
+      <field name="name">CDA Cosméticos DM</field>
+      <field name="res_model">arsante.cda_cosmetico_dm</field>
+      <field name="view_mode">tree,form,pivot</field>
+    </record>
+   
+    <record model="ir.actions.act_window" id="arsante.cda_cosmetico_action_window_no_facturados">
+      <field name="name">CDA Cosméticos DM - No Facturados</field>
+      <field name="res_model">arsante.cda_cosmetico_dm</field>
+      <field name="view_mode">tree,form,pivot</field>
+      <field name="domain">[('facturado', '=', False)]</field>        
+    </record>
+
+   
+    <!-- actions -->
+    <menuitem name="CDA Cosméticos DM"
+              id="arsante.cda_cosmetico_dm_menu_list"
+              sequence="2"
+              parent="arsante.arsante_menu_root"
+              action="arsante.cda_cosmetico_action_window"/>
+   
+  </data>
+</odoo>
