@@ -97,7 +97,6 @@
                 <field name="nro_registro"/>
                 <field name="product_id"/>
                 <field name="fabricante_id"/>
-                <field name="documentacion"/>
                 <field name="eximicion"/>
                 <field name="etiqueta_lista"/>
                 <field name="nro_resolucion"/>
