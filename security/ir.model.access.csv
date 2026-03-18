@@ -2,6 +2,7 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_cda_cosmeticos,CDA Cosmeticos,arsante.model_arsante_cda_cosmetico_dm,arsante.group_arsante_users,1,1,1,1
 access_marcas,Marcas,arsante.model_arsante_marcas,arsante.group_arsante_users,1,1,1,1
 access_modif_cosmeticos,Modificación Cosmeticos,arsante.model_arsante_modificacion_cosmeticos,arsante.group_arsante_users,1,1,1,1
+access_modif_cosmeticos_correo,Modificación Cosméticos Correo,arsante.model_arsante_modificacion_cosmeticos_correo,arsante.group_arsante_users,1,1,1,1
 access_registro_cosmeticos,Registro Cosmeticos,arsante.model_arsante_registro_cosmetico,arsante.group_arsante_users,1,1,1,1
 access_inscripciones,Inscripciones,arsante.model_arsante_inscripciones,arsante.group_arsante_users,1,1,1,1
 access_rectificaciones,Rectificaciones,arsante.model_arsante_rectificaciones,arsante.group_arsante_users,1,1,1,1

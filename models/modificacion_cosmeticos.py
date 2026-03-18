@@ -20,7 +20,7 @@ class CdaCosmetico(models.Model):
         comodel_name='arsante.tipo_registro',
         string='Tipo de Registro',
         required=True, default=_default_get,readonly=True,store=True)
-    name = fields.Char(string='Nombre Registro')
+    name = fields.Char(string='Nombre Registro', compute='_compute_name', store=True)
     date = fields.Date(string='Fecha Registro')
     partner_id = fields.Many2one(comodel_name='res.partner', string='Cliente')
     mc_categoria=fields.Selection([
@@ -37,6 +37,11 @@ class CdaCosmetico(models.Model):
             ], string='Categoría')
     oc = fields.Char(string='OC')
     sku = fields.Char(string='SKU')
+    marcar = fields.Selection([
+        ('todomoda', 'Todo Moda'),
+        ('isadora', 'Isadora'),
+    ], string='Marca')
+    marcar_url = fields.Char(string='URL OneDrive', compute='_compute_marcar_url')
     mc_ref_gicona = fields.Char(string='Referencia Gicona')
     mc_nro_registro = fields.Char(string='Nº Registro')
     product_id = fields.Many2one(comodel_name='product.product', string='Producto')
@@ -49,6 +54,7 @@ class CdaCosmetico(models.Model):
     enviar_colilla_fecha = fields.Date(string='Fecha envíar colilla')
     nro_resolucion = fields.Char(string='Nº Resolución')
     pdf_nro_resolucion = fields.Binary('PDF Resolucion')
+    fecha_resolucion = fields.Date(string='Fecha Resolución')
     eximicion = fields.Selection([
         ('si', 'Sí'),
         ('no', 'No')
@@ -75,7 +81,48 @@ class CdaCosmetico(models.Model):
         store=True
         )
     importado = fields.Boolean(string='Importado en el general')
+    imagen = fields.Binary(string='Imagen', attachment=True)
+    correo_ids = fields.One2many(
+        comodel_name='arsante.modificacion_cosmeticos.correo',
+        inverse_name='modificacion_cosmetico_id',
+        string='Correos Electrónicos'
+    )
     active = fields.Boolean(string='Activo',default=True)
+
+    @api.depends('marcar')
+    def _compute_marcar_url(self):
+        for record in self:
+            if record.marcar == 'todomoda':
+                record.marcar_url = 'https://arsanteconsultores-my.sharepoint.com/personal/pmuquillaza_arsante_cl/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fpmuquillaza%5Farsante%5Fcl%2FDocuments%2F1%2E%20CLIENTES%20VIGENTES%20AR%20SANTE%202025%2F0%2E%20COLILLAS%20DE%20PAGO%20BIJOU%2FBIJOU%2F2%2E%20colillas%20de%20pago%20TODO%20MODA&ga=1'
+            elif record.marcar == 'isadora':
+                record.marcar_url = 'https://arsanteconsultores-my.sharepoint.com/personal/pmuquillaza_arsante_cl/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fpmuquillaza%5Farsante%5Fcl%2FDocuments%2F1%2E%20CLIENTES%20VIGENTES%20AR%20SANTE%202025%2F0%2E%20COLILLAS%20DE%20PAGO%20BIJOU%2FBIJOU%2F1%2E%20colillas%20de%20pago%20ISADORA&ga=1'
+            else:
+                record.marcar_url = False
+
+    def open_marcar_link(self):
+        self.ensure_one()
+        if self.marcar_url:
+            url = self.marcar_url if self.marcar_url.startswith('http') else 'https://' + self.marcar_url
+            return {
+                'type': 'ir.actions.act_url',
+                'url': url,
+                'target': 'new',
+            }
+        return True
+
+    @api.depends('tipo_registro_id', 'partner_id', 'oc', 'sku')
+    def _compute_name(self):
+        for rec in self:
+            parts = []
+            if rec.tipo_registro_id:
+                parts.append(rec.tipo_registro_id.name)
+            if rec.partner_id:
+                parts.append(rec.partner_id.name)
+            if rec.oc:
+                parts.append(rec.oc)
+            if rec.sku:
+                parts.append(rec.sku)
+            rec.name = ' - '.join(parts) if parts else '/'
 
     @api.onchange('estado','no_cotizado','documentacion','facturado','sale_order_id')
     def _compute_dashboard(self):

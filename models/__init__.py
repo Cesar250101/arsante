@@ -4,6 +4,7 @@ from . import tipo_registro
 from . import cda_cosmetico_dm
 from . import marca
 from . import modificacion_cosmeticos
+from . import modificacion_cosmeticos_correo
 from . import registro_cosmetico
 from . import registro_cosmetico_correo
 from . import inscripciones
