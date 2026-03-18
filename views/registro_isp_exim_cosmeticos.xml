@@ -118,7 +118,17 @@
       <field name="view_mode">tree,form,pivot</field>
     </record>
    
-
+                <!-- Accion que crear las notas de ventas de varios registros seleccionados en la vista tree -->
+                <record model="ir.actions.server" id="arsante.create_so_registro_isp_exim_cosmeticos_action_server">
+                    <field name="name">Crear Nota de Venta</field>
+                    <field name="type">ir.actions.server</field>
+                    <field name="model_id" ref="arsante.model_arsante_registro_isp_exim_cosmeticos"/>
+                    <field name="binding_model_id" ref="arsante.model_arsante_registro_isp_exim_cosmeticos"/>
+                    <field name="state">code</field>
+                    <field name="code">
+                      record.create_so()
+                    </field>
+                  </record>     
 
     <!-- Top menu item -->    
     <menuitem name="Arsante" id="arsante.arsante_menu_root" parent="sale.sale_menu_root" sequence="5"/>

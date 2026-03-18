@@ -10,7 +10,21 @@ class MasiveDTEAcceptWizard(models.TransientModel):
     _name = "arsante.renovaciones_cosmeticos_wizard"
     _description = "Genera una nota de venta con los registro seleccionados"
 
-    @api.multi
+    def archivar(self):
+        ids = self.env["arsante.renovaciones_cosmeticos"].browse(self._context.get("active_ids", []))
+        for i in ids:
+            i.write({
+                'active':False
+            })
+
+    def desarchivar(self):
+        ids = self.env["arsante.renovaciones_cosmeticos"].browse(self._context.get("active_ids", []))
+        for i in ids:
+            i.write({
+                'active':True
+            }) 
+
+
     def create_so(self):
         model_sale_order=self.env['sale.order']
         model_sale_order_line=self.env['sale.order.line']
@@ -28,7 +42,8 @@ class MasiveDTEAcceptWizard(models.TransientModel):
                     value={
                         'name':self.env['ir.sequence'].next_by_code('sale.order') or _('New'),
                         'date_order':now,
-                        'partner_id':i.partner_id.id
+                        'partner_id':i.partner_id.id,
+                        'tipo_registro_id':self.tipo_registro_id.id,
                     }
                     partner_id_1=i.partner_id.id
                     sale_order_id=model_sale_order.create(value)

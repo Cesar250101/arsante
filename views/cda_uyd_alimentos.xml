@@ -13,6 +13,9 @@
                     <field name="proveedor_id"/>
                     <field name="agente_aduana_id"/>
                     <field name="cda_marca_id"/>
+                    <filter string="Activos" domain="[('active','=',True)]" name="active"/>
+                    <filter string="Archivados" domain="[('active','=',False)]" name="Activados"/>
+
                     <filter string="Facturado" domain="[('facturado','=',True)]" name="facturado_filter"/>
                     <filter string="No Facturado" domain="[('facturado','=',False)]" name="no_facturado_filter"/>
                     <filter string="No Cotizado" domain="[('sale_order_id','=',False)]" name="no_catizado_filter"/>
@@ -59,7 +62,7 @@
                 <field name="sale_order_id" attrs="{'invisible': [('sale_order_id', '=', False)]}" readonly="1"/>
                 <field name="nro_resolucion"/>
                   <field name="pdf_nro_resolucion" attrs="{'invisible': [('nro_resolucion', '=', False)]}"/>
-                <field name="no_cotizado"/>
+                <!-- <field name="no_cotizado"/> -->
                 <field name="espera_resolucion"/>
                   <field name="estado"/>
                   <field name="documentacion"/>
@@ -111,7 +114,9 @@
                 <field name="exim_ctrl_calidad"/>
                 <field name="facturado"/>
                 <field name="subir_drive"/>
-                <field name="no_cotizado"/>
+                <!-- <field name="no_cotizado"/> -->
+                <field name="sale_order_id"/>
+                
                 <field name="espera_resolucion"/>
                   <field name="estado"/>
                   <field name="documentacion"/>
@@ -119,6 +124,18 @@
         </tree>
       </field>
     </record>
+
+<!-- Accion que crear las notas de ventas de varios registros seleccionados en la vista tree -->
+    <record model="ir.actions.server" id="arsante.create_so_cda_uyd_alimentos_action_server">
+        <field name="name">Crear Nota de Venta</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="arsante.model_arsante_cda_uyd_alimentos"/>
+        <field name="binding_model_id" ref="arsante.model_arsante_cda_uyd_alimentos"/>
+        <field name="state">code</field>
+        <field name="code">
+          record.create_so()
+        </field>
+      </record>
    
        <!-- explicit pivot definition -->
     
@@ -149,7 +166,7 @@
    
    
     <!-- actions -->
-    <menuitem name="CDA UYD Alimentos" id="arsante.cda_uyd_alimento_menu_list" parent="arsante.arsante_menu_root"
+    <menuitem name="CDA UYD Alimentos" id="arsante.cda_uyd_alimento_menu_list" parent="arsante.arsante_menu_tipo_registros"
               action="arsante.cda_uyd_alimentos_action_window"/>
    
   </data>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="arsante.TipoRegistroDashboard" owl="1">
+        <div class="o_action o_arsante_dashboard">
+            <div class="o_control_panel">
+                <div class="o_cp_top">
+                    <div class="o_cp_top_left text-truncate">
+                        <ol class="breadcrumb" role="navigation">
+                            <li class="breadcrumb-item active">
+                                <span class="text-truncate">Dashboard Tipo Registro</span>
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="o_cp_top_right">
+                        <div class="btn-group">
+                            <button class="btn btn-primary" t-on-click="loadData">
+                                <i class="fa fa-refresh mr-1"/>Actualizar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="o_content overflow-auto p-4">
+                <t t-if="state.loading">
+                    <div class="d-flex justify-content-center align-items-center h-100">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Cargando...</span>
+                        </div>
+                    </div>
+                </t>
+                <t t-else="">
+                    <!-- Global Summary Panels -->
+                    <div class="row mb-5">
+                        <div class="col-md-3">
+                            <div class="o_arsante_stat_card card shadow-sm border-0 bg-white p-3 border-left border-primary">
+                                <div class="text-muted small font-weight-bold text-uppercase">Total Global</div>
+                                <div class="h2 mb-0 text-primary font-weight-bold" t-esc="state.total_global"/>
+                                <i class="fa fa-database stat-icon"/>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="o_arsante_stat_card card shadow-sm border-0 bg-white p-3 border-left border-success">
+                                <div class="text-muted small font-weight-bold text-uppercase">Total Facturados</div>
+                                <div class="h2 mb-0 text-success font-weight-bold" t-esc="state.total_facturados"/>
+                                <i class="fa fa-money stat-icon"/>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="o_arsante_stat_card card shadow-sm border-0 bg-white p-3 border-left border-warning">
+                                <div class="text-muted small font-weight-bold text-uppercase">No Facturados</div>
+                                <div class="h2 mb-0 text-warning font-weight-bold" t-esc="state.total_no_facturados"/>
+                                <i class="fa fa-exclamation-circle stat-icon"/>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="o_arsante_stat_card card shadow-sm border-0 bg-white p-3 border-left border-danger">
+                                <div class="text-muted small font-weight-bold text-uppercase">Para Renovar</div>
+                                <div class="h2 mb-0 text-danger font-weight-bold" t-esc="state.total_para_renovar"/>
+                                <i class="fa fa-clock-o stat-icon"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Individual Cards Grid -->
+                    <div class="row o_arsante_cards_grid">
+                        <t t-foreach="state.records" t-as="record" t-key="record.id">
+                            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                                <div class="card o_arsante_record_card shadow-sm border-0 h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-3">
+                                            <h5 class="card-title text-dark font-weight-bold mb-0 text-truncate" t-att-title="record.name" t-esc="record.name"/>
+                                            <span class="badge badge-primary badge-pill px-3" t-esc="record.total_record_count"/>
+                                        </div>
+                                        
+                                        <div class="row no-gutters mb-3">
+                                            <div class="col-6 mb-2">
+                                                <div class="small text-muted mb-1">Facturados</div>
+                                                <div class="font-weight-bold text-success" t-esc="record.facturados"/>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <div class="small text-muted mb-1">No Fact.</div>
+                                                <div class="font-weight-bold text-warning" t-esc="record.no_facturados"/>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="small text-muted mb-1">Listos</div>
+                                                <div class="font-weight-bold text-info" t-esc="record.estado_listos"/>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="small text-muted mb-1">Renovación</div>
+                                                <div t-attf-class="font-weight-bold #{record.para_renovar > 0 ? 'text-danger' : 'text-muted'}" t-esc="record.para_renovar"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="d-flex border-top pt-3">
+                                            <button class="btn btn-sm btn-primary flex-grow-1 mr-2" t-on-click="() => this.openRecords(record)">
+                                                <i class="fa fa-list-ul mr-1"/> Ver
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.openTipoRegistro(record.id)" title="Configuración">
+                                                <i class="fa fa-cog"/>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+</templates>

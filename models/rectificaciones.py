@@ -55,8 +55,26 @@ class CdaCosmetico(models.Model):
         store=True
         )
     product_id = fields.Many2one(comodel_name='product.product', string='Producto',required=True)
+    importado = fields.Boolean(string='Importado en el general')
+    active = fields.Boolean(string='Activo',default=True)
 
-    @api.multi
+    @api.onchange('estado','no_cotizado','documentacion','facturado','sale_order_id')
+    def _compute_dashboard(self):
+        try:
+            self.tipo_registro_id._compute_registros()
+            record_id=self.ids[0]
+            all_record_id=self.env['arsante.all_record'].search([('tipo_registro_id','=',self.tipo_registro_id.id),
+                                                                ('registro_id','=',record_id)],limit=1)
+            if all_record_id:
+                all_record_id.facturado=self.facturado
+                all_record_id.no_cotizado=self.no_cotizado
+                all_record_id.estado=self.estado
+                all_record_id.documentacion=self.documentacion
+                all_record_id.sale_order_id=self.sale_order_id
+        except:
+            pass
+
+        
     @api.depends('estado','no_cotizado','documentacion','facturado','fecha_renovacion','requiere_renovacion')
     def _compute_alerta_renovacion(self):
         for i in self:
@@ -66,3 +84,51 @@ class CdaCosmetico(models.Model):
                     i.alerta_renovacion = True
                 else:
                     i.alerta_renovacion = False
+
+    def create_so(self):
+        model_sale_order=self.env['sale.order']
+        model_sale_order_line=self.env['sale.order.line']
+        ids = self.env["arsante.rectificaciones"].browse(self._context.get("active_ids", []))
+
+        sale_order_line_ids=[]
+        now = datetime.now()
+        sale_order_id=False
+        for i in ids:
+            if i.sale_order_id:
+                raise ValidationError("Algunos registros ya tienen asociada una nota de venta!")
+        for i in ids:
+            if i.ref_solicitud and i.nro_uyd_rechazado and i.nro_uyd_aceptado and i.nro_cda and i.marca:
+                if not sale_order_id:
+                    value={
+                        'name':self.env['ir.sequence'].next_by_code('sale.order') or _('New'),
+                        'date_order':now,
+                        'partner_id':i.partner_id.id,
+                        'tipo_registro_id':self.tipo_registro_id.id,
+                    }
+                    partner_id_1=i.partner_id.id
+                    sale_order_id=model_sale_order.create(value)
+                Value={
+                    'name':'Ref. Solicitud: '+i.ref_solicitud+' Nro. UYD Rechazado: '+i.nro_uyd_rechazado+' Nro. UYD Aceptado: '+str(i.nro_uyd_aceptado)+' Nro. CDA: '+i.nro_cda+' MARCA:'+i.marca,
+                    'product_id':i.product_id.id,
+                    'product_uom_qty':1,
+                    'product_uom':i.product_id.uom_id.id,
+                    'order_id':sale_order_id.id
+                }
+                if partner_id_1!=i.partner_id.id:
+                    raise ValidationError("No puede tener clientes distintos para crear una nota de venta!")
+
+                rec=model_sale_order_line.create(Value)
+                i.sale_order_id=sale_order_id.id
+                sale_order_line_ids.append(rec.id)
+
+            else:
+                raise ValidationError("""A algunos registros les falta uno de los siguierntes datos:
+                                ref_solicitud
+                                nro_uyd_rechazado
+                                nro_uyd_aceptado 
+                                nro_cda 
+                                marca
+                              """)
+        # rec.write({
+        #     'order_line':[(6, 0, [sale_order_line_ids])]
+        # })                    

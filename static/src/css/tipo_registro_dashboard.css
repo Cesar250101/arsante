@@ -1,0 +1,213 @@
+/* ==============================================
+   Method Brand Colors
+   Primary Orange:    #F5A623
+   Dark Orange:       #E08E00
+   Dark Gray (text):  #4A4A4A
+   Medium Gray:       #6B6B6B
+   Light Background:  #F1F4F9
+   ============================================== */
+
+:root {
+    --method-orange: #F37720;
+    --method-orange-dark: #E08E00;
+    --method-orange-light: #FFF3E0;
+    --method-gray-dark: #4A4A4A;
+    --method-gray-medium: #676a76;
+    --method-gray-light: #F1F4F9;
+}
+
+/* =============================================
+   GLOBAL BACKEND STYLES (all arsante views)
+   ============================================= */
+
+/* Primary action buttons */
+.o_action_manager .o_cp_action_menus .dropdown-toggle,
+.o_action_manager .btn-primary,
+.o_form_view .o_form_statusbar .btn-primary {
+    background-color: var(--method-orange) !important;
+    border-color: var(--method-orange-dark) !important;
+    color: #fff !important;
+}
+
+.o_action_manager .btn-primary:hover,
+.o_form_view .o_form_statusbar .btn-primary:hover {
+    background-color: var(--method-orange-dark) !important;
+    border-color: var(--method-orange-dark) !important;
+}
+
+/* Nav bar / breadcrumb accent */
+.o_action_manager .breadcrumb-item a {
+    color: var(--method-orange-dark) !important;
+}
+
+.o_action_manager .breadcrumb-item a:hover {
+    color: var(--method-orange) !important;
+}
+
+/* Form view links */
+.o_form_view a:not(.btn) {
+    color: var(--method-orange-dark);
+}
+
+.o_form_view a:not(.btn):hover {
+    color: var(--method-orange);
+}
+
+/* Selection/focus highlight */
+.o_form_view .o_field_widget:focus-within {
+    border-color: var(--method-orange) !important;
+}
+
+.o_form_view .o_field_widget input:focus,
+.o_form_view .o_field_widget textarea:focus,
+.o_form_view .o_field_widget select:focus {
+    border-color: var(--method-orange) !important;
+    box-shadow: 0 0 0 0.2rem rgba(245, 166, 35, 0.25) !important;
+}
+
+/* List view selected rows */
+.o_list_view tbody tr.o_data_row.o_list_record_selector .o_list_record_selector input:checked + span,
+.o_list_view .o_data_row.o_row_selected {
+    background-color: var(--method-orange-light) !important;
+}
+
+/* List view header */
+.o_list_view thead th {
+    color: var(--method-gray-dark) !important;
+}
+
+/* Checkboxes */
+.o_form_view .o_field_boolean input:checked,
+.o_list_view .o_field_boolean input:checked {
+    background-color: var(--method-orange) !important;
+    border-color: var(--method-orange-dark) !important;
+}
+
+/* Tags / badges */
+.o_form_view .badge-primary,
+.o_form_view .o_tag {
+    background-color: var(--method-orange-light) !important;
+    color: var(--method-orange-dark) !important;
+    border: 1px solid #F5D89A !important;
+}
+
+/* Statusbar */
+.o_form_view .o_form_statusbar {
+    border-bottom: 2px solid var(--method-orange) !important;
+}
+
+/* Control panel search input */
+.o_control_panel .o_searchview input:focus {
+    border-color: var(--method-orange) !important;
+    box-shadow: 0 0 0 0.2rem rgba(245, 166, 35, 0.25) !important;
+}
+
+/* Pager active */
+.o_pager .o_pager_value:focus {
+    color: var(--method-orange-dark) !important;
+}
+
+/* =============================================
+   DASHBOARD STYLES
+   ============================================= */
+
+/* Dashboard Background */
+.o_arsante_dashboard {
+    background-color: var(--method-gray-light);
+    min-height: 100%;
+}
+
+/* Stat Cards (Top Row) */
+.o_arsante_stat_card {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border-top: 3px solid var(--method-orange);
+}
+
+.o_arsante_stat_card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(245, 166, 35, 0.15) !important;
+}
+
+.o_arsante_stat_card .stat-icon {
+    position: absolute;
+    right: 15px;
+    bottom: 10px;
+    font-size: 3rem;
+    opacity: 0.08;
+    color: var(--method-orange);
+}
+
+.o_arsante_stat_card.border-left {
+    border-left-width: 4px !important;
+    border-left-color: var(--method-orange) !important;
+}
+
+/* Record Cards (Grid) */
+.o_arsante_record_card {
+    transition: all 0.3s ease;
+    border-radius: 12px !important;
+}
+
+.o_arsante_record_card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(245, 166, 35, 0.12) !important;
+}
+
+.o_arsante_record_card .card-title {
+    font-size: 1.1rem;
+    color: var(--method-gray-dark);
+}
+
+.o_arsante_record_card .badge-primary {
+    background-color: var(--method-orange-light);
+    color: var(--method-orange-dark);
+    border: 1px solid #F5D89A;
+}
+
+/* Dashboard Buttons & Links */
+.o_arsante_dashboard .btn-primary {
+    background-color: var(--method-orange) !important;
+    border-color: var(--method-orange-dark) !important;
+    color: #fff !important;
+}
+
+.o_arsante_dashboard .btn-primary:hover {
+    background-color: var(--method-orange-dark) !important;
+    border-color: var(--method-orange-dark) !important;
+}
+
+.o_arsante_dashboard a {
+    color: var(--method-orange-dark);
+}
+
+.o_arsante_dashboard a:hover {
+    color: var(--method-orange);
+}
+
+/* Headings */
+.o_arsante_dashboard h1,
+.o_arsante_dashboard h2,
+.o_arsante_dashboard h3,
+.o_arsante_dashboard h4 {
+    color: var(--method-gray-dark);
+}
+
+/* Scrollbar with brand accent */
+.o_content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.o_content::-webkit-scrollbar-track {
+    background: var(--method-gray-light);
+}
+
+.o_content::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+.o_content::-webkit-scrollbar-thumb:hover {
+    background: var(--method-orange);
+}

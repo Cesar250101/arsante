@@ -1,5 +1,46 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
+
+    <record id="arsante.cda_uyd_alimentos_wizard_wizard_form_archivar" model="ir.ui.view">
+        <field name="name">arsante.cda.uyd.alimentos.wizard.wizard.form.archivar</field>
+        <field name="model">arsante.cda_uyd_alimentos_wizard</field>
+        <field name="arch" type="xml">
+            <form string="Crear nota de venta">
+                <group>
+                    <!--<field name="action" />-->
+                    <div>
+                        Se crear una nota de venta con las registros seleccionados
+                    </div>
+                </group>
+                <footer>
+                        <button string="Archivar" name="archivar" type="object" class="oe_highlight" />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="arsante.cda_uyd_alimentos_wizard_wizard_form_desarchivar" model="ir.ui.view">
+        <field name="name">arsante.cda.uyd.alimentos.wizard.wizard.form.desarchivar</field>
+        <field name="model">arsante.cda_uyd_alimentos_wizard</field>
+        <field name="arch" type="xml">
+            <form string="Crear nota de venta">
+                <group>
+                    <!--<field name="action" />-->
+                    <div>
+                        Se crear una nota de venta con las registros seleccionados
+                    </div>
+                </group>
+                <footer>
+                        <button string="Desarchivar" name="desarchivar" type="object" class="oe_highlight" />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+            </form>
+        </field>
+    </record>
+
     <record id="arsante.cda_uyd_alimentos_wizard_form" model="ir.ui.view">
         <field name="name">arsante.inscripciones.wizard.form</field>
         <field name="model">arsante.cda_uyd_alimentos_wizard</field>
@@ -19,15 +60,16 @@
             </form>
         </field>
     </record>
-    <act_window
-        id="action_registro_cda_uyd_alimentos_wizard_form"
-        multi="True"
-        key2="client_action_multi"
-        name="Crear nota de venta"
-        res_model="arsante.cda_uyd_alimentos_wizard"
-        src_model="arsante.cda_uyd_alimentos"
-        view_mode="form"
-        target="new"
-        view_type="form"
-    />
+
+    <record id="action_registro_cda_uyd_alimentos_wizard_form" model="ir.actions.act_window">
+        <field name="name">Crear nota de venta</field>
+        <field name="res_model">arsante.cda_uyd_alimentos_wizard</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="cda_uyd_alimentos_wizard_form"/>
+        <field name="target">new</field>
+        <field name="groups_id" eval="[(4, ref('account.group_account_invoice'))]"/>
+        <field name="binding_model_id" ref="model_arsante_cda_uyd_alimentos_wizard"/>
+        <field name="binding_view_types">list</field>
+    </record> 
+
 </odoo>

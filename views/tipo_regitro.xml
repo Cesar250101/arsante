@@ -128,25 +128,44 @@
             <field name="estado_no_listos"/>
             <field name="documentacion_completa"/>
             <field name="documentacion_completa_no_completa"/>
+            <field name="active"/>
         </tree>
+      </field>
+    </record>
+
+    <record id="tipos_registro_search_view" model="ir.ui.view">
+      <field name="name">arsante.tipo_registro.search</field>
+      <field name="model">arsante.tipo_registro</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="name"/>
+          <field name="tipo"/>
+          <filter string="Activos" name="active" domain="[('active', '=', True)]"/>
+          <filter string="Inactivos" name="inactive" domain="[('active', '=', False)]"/>
+          <group expand="0" string="Group By">
+            <filter string="Tipo" name="group_tipo" context="{'group_by': 'tipo'}"/>
+          </group>
+        </search>
       </field>
     </record>
 
     <!-- actions opening views on models -->
     
-    <record model="ir.actions.act_window" id="arsante.tipo_registro_action_window">
+    <!-- <record model="ir.actions.act_window" id="arsante.tipo_registro_action_window">
       <field name="name">Tipos de Registro</field>
       <field name="res_model">arsante.tipo_registro</field>
       <field name="view_mode">kanban,tree</field>
-    </record>
+    </record> -->
 
    
     <!-- actions -->
-    <menuitem name="DashBoard"
+    <!-- <menuitem name="DashBoard"
               id="arsante.tipo_registro_menu_list"
               sequence="1"
               parent="arsante.arsante_menu_root"
               action="arsante.tipo_registro_action_window"/>
-   
+ -->
+              
+
   </data>
 </odoo>

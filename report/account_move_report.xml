@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Herencia del reporte DTE chileno para reemplazar contact_id con tipo_registro_id cuando es_arsante es verdadero -->
+    <template id="dte_external_layout_inherit_arsante" inherit_id="l10n_cl_fe.dte_external_layout">
+        <!-- Reemplazar toda la fila de Contacto para cambiar tanto la etiqueta como el valor -->
+        <xpath expr="//tr[td/strong[text()='Contacto:']]" position="replace">
+            <tr style="max-height:15px; font-size:12px !important;">
+                <td style="border-top:0px !important;padding:0px !important;">
+                    <strong>
+                        <t t-if="o.es_arsante and o.tipo_registro_id">Tipo de Registro:</t>
+                        <t t-else="">Contacto:</t>
+                    </strong>
+                </td>
+                <td style="border-top:0px !important;padding:0px !important;min-width:440px;max-width:440px;">
+                    <t t-if="o.es_arsante and o.tipo_registro_id">
+                        <span t-field="o.tipo_registro_id.name"/>
+                    </t>
+                    <t t-elif="'contact_id' in o and o.contact_id">
+                        <span t-field="o.contact_id.name"/>
+                    </t>
+                </td>
+                <td style="border-top:0px !important;padding:0px !important;">
+                    <strong>Vencimiento:</strong>
+                </td>
+                <td style="border-top:0px !important;padding:0px !important;">
+                    <span t-field="o.invoice_date_due"/>
+                </td>
+            </tr>
+        </xpath>
+    </template>
+</odoo>

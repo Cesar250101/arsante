@@ -20,10 +20,15 @@ class CdaCosmetico(models.Model):
         comodel_name='arsante.tipo_registro',
         string='Tipo de Registro',
         required=True, default=_default_get,readonly=True,store=True)
-    name = fields.Char(string='Nombre Registro')
+    name = fields.Char(string='Nombre Registro', compute='_compute_name', store=True)
     date = fields.Date(string='Fecha Registro')
     partner_id = fields.Many2one(comodel_name='res.partner', string='Cliente')
-    categoria = fields.Char(string='Categoria')
+    marcar = fields.Selection([
+        ('todomoda', 'Todo Moda'),
+        ('isadora', 'Isadora'),
+    ], string='Marca')
+    marcar_url = fields.Char(string='URL OneDrive', compute='_compute_marcar_url')
+    categoria = fields.Char(string='Nro. OC')
     ref_gicona = fields.Char(string='Ref. Gicona')
     nro_registro = fields.Char(string='Nro. Registro')
     product_id = fields.Many2one(comodel_name='product.product', string='Producto')
@@ -53,10 +58,14 @@ class CdaCosmetico(models.Model):
     ], string='Estado')
     comentario = fields.Text(string='Comentario')
     fecha_resolucion = fields.Date(string='Fecha Resolución')
-    fecha_vcto = fields.Date(string='Fecha Vcto.')
+    fecha_vcto = fields.Date(string='Fecha Renovacion.')
+    colilla_pago_isp = fields.Char(string='Colilla Pago ISP')
+    oc_facturacion = fields.Char(string='OC Facturación')    
     sale_order_id = fields.Many2one(comodel_name='sale.order', string='Nota de Venta')
+    invoice_ids = fields.Many2many('account.move', string='Facturas', related='sale_order_id.invoice_ids', readonly=True)
     facturado = fields.Boolean(string='Facturado')
     subir_drive = fields.Boolean(string='Subir Drive')
+    imagen = fields.Binary(string='Imagen', attachment=True)
     no_cotizado = fields.Boolean(string='No Cotizado?')
     espera_resolucion = fields.Boolean(string='Espera de resolución?')
     estado= fields.Selection(string='Estado',selection=[('listo', 'Listo'),('no_listo', 'No Listo'), ],required=False, )
@@ -72,8 +81,46 @@ class CdaCosmetico(models.Model):
         compute='_compute_alerta_renovacion',
         store=True
         )
+    importado = fields.Boolean(string='Importado en el general')
+    active = fields.Boolean(string='Activo',default=True)
+    correo_ids = fields.One2many(
+        comodel_name='arsante.registro_cosmetico.correo',
+        inverse_name='registro_cosmetico_id',
+        string='Correos Electrónicos'
+    )
 
-    @api.multi
+    @api.onchange('estado','no_cotizado','documentacion','facturado','sale_order_id')
+    def _compute_dashboard(self):
+        try:
+            self.tipo_registro_id._compute_registros()
+            record_id=self.ids[0]
+            all_record_id=self.env['arsante.all_record'].search([('tipo_registro_id','=',self.tipo_registro_id.id),
+                                                                ('registro_id','=',record_id)],limit=1)
+            if all_record_id:
+                all_record_id.facturado=self.facturado
+                all_record_id.no_cotizado=self.no_cotizado
+                all_record_id.estado=self.estado
+                all_record_id.documentacion=self.documentacion
+                all_record_id.sale_order_id=self.sale_order_id
+        except:
+            pass
+    
+    @api.depends('partner_id', 'ref_gicona', 'nro_registro')
+    def _compute_name(self):
+        for i in self:
+            i.name = str(i.partner_id.name or '') + ' ' + str(i.ref_gicona or '') + ' ' + str(i.nro_registro or '')
+
+    @api.depends('marcar')
+    def _compute_marcar_url(self):
+        """Asigna automáticamente el link de SharePoint según la marca seleccionada"""
+        for record in self:
+            if record.marcar == 'todomoda':
+                record.marcar_url = 'https://arsanteconsultores-my.sharepoint.com/personal/pmuquillaza_arsante_cl/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fpmuquillaza%5Farsante%5Fcl%2FDocuments%2F1%2E%20CLIENTES%20VIGENTES%20AR%20SANTE%202025%2F0%2E%20COLILLAS%20DE%20PAGO%20BIJOU%2FBIJOU%2F2%2E%20colillas%20de%20pago%20TODO%20MODA&ga=1'
+            elif record.marcar == 'isadora':
+                record.marcar_url = 'https://arsanteconsultores-my.sharepoint.com/personal/pmuquillaza_arsante_cl/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fpmuquillaza%5Farsante%5Fcl%2FDocuments%2F1%2E%20CLIENTES%20VIGENTES%20AR%20SANTE%202025%2F0%2E%20COLILLAS%20DE%20PAGO%20BIJOU%2FBIJOU%2F1%2E%20colillas%20de%20pago%20ISADORA&ga=1'
+            else:
+                record.marcar_url = False
+
     @api.depends('estado','no_cotizado','documentacion','facturado','fecha_renovacion','requiere_renovacion')
     def _compute_alerta_renovacion(self):
         for i in self:
@@ -83,3 +130,83 @@ class CdaCosmetico(models.Model):
                     i.alerta_renovacion = True
                 else:
                     i.alerta_renovacion = False
+
+    def create_so(self):
+        model_sale_order=self.env['sale.order']
+        model_sale_order_line=self.env['sale.order.line']
+        ids = self.env["arsante.registro_cosmetico"].browse(self._context.get("active_ids", []))
+
+        sale_order_line_ids=[]
+        now = datetime.now()
+        sale_order_id=False
+        for i in ids:
+            if i.sale_order_id:
+                raise ValidationError("Algunos registros ya tienen asociada una nota de venta!")
+        for i in ids:
+            if i.ref_gicona and i.nro_registro and i.product_id and i.fabricante_id and i.nro_resolucion:
+                if not sale_order_id:
+                    value={
+                        'name':self.env['ir.sequence'].next_by_code('sale.order') or _('New'),
+                        'date_order':now,
+                        'partner_id':i.partner_id.id,
+                        'tipo_registro_id':self.tipo_registro_id.id,
+                        'marca':i.marcar 
+                    }
+                    partner_id_1=i.partner_id.id
+                    sale_order_id=model_sale_order.create(value)
+
+                Value={
+                    'name':'NRO.GICONA: '+i.ref_gicona+' NRO.REGISTRO: '+i.nro_registro+' PRODUCTO: '+i.product_id.name+' FABRICANTE: '+i.fabricante_id.name+' NRO.RESOLUCION:'+i.nro_resolucion,
+                    'product_id':i.product_id.id,
+                    'product_uom_qty':1,
+                    'product_uom':i.product_id.uom_id.id,
+                    'order_id':sale_order_id.id
+                }
+                if partner_id_1!=i.partner_id.id:
+                    raise ValidationError("No puede tener clientes distintos para crear una nota de venta!")
+
+                rec=model_sale_order_line.create(Value)
+                i.sale_order_id=sale_order_id.id
+                sale_order_line_ids.append(rec.id)
+
+            else:
+                raise ValidationError("""A algunos registros les falta uno de los siguierntes datos:
+                              -NRO.GICONA
+                              -NRO.REGISTRO
+                              -PRODUCTO
+                              -FABRICANTE
+                              -NRO.RESOLUCION
+                              """)
+        # Crear referencia DTE con OC Facturación
+        if sale_order_id:
+            oc_value = False
+            for i in ids:
+                if i.oc_facturacion:
+                    oc_value = i.oc_facturacion
+                    break
+                elif i.categoria:
+                    oc_value = i.categoria
+                    break
+            if oc_value:
+                doc_class_oc = self.env['sii.document_class'].search([('name', '=', 'Orden de Compra')], limit=1)
+                if doc_class_oc:
+                    sale_order_id.write({
+                        'referencia_ids': [(0, 0, {
+                            'fecha_documento': now.date(),
+                            'folio': oc_value,
+                            'sii_referencia_TpoDocRef': doc_class_oc.id,
+                        })]
+                    })
+
+    def open_marcar_link(self):
+        """Abre el enlace del campo marcar_url si está disponible"""
+        self.ensure_one()
+        if self.marcar_url:
+            # Si el campo marcar_url contiene una URL, abrirla
+            url = self.marcar_url if self.marcar_url.startswith('http') else 'https://' + self.marcar_url
+            return {
+                'type': 'ir.actions.act_url',
+                'url': url,
+                'target': 'new',
+            }
+        return True

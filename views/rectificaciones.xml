@@ -7,6 +7,9 @@
             <field name="arch" type="xml">
                 <search string="Search Sales Order">
                     <field name="partner_id"/>
+                    <filter string="Activos" domain="[('active','=',True)]" name="active"/>
+                    <filter string="Archivados" domain="[('active','=',False)]" name="Activados"/>
+
                     <filter string="Facturado" domain="[('facturado','=',True)]" name="facturado_filter"/>
                     <filter string="No Facturado" domain="[('facturado','=',False)]" name="no_facturado_filter"/>
                     <filter string="No Cotizado" domain="[('sale_order_id','=',False)]" name="no_catizado_filter"/>
@@ -53,7 +56,7 @@
                 <field name="marca"/>        
                 <field name="sale_order_id"/>
                 <field name="comentario"/>
-                <field name="no_cotizado"/>
+                <!-- <field name="no_cotizado"/> -->
                 <field name="espera_resolucion"/>
                 <field name="nro_resolucion"/>
                 <field name="pdf_nro_resolucion" attrs="{'invisible': [('nro_resolucion','=',False)]}"/>
@@ -97,7 +100,9 @@
                 <field name="marca"/>
                 <field name="enviar_uyd_aprobado"/>
                 <field name="facturado"/>
-                <field name="no_cotizado"/>
+                <!-- <field name="no_cotizado"/> -->
+                <field name="sale_order_id"/>
+                
                 <field name="espera_resolucion"/>
                   <field name="estado"/>
                   <field name="documentacion"/>
@@ -133,8 +138,20 @@
       <field name="domain">[('facturado', '=', False)]</field>        
     </record>        
    
+            <!-- Accion que crear las notas de ventas de varios registros seleccionados en la vista tree -->
+            <record model="ir.actions.server" id="arsante.create_so_rectificaciones_action_server">
+                <field name="name">Crear Nota de Venta</field>
+                <field name="type">ir.actions.server</field>
+                <field name="model_id" ref="arsante.model_arsante_rectificaciones"/>
+                <field name="binding_model_id" ref="arsante.model_arsante_rectificaciones"/>
+                <field name="state">code</field>
+                <field name="code">
+                  record.create_so()
+                </field>
+              </record>  
+
     <!-- actions -->
-    <menuitem name="Rectificaciones" id="arsante.rectificaciones_menu_list" parent="arsante.arsante_menu_root"
+    <menuitem name="Rectificaciones" id="arsante.rectificaciones_menu_list" parent="arsante.arsante_menu_tipo_registros"
               action="arsante.rectificaciones_action_window"/>
    
   </data>

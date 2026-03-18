@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Herencia del reporte de orden de venta para agregar tipo_registro_id -->
+    <template id="report_saleorder_document_inherit_arsante" inherit_id="sale.report_saleorder_document">
+        <!-- Mover datos del cliente al bloque de informaciones con el mismo estilo -->
+        <xpath expr="//div[@id='informations']" position="before">
+            <div class="row mt-4 mb-2">
+                <div class="col-auto col-6 mw-100 mb-2">
+                    <strong>Cliente:</strong>
+                    <p class="m-0">
+                        <span t-field="doc.partner_id.name"/>
+                        <t t-if="doc.partner_id.street">, <span t-field="doc.partner_id.street"/></t>
+                        <t t-if="doc.partner_id.city">, <span t-field="doc.partner_id.city"/></t>
+                        <t t-if="doc.partner_id.state_id">, <span t-field="doc.partner_id.state_id"/></t>
+                        <t t-if="doc.partner_id.country_id">, <span t-field="doc.partner_id.country_id"/></t>
+                        <t t-if="doc.partner_id.vat"> — RUT: <span t-field="doc.partner_id.vat"/></t>
+                    </p>
+                </div>
+            </div>
+        </xpath>
+
+        <!-- Ocultar el bloque de dirección original en el encabezado -->
+        <xpath expr="//t[@t-set='address']" position="replace">
+            <t t-set="address"/>
+        </xpath>
+
+        <!-- Agregar el campo tipo_registro_id después del campo user_id -->
+        <xpath expr="//div[@id='informations']/div[p[@t-field='doc.user_id']]" position="after">
+            <div t-if="doc.tipo_registro_id" class="col-auto col-3 mw-100 mb-2" name="tipo_registro">
+                <strong>Tipo de Registro:</strong>
+                <p class="m-0" t-field="doc.tipo_registro_id"/>
+            </div>
+        </xpath>
+
+        <!-- Agregar tabla de Referencias DTE si existen -->
+        <xpath expr="//div[@name='so_total_summary']" position="after">
+            <t t-if="doc.marca">
+                <t t-if="doc.marca == 'todomoda' and doc.partner_id.url_todomoda">
+                    <div class="mt-3">
+                        <strong>URL Colillas de Pago: </strong>
+                        <a t-att-href="doc.partner_id.url_todomoda">Ver Colillas de Pago</a>
+                    </div>
+                </t>
+                <t t-elif="doc.marca == 'isadora' and doc.partner_id.url_isadora">
+                    <div class="mt-3">
+                        <strong>URL Colillas de Pago: </strong>
+                        <a t-att-href="doc.partner_id.url_isadora">Ver Colillas de Pago</a>
+                    </div>
+                </t>
+            </t>
+            <div t-if="doc.referencia_ids" class="mt-4">
+                <h4>Referencias DTE</h4>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Folio Referencia</th>
+                            <th>Tipo de Documento SII</th>
+                            <th>Motivo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="doc.referencia_ids" t-as="ref">
+                            <tr>
+                                <td><span t-field="ref.fecha_documento"/></td>
+                                <td><span t-field="ref.folio"/></td>
+                                <td><span t-field="ref.sii_referencia_TpoDocRef"/></td>
+                                <td><span t-field="ref.motivo"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </xpath>
+    </template>
+</odoo>

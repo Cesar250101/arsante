@@ -1,42 +1,17 @@
 <odoo>
   <data>
 
-  <!-- <record id="arsante.tipo_registro_view_kanban" model="ir.ui.view">
-    <field name="name">arsante.tipo.registro.view.kanban</field>
-    <field name="model">arsante.tipo_registro</field>
-    <field name="arch" type="xml">
-      <kanban class="o_res_partner_kanban">
-      <field name="cda_cosmetico_ids"/>
-      <field name="name"/>
-      <templates>
-        <t t-name="kanban-box">
-          <div t-attf-class="oe_kanban_global_click">
-            <div class="oe_kanban_details text-center">
-              <h1 class="o_kanban_record_title text-center">
-                <field name="name"/>
-              </h1>
-              <div t-if="cda_cosmetico_ids">
-                <t t-esc="cda_cosmetico_ids"/>
-              </div>
-            </div>
-          </div>
-        </t>
-      </templates>
-      </kanban>
-    </field>
-  </record> -->
+    <!-- Client Action for OWL Dashboard -->
+    <record id="action_tipo_registro_dashboard" model="ir.actions.client">
+        <field name="name">Dashboard Tipo Registro</field>
+        <field name="tag">arsante_tipo_registro_dashboard</field>
+    </record>
 
-    <!-- actions opening views on models -->    
-    <!-- <record model="ir.actions.act_window" id="arsante.dashboard_cda_cosmetico_action_window">
-      <field name="name">DashBoard - CDA Cosméticos DM</field>
-      <field name="res_model">arsante.tipo_registro</field>
-      <field name="view_mode">kanban,form</field>
-    </record> -->
-   
-   
-    <!-- actions -->
-    <!-- action="arsante.dashboard_cda_cosmetico_action_window"  -->
-    <menuitem name="DashBoard" id="arsante.dashboard_cda_cosmetico_dm_menu_list" parent="arsante.arsante_menu_root"              
+    <!-- Update existing menu or create it if not exists -->
+    <menuitem name="DashBoard" 
+              id="arsante.dashboard_cda_cosmetico_dm_menu_list" 
+              parent="arsante.arsante_menu_root"              
+              action="action_tipo_registro_dashboard"
               sequence="1"/>
    
   </data>

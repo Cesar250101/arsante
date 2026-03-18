@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+<!-- <div class="o_td_label" attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))]}">
+    <label for="invoice_date_due" string="Due Date" attrs="{'invisible': [('invoice_payment_term_id', '!=', False)]}"/>
+    <label for="invoice_payment_term_id" string="Payment terms" attrs="{'invisible': [('invoice_payment_term_id', '=', False)]}"/>
+</div> -->
+
+    <record id="view_order_form_arsante" model="ir.ui.view">
+        <field name="name">view.order.form.arsante</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_order']" position="after">
+                <field name="es_arsante" invisible="1"/>
+                <field name="fecha_pago" attrs="{'invisible': [('es_arsante', '=', False)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_shipping_id']" position="after">
+                <field name="es_arsante" invisible="1"/>
+                <field name="tipo_serv_registro" attrs="{'invisible': [('es_arsante', '=', False)]}"/>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <record id="view_quotation_tree_inherit_arsante" model="ir.ui.view">
+        <field name="name">sale.order.tree.inherit.arsante</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='state']" position="before">
+                <field name="es_arsante" invisible="1"/>
+                <field name="tipo_serv_registro" optional="show" attrs="{'invisible': [('es_arsante', '=', False)], 'required': [('es_arsante', '=', True)]}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="sale_order_view_filter_inherit_arsante" model="ir.ui.view">
+        <field name="name">sale.order.search.inherit.arsante</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="es_arsante" invisible="1"/>
+                <field name="tipo_registro_id" filter_domain="[('tipo_registro_id', 'ilike', self)]" attrs="{'invisible': [('es_arsante', '=', False)]}"/>
+                <group expand="0" string="Group By">
+                    <filter string="Tipo de Registro" name="group_by_tipo_registro_id" context="{'group_by':'tipo_registro_id'}" attrs="{'invisible': [('es_arsante', '!=', True)]}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

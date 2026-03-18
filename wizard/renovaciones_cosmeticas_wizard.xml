@@ -19,15 +19,17 @@
             </form>
         </field>
     </record>
-    <act_window
-        id="action_renovaciones_cosmeticos_wizard"
-        multi="True"
-        key2="client_action_multi"
-        name="Crear nota de venta"
-        res_model="arsante.renovaciones_cosmeticos_wizard"
-        src_model="arsante.renovaciones_cosmeticos"
-        view_mode="form"
-        target="new"
-        view_type="form"
-    />
+
+
+    <record id="arsante.action_renovaciones_cosmeticos_wizard" model="ir.actions.act_window">
+        <field name="name">Crear nota de venta</field>
+        <field name="res_model">arsante.renovaciones_cosmeticos_wizard</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="renovaciones_cosmeticos_wizard_form"/>
+        <field name="target">new</field>
+        <field name="groups_id" eval="[(4, ref('account.group_account_invoice'))]"/>
+        <field name="binding_model_id" ref="model_arsante_renovaciones_cosmeticos_wizard"/>
+        <field name="binding_view_types">list</field>
+    </record> 
+
 </odoo>

@@ -14,7 +14,10 @@
                   <field name="descripcion"/>                
                   <field name="nro_registro"/>
                   <field name="estado_renovacion"/>
-                  <field name="fecha_vcto"/>               
+                  <field name="fecha_vcto"/>    
+                  <filter string="Activos" domain="[('active','=',True)]" name="active"/>
+                  <filter string="Archivados" domain="[('active','=',False)]" name="Activados"/>
+
                     <filter string="Facturado" domain="[('facturado','=',True)]" name="facturado_filter"/>
                     <filter string="No Facturado" domain="[('facturado','=',False)]" name="no_facturado_filter"/>
                     <filter string="No Cotizado" domain="[('sale_order_id','=',False)]" name="no_catizado_filter"/>
@@ -56,7 +59,7 @@
                 <field name="nro_registro"/>
                 <field name="estado_renovacion"/>
                 <field name="fecha_vcto"/>
-                <field name="no_cotizado"/>
+                <!-- <field name="no_cotizado"/> -->
                 <field name="espera_resolucion"/>
                   <field name="estado"/>
                   <field name="documentacion"/>
@@ -75,6 +78,7 @@
                 <field name="cotizacion_pendiente"/>
                 <field name="requiere_renovacion"/>
                 <field name="fecha_renovacion" attrs="{'invisible': [('requiere_renovacion','=',False)]}"/>
+                <field name="facturado"/>
               </group>
             </group>
           </sheet>
@@ -98,7 +102,9 @@
                 <field name="nro_registro"/>
                 <field name="estado_renovacion"/>
                 <field name="fecha_vcto"/>
-                <field name="no_cotizado"/>
+                <!-- <field name="no_cotizado"/> -->
+                <field name="sale_order_id"/>
+                
                 <field name="espera_resolucion"/>
                   <field name="estado"/>
                   <field name="documentacion"/>
@@ -106,6 +112,8 @@
                   <field name="enviar_colilla" placeholder="Envíar colilla?" />
                   <field name="enviar_colilla_fecha" placeholder="Fecha enviar colilla" attrs="{'invisible': [('enviar_colilla','=',False)]}"/>
                   <field name="enviar_cliente"/>
+                  <field name="facturado"/>
+                  
                     <field name="cotizacion_pendiente"/>
           <field name="alerta_renovacion"/>
         </tree>
@@ -139,8 +147,20 @@
       <field name="domain">[('facturado', '=', False)]</field>        
     </record>    
 
+                <!-- Accion que crear las notas de ventas de varios registros seleccionados en la vista tree -->
+                <record model="ir.actions.server" id="arsante.create_so_renovaciones_cosmeticos_action_server">
+                    <field name="name">Crear Nota de Venta</field>
+                    <field name="type">ir.actions.server</field>
+                    <field name="model_id" ref="arsante.model_arsante_renovaciones_cosmeticos"/>
+                    <field name="binding_model_id" ref="arsante.model_arsante_renovaciones_cosmeticos"/>
+                    <field name="state">code</field>
+                    <field name="code">
+                      record.create_so()
+                    </field>
+                  </record>  
+
     <!-- actions -->
-    <menuitem name="Renovaciones Cosmeticos" id="arsante.renovacion_cosmeticos_menu_list" parent="arsante.arsante_menu_root"
+    <menuitem name="Renovaciones Cosmeticos" id="arsante.renovacion_cosmeticos_menu_list" parent="arsante.arsante_menu_tipo_registros"
               action="arsante.renovacion_cosmeticos_action_window"/>
    
   </data>

@@ -1,0 +1,76 @@
+<odoo>
+    <data>
+        <record id="arsante.all_record_filter" model="ir.ui.view">
+            <field name="name">arsante.all.record.filter</field>
+            <field name="model">arsante.all_record</field>
+            <field name="priority" eval="15"/>
+            <field name="arch" type="xml">
+                <search string="Search Sales Order">
+                    <field name="partner_id"/>
+                    <field name="date"/>
+                    <filter string="Facturado" domain="[('facturado','=',True)]" name="facturado_filter"/>
+
+                    <filter string="No Facturado" domain="[('facturado','=',False)]" name="no_facturado_filter"/>
+                    <filter string="No Cotizado" domain="[('sale_order_id','=',False)]" name="no_catizado_filter"/>
+                    <filter string="Cotizado" domain="[('sale_order_id','!=',False)]" name="catizado_filter"/>
+                    <filter string="Docu. Completa" domain="[('documentacion','=','completa')]" name="completa_filter"/>
+                    <filter string="Docu. Incompleta" domain="['|',('documentacion','=','incompleta'),('documentacion','=',False)]" name="incompleta_filter"/>
+                    <filter string="Estado: Listo" domain="[('estado','=','listo')]" name="listo_filter"/>
+                    <filter string="Estado: No Listo" domain="['|',('estado','=','no_listo'),('estado','=',False)]" name="no_listo_filter"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Tipo Registro" name="tipo_registro" domain="[]" context="{'group_by':'tipo_registro_id'}"/>
+                        <filter name="partner_id" string="Cliente" domain="[]" context="{'group_by':'partner_id'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="arsante.all_record_tree_view">
+            <field name="name">Todos los Registros</field>
+            <field name="model">arsante.all_record</field>
+            <field name="arch" type="xml">
+              <tree editable="bottom">
+                <field name="tipo_registro_id" required="1"/>
+                <field name="name" required="1"/>
+                <field name="date" required="1"/>
+                <field name="partner_id" required="1"/>
+                <field name="facturado"/>
+                <field name="no_cotizado"/>
+                <field name="sale_order_id"/>
+                <field name="estado"/>
+                <field name="documentacion"/>
+      
+              </tree>
+            </field>
+          </record>
+
+        <record model="ir.ui.view" id="arsante.all_record_pivot_view">
+            <field name="name">arsante.all.record.pivot</field>
+            <field name="model">arsante.all_record</field>
+            <field name="arch" type="xml">
+                <pivot string="Todos los Registros" display_quantity="true">
+                    <field name="tipo_registro_id" type="row"/>
+                    <field name="date" type="col"/>
+                    <field name="facturado_int" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+        
+            
+
+        <record model="ir.actions.act_window" id="arsante.all_record">
+            <field name="name">Todos los Registros</field>
+            <field name="res_model">arsante.all_record</field>
+            <field name="view_mode">tree,pivot</field>
+          </record>
+
+        <menuitem name="Todos los Registros"
+        id="arsante.all_record_menu_list"
+        sequence="1"
+        parent="arsante.arsante_menu_tipo_registros"
+        action="arsante.all_record"/>
+
+
+    </data>
+</odoo>

@@ -20,12 +20,15 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','account','sale'],
+    'depends': ['base','account','sale','contacts'],
 
     # always loaded
     'data': [
+        'data/groups.xml',
+        'data/cron.xml',
         'security/ir.model.access.csv',
          'data/tipo_registro.xml',
+         'views/all_record.xml',
         'views/exim_proceso_cosmeticos.xml',
         'views/templates.xml',
         'views/cda_cosmetico_dm.xml',
@@ -56,8 +59,22 @@
         'wizard/registro_desinfectantes_wizard.xml',
         'wizard/modificaciones_desinfectantes_wizard.xml',
         'wizard/renovaciones_desinfectantes_wizard.xml',
-        'views/tipo_regitro.xml'
+        'views/tipo_registro.xml',
+        'views/tipo_regitro.xml',
+        'views/res_company.xml',
+        'views/sale_order.xml',
+        'report/sale_order_report.xml',
+        'report/account_move_report.xml',
+        'views/account_move.xml',
+        'views/res_partner.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'arsante/static/src/css/tipo_registro_dashboard.css',
+            'arsante/static/src/js/tipo_registro_dashboard.js',
+            'arsante/static/src/xml/tipo_registro_dashboard.xml',
+        ],
+    },
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',

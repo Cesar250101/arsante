@@ -11,9 +11,12 @@
                     <field name="product_id"/>
                     <field name="fabricante_id"/>
                     <field name="nro_resolucion"/>
+                    <filter string="Activos" domain="[('active','=',True)]" name="active"/>
+                    <filter string="Archivados" domain="[('active','=',False)]" name="Activados"/>
+
                     <filter string="Facturado" domain="[('facturado','=',True)]" name="facturado_filter"/>
                     <filter string="No Facturado" domain="[('facturado','=',False)]" name="no_facturado_filter"/>
-                    <filter string="No Cotizado" domain="[('sale_id','=',False)]" name="no_catizado_filter"/>
+                    <filter string="No Cotizado" domain="[('sale_order_id','=',False)]" name="no_catizado_filter"/>
                     <filter string="Cotizado" domain="[('sale_order_id','!=',False)]" name="catizado_filter"/>
                     <filter string="Docu. Completa" domain="[('documentacion','=','completa')]" name="completa_filter"/>
                     <filter string="Docu. Incompleta" domain="['|',('documentacion','=','incompleta'),('documentacion','=',False)]" name="incompleta_filter"/>
@@ -57,13 +60,12 @@
 
                 <field name="sale_order_id" attrs="{'invisible': [('sale_order_id','=',False)]}"/>
                 <field name="comentario"/>
-                <field name="no_cotizado"/>
+                <!-- <field name="no_cotizado"/> -->
                 <field name="espera_resolucion"/>
                   <field name="documentacion"/>
                   <field name="alerta_renovacion" invisible="1"/>
               </group>
               <group>
-                <field name="documentacion"/>
                 <label for="enviar_colilla"/>
                 <div class="o_row">
                   <field name="enviar_colilla" placeholder="Envíar colilla?" />
@@ -101,7 +103,7 @@
                 <field name="nro_resolucion"/>
                 <field name="sale_order_id" attrs="{'invisible': [('sale_order_id','=',False)]}"/>
                 <field name="facturado"/>
-                <field name="no_cotizado"/>
+                <!-- <field name="no_cotizado"/> -->
                 <field name="espera_resolucion"/>
                   <field name="estado"/>
                   <field name="documentacion"/>
@@ -137,9 +139,20 @@
       <field name="domain">[('facturado', '=', False)]</field>        
     </record>      
    
+            <!-- Accion que crear las notas de ventas de varios registros seleccionados en la vista tree -->
+            <record model="ir.actions.server" id="arsante.create_so_modificacion_cosmeticos_action_server">
+                <field name="name">Crear Nota de Venta</field>
+                <field name="type">ir.actions.server</field>
+                <field name="model_id" ref="arsante.model_arsante_modificacion_cosmeticos"/>
+                <field name="binding_model_id" ref="arsante.model_arsante_modificacion_cosmeticos"/>
+                <field name="state">code</field>
+                <field name="code">
+                  record.create_so()
+                </field>
+              </record>        
    
     <!-- actions -->
-    <menuitem name="Modificaciones Cosméticos" id="arsante.modificaciones_cosmetico_menu_list" parent="arsante.arsante_menu_root"
+    <menuitem name="Modificaciones Cosméticos" id="arsante.modificaciones_cosmetico_menu_list" parent="arsante.arsante_menu_tipo_registros"
               action="arsante.modificaciones_cosmetico_action_window"/>
    
   </data>

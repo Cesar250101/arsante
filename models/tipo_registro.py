@@ -10,6 +10,7 @@ class TipoRegistro(models.Model):
         string='Tipo',
         selection=[('cda_cosmetico', 'CDA Cosmetico'),
                    ('cda_uyd_alimentos', 'CDA UYD Alimentos'),
+                   ('cda_dispositivos_medicos', 'CDA Dispositivos Medicos'),
                    ('dispositivos_medicos', 'Dispositivos Medicos'),
                    ('exim_proceso_cosmeticos', 'Exmin. Proceso Cosmetico'),
                    ('eximiciones_cosmeticos', 'Eximiciones Cosmetico'),
@@ -25,7 +26,7 @@ class TipoRegistro(models.Model):
                    ],
         required=False, )
 
-    active = fields.Boolean(string='Activo?')
+    active = fields.Boolean(string='Activo?',default=True)
     total_record_count = fields.Integer(string='Nro. CDA Cosmeticos',required=False,compute='_compute_registros')
     facturados = fields.Integer(string='Nro. Facturados', required=False, compute='_compute_registros')
     no_facturados = fields.Integer(string='Nro. No Facturados', required=False, compute='_compute_registros')
@@ -176,7 +177,7 @@ class TipoRegistro(models.Model):
             "res_id": self.env.context.get("id"),
         }
 
-    @api.multi
+
     @api.depends('cda_cosmetico_ids')
     def _compute_registros(self):
         for i in self:
@@ -190,6 +191,18 @@ class TipoRegistro(models.Model):
             documentacion_completa = 0
             documentacion_completa_no_completa = 0
             para_renovar=0
+
+            # Initialize all computed fields with default values
+            i.para_renovar = 0
+            i.total_record_count = 0
+            i.facturados = 0
+            i.no_facturados = 0
+            i.cotizados = 0
+            i.no_cotizados = 0
+            i.estado_listos = 0
+            i.estado_no_listos = 0
+            i.documentacion_completa = 0
+            i.documentacion_completa_no_completa = 0
 
             # CDA Alimentos
             if i.tipo=='cda_cosmetico':

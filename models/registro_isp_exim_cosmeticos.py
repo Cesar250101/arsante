@@ -44,6 +44,7 @@ class EximCosmeticos(models.Model):
     fecha_renovacion= fields.Date(
         string='Fecha de Renovacion',
         required=False)
+    importado = fields.Boolean(string='Importado en el general')
 
     def write(self, vals):
         rec= super(EximCosmeticos,self).write(vals)
