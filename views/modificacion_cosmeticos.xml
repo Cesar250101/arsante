@@ -58,7 +58,7 @@
                 </div>
                 <!-- <field name="mc_categoria"/> -->
                 <field name="oc" />
-                <field name="sku" />
+                <!-- <field name="sku" /> -->
                 <field name="mc_ref_gicona"/>
                 <field name="mc_nro_registro"/>
                 <field name="product_id"/>
@@ -68,12 +68,13 @@
                   <field name="fecha_resolucion" attrs="{'invisible': [('nro_resolucion','=',False)]}"/>
 
                 <field name="sale_order_id" attrs="{'invisible': [('sale_order_id','=',False)]}"/>
-                <field name="correo_ids" widget="many2many_tags" options="{'no_create_edit': True}" context="{'default_modificacion_cosmetico_id': id}"/>
+
                 <!-- <field name="no_cotizado"/> -->
                 <field name="espera_resolucion"/>
                   <!-- <field name="documentacion"/> -->
                 <!-- <field name="requiere_renovacion"/> -->
                 <field name="fecha_renovacion"/>
+                <field name="correo_ids" widget="many2many_tags" options="{'no_create_edit': True}" context="{'default_modificacion_cosmetico_id': id}"/>                
                 <field name="comentario"/>
                   <field name="alerta_renovacion" invisible="1"/>
               </group>
@@ -116,6 +117,7 @@
                 <field name="product_id"/>
                 <field name="fabricante_id"/>
                 <field name="nro_resolucion"/>
+                <field name="fecha_resolucion"/>
                 <field name="sale_order_id" attrs="{'invisible': [('sale_order_id','=',False)]}"/>
                 <field name="facturado"/>
                 <!-- <field name="no_cotizado"/> -->
