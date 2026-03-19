@@ -56,9 +56,9 @@
                      icon="fa-folder-open" class="oe_link"
                      attrs="{'invisible': [('marcar_url', '=', False)]}"/>
                 </div>
-                <field name="mc_categoria"/>
-                <field name="oc" attrs="{'invisible': [('mc_categoria','!=','modificacion_formula')]}"/>
-                <field name="sku" attrs="{'invisible': [('mc_categoria','!=','modificacion_formula')]}"/>
+                <!-- <field name="mc_categoria"/> -->
+                <field name="oc" />
+                <field name="sku" />
                 <field name="mc_ref_gicona"/>
                 <field name="mc_nro_registro"/>
                 <field name="product_id"/>
@@ -71,9 +71,9 @@
                 <field name="correo_ids" widget="many2many_tags" options="{'no_create_edit': True}" context="{'default_modificacion_cosmetico_id': id}"/>
                 <!-- <field name="no_cotizado"/> -->
                 <field name="espera_resolucion"/>
-                  <field name="documentacion"/>
-                <field name="requiere_renovacion"/>
-                <field name="fecha_renovacion" attrs="{'invisible': [('requiere_renovacion','=',False)]}"/>
+                  <!-- <field name="documentacion"/> -->
+                <!-- <field name="requiere_renovacion"/> -->
+                <field name="fecha_renovacion"/>
                 <field name="comentario"/>
                   <field name="alerta_renovacion" invisible="1"/>
               </group>
@@ -110,7 +110,7 @@
                 <field name="name" required="1"/>
                 <field name="date" required="1"/>
                 <field name="partner_id" required="1"/>
-                <field name="mc_categoria"/>
+                <!-- <field name="mc_categoria"/> -->
                 <field name="mc_ref_gicona"/>
                 <field name="mc_nro_registro"/>
                 <field name="product_id"/>
