@@ -68,7 +68,7 @@
                   <field name="fecha_resolucion" attrs="{'invisible': [('nro_resolucion','=',False)]}"/>
 
                 <field name="sale_order_id" attrs="{'invisible': [('sale_order_id','=',False)]}"/>
-
+                <!-- <field name="correo_ids" widget="many2many_tags" options="{'no_create_edit': True}" context="{'default_modificacion_cosmetico_id': id}"/> -->
                 <!-- <field name="no_cotizado"/> -->
                 <field name="espera_resolucion"/>
                   <!-- <field name="documentacion"/> -->
