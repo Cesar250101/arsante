@@ -61,9 +61,9 @@
                      attrs="{'invisible': [('marcar_url', '=', False)]}"/>
                 </div>
                 <field name="categoria"/>
-                <field name="ref_gicona"/>
-                <!-- <field name="clave_gicona"/>
-                <field name="nro_registro"/> -->
+                <!-- <field name="ref_gicona"/> -->
+                <field name="clave_gicona"/>
+                <!-- <field name="nro_registro"/> -->
                 <field name="nro_reg_insc_isp"/>
                 <field name="product_id"/>
                 <field name="fabricante_id"/>

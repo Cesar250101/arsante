@@ -30,7 +30,7 @@ class EximicionesCosmeticos(models.Model):
     marcar_url = fields.Char(string='URL OneDrive', compute='_compute_marcar_url')
     categoria = fields.Char(string='Nro. OC')
     ref_gicona = fields.Char(string='Ref. Gicona')
-    clave_gicona = fields.Char(string='Clave Gicona')
+    clave_gicona = fields.Char(string='Ref. Gicona')
     nro_registro = fields.Char(string='Nro. Registro')
     nro_reg_insc_isp = fields.Char(string='Nº reg./inscrip ISP')
     product_id = fields.Many2one(comodel_name='product.product', string='Nombre ISP Producto')
