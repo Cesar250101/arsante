@@ -61,12 +61,14 @@
                      attrs="{'invisible': [('marca_url', '=', False)]}"/>
                 </div>
                 <field name="proveedor_id"/>
+                 <field name="refgicona"/>  
                 <field name="ref_tramite"/>
                 <field name="au"/>
                 <field name="item"/>
                 <field name="fecha_llegada"/>
                 <field name="agente_aduana_id"/>
                 <field name="nro_cda"/>
+                <field name="fecha_resolucion"/>
                 <!-- <field name="pdf_nro_resolucion"/> -->
                 <field name="nro_resolucion"/>
                 <field name="exim_ctrl_calidad"/>
@@ -77,6 +79,8 @@
                   <field name="estado" invisible="1"/>
                   <field name="documentacion" invisible="1"/>
                   <field name="alerta_renovacion" invisible="1"/>
+                  <field name="correo_ids" widget="many2many_tags" options="{'no_create_edit': True}" context="{'default_cda_cosmetico_dm_id': id}"/>
+
               </group>
               <group>
                 <field name="va_cesmec" invisible="1"/>
@@ -113,12 +117,14 @@
           <field name="partner_id" required="1"/>
           <field name="marca"/>
           <field name="proveedor_id"/>
+          <field name="refgicona"/>
           <field name="ref_tramite"/>
           <field name="au"/>
           <field name="item"/>
           <field name="fecha_llegada"/>
           <field name="agente_aduana_id"/>
           <field name="nro_cda"/>
+          <field name="fecha_resolucion"/>
           <field name="nro_resolucion"/>
           <field name="exim_ctrl_calidad"/>
           <field name="sale_order_id"/>
