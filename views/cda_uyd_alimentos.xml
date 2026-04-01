@@ -106,7 +106,7 @@
       <field name="arch" type="xml">
         <tree>
                 <field name="tipo_registro_id" required="1"/>
-                <field name="name" required="1"/>
+                <field name="name" required="1" optional="hide"/>
                 <field name="date" required="1"/>
                 <field name="partner_id" required="1"/>
                 <!-- <field name="au"/> -->
@@ -118,15 +118,13 @@
                 <field name="marca"/>
                 <field name="fecha_llegada"/>
                 <field name="sale_order_id"/>
-                <field name="exim_ctrl_calidad"/>
-                <field name="facturado"/>
-                <field name="subir_drive"/>
+                <field name="exim_ctrl_calidad" optional="hide"/>
+                <field name="facturado" optional="hide"/>
+                <field name="subir_drive" optional="hide"/>
                 <!-- <field name="no_cotizado"/> -->
-                <field name="sale_order_id"/>
-                
-                <field name="espera_resolucion"/>
-                  <field name="estado"/>
-                  <field name="documentacion"/>
+                <field name="espera_resolucion" optional="hide"/>
+                  <field name="estado" optional="hide"/>
+                  <field name="documentacion" optional="hide"/>
           <field name="alerta_renovacion"/>
         </tree>
       </field>
