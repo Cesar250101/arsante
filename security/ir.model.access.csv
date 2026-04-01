@@ -22,3 +22,5 @@ access_tipo_servicio_sales_manager,Tipo de Servicio Sales Manager,arsante.model_
 access_all_record_arsante,Todos los registros,arsante.model_arsante_all_record,arsante.group_arsante_users,1,1,1,1
 access_registro_cosmetico_correo,Correos Registro Cosmetico,arsante.model_arsante_registro_cosmetico_correo,arsante.group_arsante_users,1,1,1,1
 access_registro_cosmetico_correo_sales,Correos Registro Cosmetico Sales,arsante.model_arsante_registro_cosmetico_correo,sales_team.group_sale_manager,1,1,1,1
+access_cda_cosmetico_dm_correo,Correos CDA Cosmetico DM,arsante.model_arsante_cda_cosmetico_dm_correo,arsante.group_arsante_users,1,1,1,1
+access_cda_cosmetico_dm_correo_sales,Correos CDA Cosmetico DM Sales,arsante.model_arsante_cda_cosmetico_dm_correo,sales_team.group_sale_manager,1,1,1,1
