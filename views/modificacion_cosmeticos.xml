@@ -74,7 +74,7 @@
                   <!-- <field name="documentacion"/> -->
                 <!-- <field name="requiere_renovacion"/> -->
                 <field name="fecha_renovacion"/>
-                <field name="correo_ids" widget="many2many_tags" options="{'no_create_edit': True}" context="{'default_modificacion_cosmetico_id': id}"/>                
+                <field name="correo_ids" />                
                 <field name="comentario"/>
                   <field name="alerta_renovacion" invisible="1"/>
               </group>

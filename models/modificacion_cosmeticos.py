@@ -82,11 +82,7 @@ class CdaCosmetico(models.Model):
         )
     importado = fields.Boolean(string='Importado en el general')
     imagen = fields.Binary(string='Imagen', attachment=True)
-    correo_ids = fields.One2many(
-        comodel_name='arsante.modificacion_cosmeticos.correo',
-        inverse_name='modificacion_cosmetico_id',
-        string='Correos Electrónicos'
-    )
+    correo_ids = fields.Char(string='Correos Electrónicos',placeholder='correo@correo.cl,correo2@correo.cl')
     active = fields.Boolean(string='Activo',default=True)
 
     @api.depends('marcar')

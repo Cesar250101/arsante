@@ -4,15 +4,12 @@ from . import tipo_registro
 from . import cda_cosmetico_dm
 from . import marca
 from . import modificacion_cosmeticos
-from . import modificacion_cosmeticos_correo
 from . import registro_cosmetico
-from . import registro_cosmetico_correo
 from . import inscripciones
 from . import rectificaciones
 from . import cda_uyd_alimentos
 from . import dispositivos_medicos
 from . import eximiciones_cosmeticos
-from . import eximiciones_cosmeticos_correo
 from . import renovaciones_cosmeticas
 from . import registro_desinfectantes
 from . import modificaciones_desinfectantes

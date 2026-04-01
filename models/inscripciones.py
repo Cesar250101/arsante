@@ -23,7 +23,7 @@ class CdaCosmetico(models.Model):
     name = fields.Char(string='Nombre Registro')
     date = fields.Date(string='Fecha Registro')
     partner_id = fields.Many2one(comodel_name='res.partner', string='Cliente')
-    categoria = fields.Char(string='Categoria')
+    categoria = fields.Char(string='N° OC')
     ref_gicona = fields.Char(string='Ref. Gicona')
     nro_isp = fields.Char(string='Nro. ISP')
     product_id = fields.Many2one(comodel_name='product.product', string='Producto')
@@ -65,6 +65,38 @@ class CdaCosmetico(models.Model):
         )
     importado = fields.Boolean(string='Importado en el general')
     active = fields.Boolean(string='Activo',default=True)
+    marca = fields.Selection([
+        ('todomoda', 'Todo Moda'),
+        ('isadora', 'Isadora'),
+    ], string='Marca')
+    marca_url = fields.Char(string='URL OneDrive', compute='_compute_marcar_url')
+    fecha_resolucion = fields.Date(string='Fecha Resolución')
+    correo_ids = fields.Char(string='Correos Electrónicos',placeholder='correo@correo.cl,correo2@correo.cl')
+
+    def open_marca_link(self):
+        """Abre el enlace del campo marcar_url si está disponible"""
+        self.ensure_one()
+        if self.marca_url:
+            # Si el campo marcar_url contiene una URL, abrirla
+            url = self.marca_url if self.marca_url.startswith('http') else 'https://' + self.marca_url
+            return {
+                'type': 'ir.actions.act_url',
+                'url': url,
+                'target': 'new',
+            }
+        return True
+
+    @api.depends('marca')
+    def _compute_marcar_url(self):
+        """Asigna automáticamente el link de SharePoint según la marca seleccionada"""
+        for record in self:
+            if record.marca == 'todomoda':
+                record.marca_url = 'https://arsanteconsultores-my.sharepoint.com/personal/pmuquillaza_arsante_cl/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fpmuquillaza%5Farsante%5Fcl%2FDocuments%2F1%2E%20CLIENTES%20VIGENTES%20AR%20SANTE%202025%2F0%2E%20COLILLAS%20DE%20PAGO%20BIJOU%2FBIJOU%2F2%2E%20colillas%20de%20pago%20TODO%20MODA&ga=1'
+            elif record.marca == 'isadora':
+                record.marca_url = 'https://arsanteconsultores-my.sharepoint.com/personal/pmuquillaza_arsante_cl/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fpmuquillaza%5Farsante%5Fcl%2FDocuments%2F1%2E%20CLIENTES%20VIGENTES%20AR%20SANTE%202025%2F0%2E%20COLILLAS%20DE%20PAGO%20BIJOU%2FBIJOU%2F1%2E%20colillas%20de%20pago%20ISADORA&ga=1'
+            else:
+                record.marca_url = False
+
 
     @api.onchange('estado','no_cotizado','documentacion','facturado','sale_order_id')
     def _compute_dashboard(self):

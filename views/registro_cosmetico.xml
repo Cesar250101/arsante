@@ -73,7 +73,7 @@
                   <field name="oc_facturacion" class="oe_inline" placeholder="OC Facturacion" nolabel="1"/>
                   <field name="invoice_ids" widget="many2many_tags" class="oe_inline" nolabel="1"/>
                 </div>
-                <field name="correo_ids" widget="many2many_tags" options="{'no_create_edit': True}" context="{'default_registro_cosmetico_id': id}"/>
+                <field name="correo_ids"/>
                 <field name="comentario"/>
                 <!-- <field name="no_cotizado"/> -->
                 <!-- <field name="espera_resolucion"/> -->

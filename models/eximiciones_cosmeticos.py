@@ -74,11 +74,7 @@ class EximicionesCosmeticos(models.Model):
     importado = fields.Boolean(string='Importado en el general')
     active = fields.Boolean(string='Activo', default=True)
     comentario = fields.Text(string='Comentario')
-    correo_ids = fields.One2many(
-        comodel_name='arsante.eximiciones_cosmeticos.correo',
-        inverse_name='eximicion_cosmetico_id',
-        string='Correos Electrónicos'
-    )
+    correo_ids = fields.Char(string='Correos Electrónicos',placeholder='correo@correo.cl,correo2@correo.cl')
 
     @api.onchange('estado', 'no_cotizado', 'documentacion', 'facturado', 'sale_order_id')
     def _compute_dashboard(self):
