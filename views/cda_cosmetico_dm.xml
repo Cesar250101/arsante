@@ -1,5 +1,22 @@
 <odoo>
   <data>
+
+    <!-- Vista form correo: oculta el campo relacional para que se asigne via contexto -->
+    <record model="ir.ui.view" id="arsante.cda_cosmetico_dm_correo_form_view">
+      <field name="name">arsante.cda_cosmetico_dm.correo.form</field>
+      <field name="model">arsante.cda_cosmetico_dm.correo</field>
+      <field name="arch" type="xml">
+        <form string="Correo Electrónico">
+          <sheet>
+            <group>
+              <field name="name"/>
+              <field name="cda_cosmetico_dm_id" invisible="1"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
 <!--      Vista de busqqueda-->
         <record id="arsante.cda_cosmetico_dm_filter" model="ir.ui.view">
             <field name="name">view.arsante.arsante.cda.cosmetico.dm.filter</field>
