@@ -31,7 +31,11 @@ class CdaCosmetico(models.Model):
     agente_aduana_id = fields.Many2one(comodel_name='res.partner', string='Agente Aduana')
     ref_tramite = fields.Char(string='Ref. Trámite')
     proveedor_id = fields.Many2one(comodel_name='res.partner', string='Proveedor')
-    cda_marca_id = fields.Many2one(comodel_name='arsante.marcas', string='Marca')
+    marca = fields.Selection([
+        ('todomoda', 'Todo Moda'),
+        ('isadora', 'Isadora'),
+    ], string='Marca')
+    marca_url = fields.Char(string='URL OneDrive', compute='_compute_marca_url')
     fecha_llegada = fields.Date(string='Fecha Llegada')
     enviar_colilla = fields.Boolean(string='Envíar Colilla?')
     enviar_colilla_fecha = fields.Date(string='Fecha envíar colilla')
@@ -63,6 +67,29 @@ class CdaCosmetico(models.Model):
     active = fields.Boolean(string='Activo',default=True)
     
 
+    @api.depends('marca')
+    def _compute_marca_url(self):
+        """Asigna automáticamente el link de SharePoint según la marca seleccionada"""
+        for record in self:
+            if record.marca == 'todomoda':
+                record.marca_url = 'https://arsanteconsultores-my.sharepoint.com/personal/pmuquillaza_arsante_cl/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fpmuquillaza%5Farsante%5Fcl%2FDocuments%2F1%2E%20CLIENTES%20VIGENTES%20AR%20SANTE%202025%2F0%2E%20COLILLAS%20DE%20PAGO%20BIJOU%2FBIJOU%2F2%2E%20colillas%20de%20pago%20TODO%20MODA&ga=1'
+            elif record.marca == 'isadora':
+                record.marca_url = 'https://arsanteconsultores-my.sharepoint.com/personal/pmuquillaza_arsante_cl/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fpmuquillaza%5Farsante%5Fcl%2FDocuments%2F1%2E%20CLIENTES%20VIGENTES%20AR%20SANTE%202025%2F0%2E%20COLILLAS%20DE%20PAGO%20BIJOU%2FBIJOU%2F1%2E%20colillas%20de%20pago%20ISADORA&ga=1'
+            else:
+                record.marca_url = False
+
+    def open_marca_link(self):
+        """Abre el enlace del campo marca_url si está disponible"""
+        self.ensure_one()
+        if self.marca_url:
+            url = self.marca_url if self.marca_url.startswith('http') else 'https://' + self.marca_url
+            return {
+                'type': 'ir.actions.act_url',
+                'url': url,
+                'target': 'new',
+            }
+        return True
+
     def create_so(self):
         model_sale_order=self.env['sale.order']
         model_sale_order_line=self.env['sale.order.line']
@@ -77,7 +104,7 @@ class CdaCosmetico(models.Model):
                 raise ValidationError("Algunos registros ya tienen asociada una nota de venta!")
           
         for i in ids:
-            if i.au and i.nro_cda and i.proveedor_id and i.cda_marca_id:
+            if i.au and i.nro_cda and i.proveedor_id and i.marca:
                 if not sale_order_id:
                     value={
                         'name':self.env['ir.sequence'].next_by_code('sale.order') or _('New'),
@@ -88,7 +115,7 @@ class CdaCosmetico(models.Model):
                     partner_id_1=i.partner_id.id
                     sale_order_id=model_sale_order.create(value)
                 Value={
-                    'name':'AU: '+i.au+' Nº CDA: '+i.nro_cda+' ITEM: '+str(i.item)+' PROVEEDOR: '+i.proveedor_id.name+' MARCA:'+i.cda_marca_id.name,
+                    'name':'AU: '+i.au+' Nº CDA: '+i.nro_cda+' ITEM: '+str(i.item)+' PROVEEDOR: '+i.proveedor_id.name+' MARCA:'+(i.marca or ''),
                     'product_id':i.product_id.id,
                     'product_uom_qty':1,
                     'product_uom':i.product_id.uom_id.id,

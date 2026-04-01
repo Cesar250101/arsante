@@ -13,7 +13,7 @@
                     <field name="product_id"/>
                     <field name="proveedor_id"/>
                     <field name="agente_aduana_id"/>
-                    <field name="cda_marca_id"/>
+                    <field name="marca"/>
                     <filter string="Activos" domain="[('active','=',True)]" name="active"/>
                     <filter string="Archivados" domain="[('active','=',False)]" name="Activados"/>
                     <filter string="Facturado" domain="[('facturado','=',True)]" name="facturado_filter"/>
@@ -49,43 +49,49 @@
               <group>
                 <!-- <field name="tipo_registro_id" required="1"/> -->
                 <field name="tipo_registro_id" required="1"/>
-                <field name="name" placeholder="Este dato es importante para las busquedas, por esto debe ingresar un nombre que identifique el registro" required="1"/>
+                <field name="name" placeholder="Este dato es importante para las busquedas, por esto debe ingresar un nombre que identifique el registro" required="1" invisible="1"/>
                 <field name="date" required="1"/>
                 <field name="partner_id" required="1"/>
-                <field name="product_id" required="1"/>
-                <field name="au"/>
-                <field name="nro_cda"/>
-                <field name="item"/>
-                <field name="agente_aduana_id"/>
-                <field name="ref_tramite"/>
+                <field name="marca_url" invisible="1"/>
+                <label for="marca"/>
+                <div class="o_row">
+                  <field name="marca" class="oe_inline"/>
+                  <button name="open_marca_link" string="URL OneDrive" type="object"
+                     icon="fa-folder-open" class="oe_link"
+                     attrs="{'invisible': [('marca_url', '=', False)]}"/>
+                </div>
                 <field name="proveedor_id"/>
-                <field name="cda_marca_id"/>
+                <field name="ref_tramite"/>
+                <field name="au"/>
+                <field name="item"/>
                 <field name="fecha_llegada"/>
+                <field name="agente_aduana_id"/>
+                <field name="nro_cda"/>
+                <field name="pdf_nro_resolucion"/>
+                <field name="nro_resolucion"/>
                 <field name="exim_ctrl_calidad"/>
                 <field name="sale_order_id" attrs="{'invisible': [('sale_order_id', '=', False)]}"/>
-                <field name="nro_resolucion"/>
-                <field name="pdf_nro_resolucion" attrs="{'invisible': [('nro_resolucion','=',False)]}"/>
+                <field name="product_id" required="1" invisible="1"/>
                   <!-- <field name="no_cotizado"/> -->
-                  <field name="espera_resolucion"/>
-                  <field name="estado"/>
-                  <field name="documentacion"/>
+                  <field name="espera_resolucion" invisible="1"/>
+                  <field name="estado" invisible="1"/>
+                  <field name="documentacion" invisible="1"/>
                   <field name="alerta_renovacion" invisible="1"/>
-                            
               </group>
               <group>
-                <field name="va_cesmec"/>
-                <label for="enviar_colilla"/>
-                <div class="o_row">
+                <field name="va_cesmec" invisible="1"/>
+                <label for="enviar_colilla" invisible="1"/>
+                <div class="o_row" invisible="1">
                   <field name="enviar_colilla" placeholder="Envíar colilla?" />
                   <field name="enviar_colilla_fecha" placeholder="Fecha enviar colilla" attrs="{'invisible': [('enviar_colilla','=',False)]}"/>
                 </div>
-                <field name="enviar_cda"/>  
+                <field name="enviar_cda" invisible="1"/>
                 <!-- <field name="enviar_uyd"/>   -->
-                <field name="enviar_subir"/>  
-                
-                <field name="facturado"/>  
-                <field name="subir_cloud"/>  
-                <field name="requiere_renovacion"/>
+                <field name="enviar_subir" invisible="1"/>
+
+                <field name="facturado" invisible="1"/>
+                <field name="subir_cloud" invisible="1"/>
+                <field name="requiere_renovacion" invisible="1"/>
                 <field name="fecha_renovacion" attrs="{'invisible': [('requiere_renovacion','=',False)]}"/>
               </group>
             </group>
@@ -102,24 +108,25 @@
       <field name="arch" type="xml">
         <tree>
           <field name="tipo_registro_id" required="1"/>
-          <field name="name" required="1"/>
+          <field name="name" required="1" optional="hide"/>
           <field name="date" required="1"/>
           <field name="partner_id" required="1"/>
-          <field name="au"/>
-          <field name="nro_cda"/>
-          <field name="item"/>
-          <field name="agente_aduana_id"/>
-          <field name="ref_tramite"/>
+          <field name="marca"/>
           <field name="proveedor_id"/>
-          <field name="cda_marca_id"/>
+          <field name="ref_tramite"/>
+          <field name="au"/>
+          <field name="item"/>
           <field name="fecha_llegada"/>
-          <field name="sale_order_id"/>
+          <field name="agente_aduana_id"/>
+          <field name="nro_cda"/>
+          <field name="nro_resolucion"/>
           <field name="exim_ctrl_calidad"/>
-          <field name="facturado"/>
+          <field name="sale_order_id"/>
+          <field name="facturado" optional="hide"/>
           <!-- <field name="no_cotizado"/> -->
-          <field name="espera_resolucion"/>
-          <field name="estado"/>
-          <field name="documentacion"/>
+          <field name="espera_resolucion" optional="hide"/>
+          <field name="estado" optional="hide"/>
+          <field name="documentacion" optional="hide"/>
           <field name="alerta_renovacion"/>
         </tree>
       </field>
