@@ -65,11 +65,14 @@
                 <field name="nro_registro"/>
                 <field name="product_id"/>
                 <field name="descripcion"/>
-                <field name="pdf_nro_resolucion"/>
                 <field name="nro_resolucion"/>
-                <field name="fecha_vcto"/>
+                <field name="fecha_resolucion"/>
+                <!-- <field name="fecha_vcto"/> -->
                 <field name="fecha_renovacion"/>
                 <field name="sale_order_id"/>
+                <field name="correo_ids"/>
+                <field name="comentario"/>
+
                 <!-- <field name="no_cotizado"/> -->
                 <field name="estado_renovacion" invisible="1"/>
                 <field name="espera_resolucion" invisible="1"/>

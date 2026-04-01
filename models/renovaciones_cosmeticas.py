@@ -53,12 +53,15 @@ class CdaCosmetico(models.Model):
     enviar_colilla = fields.Boolean(string='Envíar Colilla?')
     enviar_colilla_fecha = fields.Date(string='Fecha envíar colilla')
     nro_resolucion=fields.Char(string='Nro. Resolución')
+    fecha_resolucion=fields.Date(string='Fecha Resolución')
     enviar_cliente = fields.Boolean(string='Envíar Cliente')
     cotizacion_pendiente = fields.Boolean(string='Cotización Pendiente')
     sale_order_id = fields.Many2one(comodel_name='sale.order', string='Nota de Venta')
     pdf_nro_resolucion = fields.Binary('PDF Resolucion')
     importado = fields.Boolean(string='Importado en el general')
     active = fields.Boolean(string='Activo',default=True)
+    correo_ids = fields.Char(string='Correos Electrónicos',placeholder='correo@correo.cl,correo2@correo.cl')
+    comentario = fields.Text(string='Comentario')
 
     @api.depends('marca')
     def _compute_marca_url(self):

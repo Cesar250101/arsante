@@ -25,7 +25,7 @@ class CdaCosmetico(models.Model):
     date = fields.Date(string='Fecha Registro')
     partner_id = fields.Many2one(comodel_name='res.partner', string='Cliente')
     va_cesmec=fields.Boolean(string="Va a Cesmec?")
-    au = fields.Char(string='AU')
+    au = fields.Char(string='N° UYD')
     nro_cda = fields.Char(string='Nº CDA')
     item = fields.Char(string='Item')
     agente_aduana_id = fields.Many2one(comodel_name='res.partner', string='Agente Aduana')
@@ -46,6 +46,7 @@ class CdaCosmetico(models.Model):
     sale_order_id = fields.Many2one(comodel_name='sale.order', string='Nota de Venta')
     facturado = fields.Boolean(string='Facturado?')
     nro_resolucion=fields.Char(string='Nro. Resolución')
+    fecha_resolucion = fields.Date(string='Fecha Resolución')
     pdf_nro_resolucion = fields.Binary('PDF Resolucion')
     product_id = fields.Many2one(comodel_name='product.product', string='Producto')
     no_cotizado = fields.Boolean(string='No Cotizado?')
@@ -65,8 +66,10 @@ class CdaCosmetico(models.Model):
         )
     importado = fields.Boolean(string='Importado en el general')
     active = fields.Boolean(string='Activo',default=True)
+    refgicona = fields.Char(string='Ref. Gicona (AU)')
+    correo_ids = fields.Char(string='Correos Electrónicos',placeholder='correo@correo.cl,correo2@correo.cl')
+    comentario = fields.Text(string='Comentario')
     
-
     @api.depends('marca')
     def _compute_marca_url(self):
         """Asigna automáticamente el link de SharePoint según la marca seleccionada"""
