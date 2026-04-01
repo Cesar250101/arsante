@@ -30,7 +30,11 @@ class CdaCosmetico(models.Model):
     agente_aduana_id = fields.Many2one(comodel_name='res.partner', string='Agente Aduana')
     ref_tramite = fields.Char(string='Ref. Trámite')
     proveedor_id = fields.Many2one(comodel_name='res.partner', string='Proveedor')
-    cda_marca_id = fields.Many2one(comodel_name='arsante.marcas', string='Marca')
+    marca = fields.Selection([
+        ('todomoda', 'Todo Moda'),
+        ('isadora', 'Isadora'),
+    ], string='Marca')
+    cda_marca_url = fields.Char(string='URL OneDrive', compute='_compute_cda_marca_url')
     fecha_llegada = fields.Date(string='Fecha Llegada')
     enviar_colilla = fields.Boolean(string='Envíar Colilla?')
     enviar_colilla_fecha = fields.Date(string='Fecha envíar colilla')
@@ -179,6 +183,28 @@ class CdaCosmetico(models.Model):
             rec.product_id.write(values)
         
         return rec
+
+    @api.depends('marca')
+    def _compute_cda_marca_url(self):
+        """Asigna automáticamente el link de SharePoint según la marca seleccionada"""
+        for record in self:
+            if record.marca == 'todomoda':
+                record.cda_marca_url = 'https://arsanteconsultores-my.sharepoint.com/personal/pmuquillaza_arsante_cl/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fpmuquillaza%5Farsante%5Fcl%2FDocuments%2F1%2E%20CLIENTES%20VIGENTES%20AR%20SANTE%202025%2F0%2E%20COLILLAS%20DE%20PAGO%20BIJOU%2FBIJOU%2F2%2E%20colillas%20de%20pago%20TODO%20MODA&ga=1'
+            elif record.marca == 'isadora':
+                record.cda_marca_url = 'https://arsanteconsultores-my.sharepoint.com/personal/pmuquillaza_arsante_cl/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fpmuquillaza%5Farsante%5Fcl%2FDocuments%2F1%2E%20CLIENTES%20VIGENTES%20AR%20SANTE%202025%2F0%2E%20COLILLAS%20DE%20PAGO%20BIJOU%2FBIJOU%2F1%2E%20colillas%20de%20pago%20ISADORA&ga=1'
+            else:
+                record.cda_marca_url = False
+    def open_cda_marca_link(self):
+        """Abre el enlace del campo cda_marca_url si está disponible"""
+        self.ensure_one()
+        if self.cda_marca_url:
+            url = self.cda_marca_url if self.cda_marca_url.startswith('http') else 'https://' + self.cda_marca_url
+            return {
+                'type': 'ir.actions.act_url',
+                'url': url,
+                'target': 'new',
+            }
+        return True
 
     def get_invoice_ids(self):
         ids_grabar=[]
