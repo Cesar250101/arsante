@@ -67,7 +67,7 @@
                 <field name="fecha_llegada"/>
                 <field name="agente_aduana_id"/>
                 <field name="nro_cda"/>
-                <field name="pdf_nro_resolucion"/>
+                <!-- <field name="pdf_nro_resolucion"/> -->
                 <field name="nro_resolucion"/>
                 <field name="exim_ctrl_calidad"/>
                 <field name="sale_order_id" attrs="{'invisible': [('sale_order_id', '=', False)]}"/>
