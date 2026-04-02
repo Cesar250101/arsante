@@ -95,7 +95,7 @@ class CdaCosmetico(models.Model):
             if i.sale_order_id:
                 raise ValidationError("Algunos registros ya tienen asociada una nota de venta!")
         for i in ids:
-            if i.nro_cda and i.proveedor_id:
+            if i.nro_cda and i.proveedor_id and i.product_id:
                 if not sale_order_id:
                     value={
                         'name':self.env['ir.sequence'].next_by_code('sale.order') or _('New'),
@@ -105,8 +105,10 @@ class CdaCosmetico(models.Model):
                     }
                     partner_id_1=i.partner_id.id
                     sale_order_id=model_sale_order.create(value)
+                name_base = ' Nº CDA: ' + i.nro_cda + ' ITEM: ' + str(i.item) + ' PROVEEDOR: ' + i.proveedor_id.name
+                name_marca = ' MARCA:' + i.marca if i.marca else ''
                 Value={
-                    'name':' Nº CDA: '+i.nro_cda+' ITEM: '+str(i.item)+' PROVEEDOR: '+i.proveedor_id.name+' MARCA:'+i.marca if i.marca else ''  ,
+                    'name': name_base + name_marca,
                     'product_id':i.product_id.id,
                     'product_uom_qty':1,
                     'product_uom':i.product_id.uom_id.id,
@@ -120,12 +122,10 @@ class CdaCosmetico(models.Model):
                 sale_order_line_ids.append(rec.id)
 
             else:
-                raise ValidationError("""A algunos registros les falta uno de los siguierntes datos:
-                              -AU
+                raise ValidationError("""A algunos registros les falta uno de los siguientes datos:
                               -Nº CDA
-                              -Item
                               -Proveedor
-                              -Marca
+                              -Producto
                               """)
         # rec.write({
         #     'order_line':[(6, 0, [sale_order_line_ids])]

@@ -66,7 +66,7 @@
                 <field name="pdf_nro_resolucion"/>
                 <field name="nro_resolucion"/>
                 <field name="sale_order_id" attrs="{'invisible': [('sale_order_id', '=', False)]}" readonly="1"/>
-                <field name="product_id" required="1" invisible="1"/>
+                <field name="product_id" required="1" />
                 <!-- <field name="au"/> -->
                 <field name="exim_ctrl_calidad" invisible="1"/>
                 <!-- <field name="no_cotizado"/> -->
