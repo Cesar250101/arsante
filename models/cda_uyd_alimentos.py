@@ -95,7 +95,7 @@ class CdaCosmetico(models.Model):
             if i.sale_order_id:
                 raise ValidationError("Algunos registros ya tienen asociada una nota de venta!")
         for i in ids:
-            if i.nro_cda and i.proveedor_id and i.cda_marca_id:
+            if i.nro_cda and i.proveedor_id:
                 if not sale_order_id:
                     value={
                         'name':self.env['ir.sequence'].next_by_code('sale.order') or _('New'),
@@ -106,7 +106,7 @@ class CdaCosmetico(models.Model):
                     partner_id_1=i.partner_id.id
                     sale_order_id=model_sale_order.create(value)
                 Value={
-                    'name':' Nº CDA: '+i.nro_cda+' ITEM: '+str(i.item)+' PROVEEDOR: '+i.proveedor_id.name+' MARCA:'+i.cda_marca_id.name,
+                    'name':' Nº CDA: '+i.nro_cda+' ITEM: '+str(i.item)+' PROVEEDOR: '+i.proveedor_id.name+' MARCA:'+i.marca if i.marca else ''  ,
                     'product_id':i.product_id.id,
                     'product_uom_qty':1,
                     'product_uom':i.product_id.uom_id.id,
