@@ -41,6 +41,7 @@
         'views/uyd_alimentos.xml',
         'views/registro_dispositivos_medicos.xml',
         'views/declaracion_dispositivos_medicos.xml',
+        'views/rev_antecedentes_dm.xml',
         'views/dispositivos_medicos.xml',
         'views/eximiciones_cosmeticos.xml',
         'views/renovaciones_cosmeticas.xml',

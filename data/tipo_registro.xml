@@ -31,6 +31,11 @@
             <field name='tipo'>declaracion_dispositivos_medicos</field>
             <field name='active'>True</field>
         </record>
+        <record model='arsante.tipo_registro' id='rev_antecedentes_dm_id'>
+            <field name='name'>Rev. Antecedentes DM</field>
+            <field name='tipo'>rev_antecedentes_dm</field>
+            <field name='active'>True</field>
+        </record>
         <record model='arsante.tipo_registro' id='exim_proceso_cosmeticos_id'>
             <field name='name'>Exim. Proceso Cosméticos</field>
             <field name='tipo'>exim_proceso_cosmeticos</field>

@@ -8,6 +8,7 @@ from . import registro_cosmetico
 from . import inscripciones
 from . import inscripciones_cosmeticos
 from . import declaracion_dispositivos_medicos
+from . import rev_antecedentes_dm
 from . import rectificaciones
 from . import cda_uyd_alimentos
 from . import uyd_alimentos

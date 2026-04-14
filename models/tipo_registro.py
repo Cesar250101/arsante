@@ -15,6 +15,7 @@ class TipoRegistro(models.Model):
                    ('cda_dispositivos_medicos', 'CDA Dispositivos Medicos'),
                    ('dispositivos_medicos', 'Dispositivos Medicos'),
                    ('declaracion_dispositivos_medicos', 'Declaración Dispositivos Médicos'),
+                   ('rev_antecedentes_dm', 'Rev. Antecedentes DM'),
                    ('exim_proceso_cosmeticos', 'Exmin. Proceso Cosmetico'),
                    ('eximiciones_cosmeticos', 'Eximiciones Cosmetico'),
                    ('hds_hechas', 'HDS Hechas'),
@@ -66,6 +67,11 @@ class TipoRegistro(models.Model):
         comodel_name='arsante.declaracion_dispositivos_medicos',
         inverse_name='tipo_registro_id',
         string='Declaración Dispositivos Médicos',
+        required=False)
+    rev_antecedentes_dm_ids = fields.One2many(
+        comodel_name='arsante.rev_antecedentes_dm',
+        inverse_name='tipo_registro_id',
+        string='Rev. Antecedentes DM',
         required=False)
     exim_proceso_cosmeticos_ids = fields.One2many(
         comodel_name='arsante.exim_proceso_cosmeticos',
@@ -157,6 +163,10 @@ class TipoRegistro(models.Model):
         if self.tipo=='declaracion_dispositivos_medicos':
             act_window_id='arsante.declaracion_dm_action_window'
             modelo='arsante.declaracion_dispositivos_medicos'
+
+        if self.tipo=='rev_antecedentes_dm':
+            act_window_id='arsante.rev_antecedentes_dm_action_window'
+            modelo='arsante.rev_antecedentes_dm'
 
         if self.tipo=='exim_proceso_cosmeticos':
             act_window_id='arsante.registro_isp_action_window'
@@ -780,6 +790,39 @@ class TipoRegistro(models.Model):
             # Declaracion Dispositivos Medicos
             if i.tipo=='declaracion_dispositivos_medicos':
                 for cda in i.declaracion_dispositivos_medicos_ids:
+                    cda_cosmeticos_count+=1
+                    if cda.facturado==True:
+                        facturados+=1
+                    else:
+                        no_facturados+=1
+                    if cda.no_cotizado==False:
+                        cotizados+=1
+                    else:
+                        no_cotizados+=1
+                    if cda.estado=="listo":
+                        estado_listos+=1
+                    else:
+                        estado_no_listos+=1
+                    if cda.documentacion=="completa":
+                        documentacion_completa+=1
+                    else:
+                        documentacion_completa_no_completa+=1
+                    if cda.alerta_renovacion:
+                        para_renovar+=1
+                i.para_renovar=para_renovar
+                i.total_record_count = cda_cosmeticos_count
+                i.facturados=facturados
+                i.no_facturados=no_facturados
+                i.cotizados=cotizados
+                i.no_cotizados=no_cotizados
+                i.estado_listos=estado_listos
+                i.estado_no_listos=estado_no_listos
+                i.documentacion_completa=documentacion_completa
+                i.documentacion_completa_no_completa=documentacion_completa_no_completa
+
+            # Rev. Antecedentes DM
+            if i.tipo=='rev_antecedentes_dm':
+                for cda in i.rev_antecedentes_dm_ids:
                     cda_cosmeticos_count+=1
                     if cda.facturado==True:
                         facturados+=1
