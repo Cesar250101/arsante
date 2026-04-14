@@ -10,6 +10,8 @@ class TipoRegistro(models.Model):
         string='Tipo',
         selection=[('cda_cosmetico', 'CDA Cosmetico'),
                    ('cda_uyd_alimentos', 'CDA UYD Alimentos'),
+                   ('uyd_alimentos', 'UYD Alimentos'),
+                   ('registro_dispositivos_medicos', 'Registro Dispositivos Médicos'),
                    ('cda_dispositivos_medicos', 'CDA Dispositivos Medicos'),
                    ('dispositivos_medicos', 'Dispositivos Medicos'),
                    ('exim_proceso_cosmeticos', 'Exmin. Proceso Cosmetico'),
@@ -48,6 +50,11 @@ class TipoRegistro(models.Model):
         comodel_name='arsante.cda_uyd_alimentos',
         inverse_name='tipo_registro_id',
         string='CDA UYD Alimentos',
+        required=False)
+    uyd_alimentos_ids = fields.One2many(
+        comodel_name='arsante.uyd_alimentos',
+        inverse_name='tipo_registro_id',
+        string='UYD Alimentos',
         required=False)
     dispositivos_medicos_ids = fields.One2many(
         comodel_name='arsante.dispositivos_medicos',
@@ -119,6 +126,11 @@ class TipoRegistro(models.Model):
         inverse_name='tipo_registro_id',
         string='Renovaciones Cosmeticas',
         required=False)
+    registro_dispositivos_medicos_ids = fields.One2many(
+        comodel_name='arsante.registro_dispositivos_medicos',
+        inverse_name='tipo_registro_id',
+        string='Registro Dispositivos Médicos',
+        required=False)
 
 
     def open_tree_cda_cosmeticos(self):
@@ -129,6 +141,9 @@ class TipoRegistro(models.Model):
         if self.tipo=='cda_uyd_alimentos':
             act_window_id='arsante.cda_uyd_alimentos_action_window'
             modelo='arsante.cda_uyd_alimentos'
+        if self.tipo=='uyd_alimentos':
+            act_window_id='arsante.uyd_alimentos_action_window'
+            modelo='arsante.uyd_alimentos'
         if self.tipo=='dispositivos_medicos':
             act_window_id='arsante.dm_action_window'
             modelo='arsante.dispositivos_medicos'
@@ -178,6 +193,10 @@ class TipoRegistro(models.Model):
             act_window_id='arsante.renovaciones_desinfectantes_action_window'
             modelo='arsante.renovaciones_desinfectantes'
 
+        if self.tipo=='registro_dispositivos_medicos':
+            act_window_id='arsante.registro_dispositivos_medicos_action_window'
+            modelo='arsante.registro_dispositivos_medicos'
+
 
         return {
             "type": "ir.actions.act_window",
@@ -188,7 +207,7 @@ class TipoRegistro(models.Model):
         }
 
 
-    @api.depends('cda_cosmetico_ids')
+    @api.depends('cda_cosmetico_ids', 'registro_dispositivos_medicos_ids')
     def _compute_registros(self):
         for i in self:
             cda_cosmeticos_count = 0
@@ -618,6 +637,72 @@ class TipoRegistro(models.Model):
             # CDA UYD Alimentos
             if i.tipo=='cda_uyd_alimentos':
                 for cda in i.cda_uyd_alimentos_ids:
+                    cda_cosmeticos_count+=1
+                    if cda.facturado==True:
+                        facturados+=1
+                    else:
+                        no_facturados+=1
+                    if cda.no_cotizado==False:
+                        cotizados+=1
+                    else:
+                        no_cotizados+=1
+                    if cda.estado=="listo":
+                        estado_listos+=1
+                    else:
+                        estado_no_listos+=1
+                    if cda.documentacion=="completa":
+                        documentacion_completa+=1
+                    else:
+                        documentacion_completa_no_completa+=1
+                    if cda.alerta_renovacion:
+                        para_renovar+=1
+                i.para_renovar=para_renovar
+                i.total_record_count = cda_cosmeticos_count
+                i.facturados=facturados
+                i.no_facturados=no_facturados
+                i.cotizados=cotizados
+                i.no_cotizados=no_cotizados
+                i.estado_listos=estado_listos
+                i.estado_no_listos=estado_no_listos
+                i.documentacion_completa=documentacion_completa
+                i.documentacion_completa_no_completa=documentacion_completa_no_completa
+
+            # UYD Alimentos
+            if i.tipo=='uyd_alimentos':
+                for cda in i.uyd_alimentos_ids:
+                    cda_cosmeticos_count+=1
+                    if cda.facturado==True:
+                        facturados+=1
+                    else:
+                        no_facturados+=1
+                    if cda.no_cotizado==False:
+                        cotizados+=1
+                    else:
+                        no_cotizados+=1
+                    if cda.estado=="listo":
+                        estado_listos+=1
+                    else:
+                        estado_no_listos+=1
+                    if cda.documentacion=="completa":
+                        documentacion_completa+=1
+                    else:
+                        documentacion_completa_no_completa+=1
+                    if cda.alerta_renovacion:
+                        para_renovar+=1
+                i.para_renovar=para_renovar
+                i.total_record_count = cda_cosmeticos_count
+                i.facturados=facturados
+                i.no_facturados=no_facturados
+                i.cotizados=cotizados
+                i.no_cotizados=no_cotizados
+                i.estado_listos=estado_listos
+                i.estado_no_listos=estado_no_listos
+                i.documentacion_completa=documentacion_completa
+                i.documentacion_completa_no_completa=documentacion_completa_no_completa
+
+            # Registro Dispositivos Medicos
+            if i.tipo=='registro_dispositivos_medicos':
+                for cda in i.registro_dispositivos_medicos_ids:
                     cda_cosmeticos_count+=1
                     if cda.facturado==True:
                         facturados+=1

@@ -11,6 +11,16 @@
             <field name='tipo'>cda_uyd_alimentos</field>
             <field name='active'>True</field>
         </record>
+        <record model='arsante.tipo_registro' id='uyd_alimentos_id'>
+            <field name='name'>UYD Alimentos</field>
+            <field name='tipo'>uyd_alimentos</field>
+            <field name='active'>True</field>
+        </record>
+        <record model='arsante.tipo_registro' id='registro_dispositivos_medicos_id'>
+            <field name='name'>Registro Dispositivos Médicos</field>
+            <field name='tipo'>registro_dispositivos_medicos</field>
+            <field name='active'>True</field>
+        </record>
         <record model='arsante.tipo_registro' id='dispositivos_medicos_id'>
             <field name='name'>Dispositivos Medicos</field>
             <field name='tipo'>dispositivos_medicos</field>

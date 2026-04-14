@@ -12,7 +12,19 @@ from odoo.exceptions import AccessError, UserError, RedirectWarning, ValidationE
 class EximCosmeticos(models.Model):
     _name = 'arsante.dispositivos_medicos'
 
-    name = fields.Char(string='Nombre Registro')
+    name = fields.Char(string='Nombre Registro', compute='_compute_name', store=True)
+    @api.depends('tipo_registro_id', 'date', 'partner_id')
+    def _compute_name(self):
+        for rec in self:
+            parts = []
+            if rec.tipo_registro_id:
+                parts.append(rec.tipo_registro_id.name)
+            if rec.date:
+                parts.append(rec.date.strftime('%d/%m/%Y'))
+            if rec.partner_id:
+                parts.append(rec.partner_id.name)
+            rec.name = ' - '.join(parts) if parts else ''
+
     def _default_get(self):
         tipo_id=self.env['arsante.tipo_registro'].search([('tipo','=','dispositivos_medicos')])
         return tipo_id
@@ -29,11 +41,16 @@ class EximCosmeticos(models.Model):
         ('dec_sit_reg_dm', 'Decl situación regul. de DM'),
         ('rev_ant_dm', 'Revisión antecedentes que acompañan DM'),
     ], string='Categoría')
+    marca = fields.Selection([
+        ('todomoda', 'Todo Moda'),
+        ('isadora', 'Isadora'),
+    ], string='Marca')
+    marca_url = fields.Char(string='URL OneDrive', compute='_compute_marca_url')
     ref_isp = fields.Char(string='Ref. ISP')
     nro_registro = fields.Char(string='Nro. Registro')
     product_id = fields.Many2one(comodel_name='product.product', string='Producto')
     fabricante_id = fields.Many2one(comodel_name='res.partner', string='Fabricante')
-    fecha_ingreso = fields.Date(string='Fecha Ingreso')
+    fecha_ingreso = fields.Date(string='Fecha Llegada')
     nro_resolucion=fields.Char(string='Nro. Resolución')
     estado = fields.Char(string='Estado')
     comentario = fields.Text(string='Comentario')
@@ -41,6 +58,8 @@ class EximCosmeticos(models.Model):
     fecha_ult_renovacion = fields.Date(string='Fecha últ. renovación')
     fecha_vcto = fields.Date(string='Fecha Vencimiento')
     sale_order_id = fields.Many2one(comodel_name='sale.order', string='Nota de Venta')
+    oc_facturacion = fields.Char(string='OC Facturación')
+    invoice_ids = fields.Many2many('account.move', string='Facturas', related='sale_order_id.invoice_ids', readonly=True)
 
     enviar_colilla = fields.Boolean(string='Envíar Colilla')
     enviar_cliente = fields.Boolean(string='Envíar Cliente')
@@ -62,7 +81,14 @@ class EximCosmeticos(models.Model):
         )
     importado = fields.Boolean(string='Importado en el general')
     active = fields.Boolean(string='Activo',default=True)
-    
+    ref_gicona = fields.Char(string='Ref. Gicona')
+    nro_items = fields.Char(string='Nro. Items')
+    agente_aduana_id = fields.Many2one(comodel_name='res.partner', string='Agente Aduana')
+    nro_cda = fields.Char(string='Nº CDA')
+    au = fields.Char(string='N° UYD')
+    cc_cesmec= fields.Char(string='CC Cesmec')
+    correo_ids = fields.Char(string='Correos Electrónicos', placeholder='correo@correo.cl,correo2@correo.cl')
+
     @api.onchange('estado','no_cotizado','documentacion','facturado','sale_order_id')
     def _compute_dashboard(self):
         try:
@@ -125,6 +151,29 @@ class EximCosmeticos(models.Model):
         # rec.write({
         #     'order_line':[(6, 0, [sale_order_line_ids])]
         # })
+
+    @api.depends('marca')
+    def _compute_marca_url(self):
+        """Asigna automáticamente el link de SharePoint según la marca seleccionada"""
+        for record in self:
+            if record.marca == 'todomoda':
+                record.marca_url = 'https://arsanteconsultores-my.sharepoint.com/personal/pmuquillaza_arsante_cl/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fpmuquillaza%5Farsante%5Fcl%2FDocuments%2F1%2E%20CLIENTES%20VIGENTES%20AR%20SANTE%202025%2F0%2E%20COLILLAS%20DE%20PAGO%20BIJOU%2FBIJOU%2F2%2E%20colillas%20de%20pago%20TODO%20MODA&ga=1'
+            elif record.marca == 'isadora':
+                record.marca_url = 'https://arsanteconsultores-my.sharepoint.com/personal/pmuquillaza_arsante_cl/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fpmuquillaza%5Farsante%5Fcl%2FDocuments%2F1%2E%20CLIENTES%20VIGENTES%20AR%20SANTE%202025%2F0%2E%20COLILLAS%20DE%20PAGO%20BIJOU%2FBIJOU%2F1%2E%20colillas%20de%20pago%20ISADORA&ga=1'
+            else:
+                record.marca_url = False
+
+    def open_marca_link(self):
+        """Abre el enlace de SharePoint según la marca seleccionada"""
+        self.ensure_one()
+        if self.marca_url:
+            url = self.marca_url if self.marca_url.startswith('http') else 'https://' + self.marca_url
+            return {
+                'type': 'ir.actions.act_url',
+                'url': url,
+                'target': 'new',
+            }
+        return True
 
     @api.depends('estado','no_cotizado','documentacion','facturado','fecha_renovacion','requiere_renovacion')
     def _compute_alerta_renovacion(self):

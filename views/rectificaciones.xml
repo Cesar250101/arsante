@@ -43,7 +43,8 @@
                 <field name="tipo_registro_id" required="1"/>
                 <field name="name" placeholder="Este dato es importante para las busquedas, por esto debe ingresar un nombre que identifique el registro" required="1"/>
                 <field name="date" required="1"/>
-                <field name="partner_id" required="1"/>
+                <field name="partner_id" required="1"
+                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
                 <field name="categoria"/>
                 <field name="ref_solicitud"/>
                 <field name="nro_uyd_rechazado"/>
@@ -52,8 +53,9 @@
                 <field name="fecha_emision"/>
                 <field name="invoice"/>
                 <field name="bl"/>
-                <field name="proveedor_id"/>
-                <field name="marca"/>        
+                <field name="proveedor_id"
+                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
+                <field name="marca"/>
                 <field name="sale_order_id"/>
                 <field name="comentario"/>
                 <!-- <field name="no_cotizado"/> -->
@@ -63,7 +65,8 @@
 
                   <field name="estado"/>
                   <field name="documentacion"/>
-                <field name="product_id"/>
+                <field name="product_id"
+                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
                   <field name="alerta_renovacion" invisible="1"/>
               </group>
               <group>

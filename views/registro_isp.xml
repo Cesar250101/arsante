@@ -38,11 +38,14 @@
                 <field name="tipo_registro_id" required="1"/>
                 <field name="tipo_registro" required="1"/>
                 <field name="date" required="1"/>
-                <field name="partner_id" required="1"/>
+                <field name="partner_id" required="1"
+                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
                 <field name="referencia_gicona"/>
                 <field name="nro_isp"/>                
-                <field name="product_id"/>
-                <field name="fabricante_id"/>
+                <field name="product_id"
+                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
+                <field name="fabricante_id"
+                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
                 <field name="documentacion"/>
                 <field name="nro_resolucion"  attrs="{'invisible': [('tipo_registro', '=', 'cda_cosmeticos')]}"/>
                 <field name="pdf_nro_resolucion" attrs="{'invisible': [('nro_resolucion', '=', False)]}"/>

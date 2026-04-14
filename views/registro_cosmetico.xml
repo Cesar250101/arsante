@@ -48,7 +48,8 @@
                 <field name="tipo_registro_id" required="1"/>
                 <!-- <field name="name" placeholder="Este dato es importante para las busquedas, por esto debe ingresar un nombre que identifique el registro" required="1"/> -->
                 <field name="date" required="1"/>
-                <field name="partner_id" required="1"/>
+                <field name="partner_id" required="1"
+                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
                 <field name="marcar_url" invisible="1"/>
                 <label for="marcar"/>
                 <div class="o_row">
@@ -60,8 +61,10 @@
                 <field name="categoria"/>
                 <field name="ref_gicona"/>
                 <field name="nro_registro"/>
-                <field name="product_id"/>
-                <field name="fabricante_id"/>
+                <field name="product_id"
+                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
+                <field name="fabricante_id"
+                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
                 <field name="pdf_nro_resolucion"/>
                 <field name="nro_resolucion"/>                
                 <field name="fecha_resolucion"/>

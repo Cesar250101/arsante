@@ -26,10 +26,10 @@ class CdaCosmetico(models.Model):
     va_cesmec=fields.Boolean(string="Va a Cesmec?")
     au = fields.Char(string='AU')
     nro_cda = fields.Char(string='Nº CDA')
-    item = fields.Char(string='Item')
+    item = fields.Char(string='N° Items')
     agente_aduana_id = fields.Many2one(comodel_name='res.partner', string='Agente Aduana')
     ref_tramite = fields.Char(string='Ref. Trámite')
-    proveedor_id = fields.Many2one(comodel_name='res.partner', string='Proveedor')
+    proveedor_id = fields.Many2one(comodel_name='res.partner', string='Proveedor Ref. SEREMI')
     marca = fields.Selection([
         ('todomoda', 'Todo Moda'),
         ('isadora', 'Isadora'),
@@ -45,6 +45,8 @@ class CdaCosmetico(models.Model):
     # enviar_uyd = fields.Boolean(string='Envíar UYD?')
     exim_ctrl_calidad = fields.Char(string='Exim. Cntrl Calidad')
     sale_order_id = fields.Many2one(comodel_name='sale.order', string='Nota de Venta')
+    oc_facturacion = fields.Char(string='OC Facturación')
+    invoice_ids = fields.Many2many('account.move', string='Facturas', related='sale_order_id.invoice_ids', readonly=True)
     facturado = fields.Boolean(string='Facturado?')
     nro_resolucion=fields.Char(string='Nro. Resolución')
     pdf_nro_resolucion = fields.Binary('PDF Resolucion')
@@ -66,6 +68,10 @@ class CdaCosmetico(models.Model):
         )
     importado = fields.Boolean(string='Importado en el general')
     active = fields.Boolean(string='Activo',default=True)
+    Bodega_llegada= fields.Char(string='Bodega llegada N° CDA')
+    fecha_resolucion_nro= fields.Date(string='Fecha Resolución N°')
+    correo_ids = fields.Char(string='Correos Electrónicos', placeholder='correo@correo.cl,correo2@correo.cl')
+    comentario = fields.Text(string='Comentario')
 
     @api.onchange('estado','no_cotizado','documentacion','facturado','sale_order_id')
     def _compute_dashboard(self):

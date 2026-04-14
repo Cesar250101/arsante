@@ -1,14 +1,14 @@
 <odoo>
   <data>
-        <record id="view_arsante_cda_uyd_alimentos_filter" model="ir.ui.view">
-            <field name="name">view.arsante.cda.uyd.alimentos.filter</field>
-            <field name="model">arsante.cda_uyd_alimentos</field>
+        <record id="view_arsante_registro_dispositivos_medicos_filter" model="ir.ui.view">
+            <field name="name">view.arsante.registro.dispositivos.medicos.filter</field>
+            <field name="model">arsante.registro_dispositivos_medicos</field>
             <field name="priority" eval="15"/>
             <field name="arch" type="xml">
                 <search string="Search Sales Order">
                     <field name="partner_id"/>
                     <field name="au"/>
-                    <field name="nro_cda"/>
+                    <field name="nro_uyd"/>
                     <field name="product_id"/>
                     <field name="proveedor_id"/>
                     <field name="agente_aduana_id"/>
@@ -34,10 +34,10 @@
             </field>
         </record>
 
-    <!-- explicit form view definition -->    
-    <record model="ir.ui.view" id="arsante.cda_uyd_alimentos_form_view">
-      <field name="name">CDA UYD Alimentos</field>
-      <field name="model">arsante.cda_uyd_alimentos</field>
+    <!-- explicit form view definition -->
+    <record model="ir.ui.view" id="arsante.registro_dispositivos_medicos_form_view">
+      <field name="name">Registro Dispositivos Médicos</field>
+      <field name="model">arsante.registro_dispositivos_medicos</field>
       <field name="arch" type="xml">
         <form string="">
           <header>
@@ -50,19 +50,18 @@
                 <field name="date" required="1"/>
                 <field name="partner_id" required="1"
                   domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
-                <field name="cda_marca_url" invisible="1"/>
+                <field name="marca_url" invisible="1"/>
                 <label for="marca"/>
                 <div class="o_row">
                   <field name="marca" class="oe_inline"/>
-                  <button name="open_cda_marca_link" string="URL OneDrive" type="object"
+                  <button name="open_marca_link" string="URL OneDrive" type="object"
                      icon="fa-folder-open" class="oe_link"
-                     attrs="{'invisible': [('cda_marca_url', '=', False)]}"/>
+                     attrs="{'invisible': [('marca_url', '=', False)]}"/>
                 </div>
                 <field name="proveedor_id"
                   domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
                 <field name="product_id" required="1"
                   domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
-
                 <field name="ref_tramite"/>
                 <field name="item"/>
                 <field name="fecha_llegada"/>
@@ -70,7 +69,7 @@
                   domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
                 <field name="Bodega_llegada"/>
                 <field name="fecha_resolucion_nro"/>
-                <field name="nro_cda"/>
+                <field name="nro_uyd"/>
                 <field name="pdf_nro_resolucion"/>
                 <field name="nro_resolucion"/>
                 <label for="sale_order_id"/>
@@ -82,9 +81,7 @@
                 </div>
                 <field name="correo_ids"/>
                 <field name="comentario"/>
-                <!-- <field name="au"/> -->
                 <field name="exim_ctrl_calidad" invisible="1"/>
-                <!-- <field name="no_cotizado"/> -->
                 <field name="espera_resolucion" invisible="1"/>
                   <field name="estado" invisible="1"/>
                   <field name="documentacion" invisible="1"/>
@@ -98,9 +95,7 @@
                   <field name="enviar_colilla_fecha" placeholder="Fecha enviar colilla" attrs="{'invisible': [('enviar_colilla','=',False)]}"/>
                 </div>
                 <field name="enviar_cda" invisible="1"/>
-                <!-- <field name="enviar_uyd"/>   -->
                 <field name="enviar_subir" invisible="1"/>
-
                 <field name="facturado" invisible="1"/>
                 <field name="subir_cloud" invisible="1"/>
                 <field name="subir_drive" invisible="1"/>
@@ -112,20 +107,19 @@
         </form>
       </field>
     </record>
-     
+
     <!-- explicit list view definition -->
-    
-    <record model="ir.ui.view" id="arsante.cda_uyd_alimentos_tree_view">
-      <field name="name">CDA UYD Alimentos</field>
-      <field name="model">arsante.cda_uyd_alimentos</field>
+
+    <record model="ir.ui.view" id="arsante.registro_dispositivos_medicos_tree_view">
+      <field name="name">Registro Dispositivos Médicos</field>
+      <field name="model">arsante.registro_dispositivos_medicos</field>
       <field name="arch" type="xml">
         <tree>
                 <field name="tipo_registro_id" required="1"/>
                 <field name="name" required="1" optional="hide"/>
                 <field name="date" required="1"/>
                 <field name="partner_id" required="1"/>
-                <!-- <field name="au"/> -->
-                <field name="nro_cda"/>
+                <field name="nro_uyd"/>
                 <field name="item"/>
                 <field name="agente_aduana_id"/>
                 <field name="ref_tramite"/>
@@ -136,7 +130,6 @@
                 <field name="exim_ctrl_calidad" optional="hide"/>
                 <field name="facturado" optional="hide"/>
                 <field name="subir_drive" optional="hide"/>
-                <!-- <field name="no_cotizado"/> -->
                 <field name="espera_resolucion" optional="hide"/>
                   <field name="estado" optional="hide"/>
                   <field name="documentacion" optional="hide"/>
@@ -145,23 +138,11 @@
       </field>
     </record>
 
-<!-- Accion que crear las notas de ventas de varios registros seleccionados en la vista tree -->
-    <record model="ir.actions.server" id="arsante.create_so_cda_uyd_alimentos_action_server">
-        <field name="name">Crear Nota de Venta</field>
-        <field name="type">ir.actions.server</field>
-        <field name="model_id" ref="arsante.model_arsante_cda_uyd_alimentos"/>
-        <field name="binding_model_id" ref="arsante.model_arsante_cda_uyd_alimentos"/>
-        <field name="state">code</field>
-        <field name="code">
-          record.create_so()
-        </field>
-      </record>
-   
-       <!-- explicit pivot definition -->
-    
-    <record model="ir.ui.view" id="arsante.cda_uyd_alimentos_pivot_view">
-      <field name="name">CDA UYD Alimentos</field>
-      <field name="model">arsante.cda_uyd_alimentos</field>
+    <!-- explicit pivot definition -->
+
+    <record model="ir.ui.view" id="arsante.registro_dispositivos_medicos_pivot_view">
+      <field name="name">Registro Dispositivos Médicos</field>
+      <field name="model">arsante.registro_dispositivos_medicos</field>
       <field name="arch" type="xml">
         <pivot>
           <field name="partner_id" type="row"/>
@@ -169,25 +150,37 @@
       </field>
     </record>
 
+    <!-- Accion que crear las notas de ventas de varios registros seleccionados en la vista tree -->
+    <record model="ir.actions.server" id="arsante.create_so_registro_dispositivos_medicos_action_server">
+        <field name="name">Crear Nota de Venta</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="arsante.model_arsante_registro_dispositivos_medicos"/>
+        <field name="binding_model_id" ref="arsante.model_arsante_registro_dispositivos_medicos"/>
+        <field name="state">code</field>
+        <field name="code">
+          record.create_so()
+        </field>
+      </record>
+
     <!-- actions opening views on models -->
-    
-    <record model="ir.actions.act_window" id="arsante.cda_uyd_alimentos_action_window">
-      <field name="name">CDA UYD Alimentos</field>
-      <field name="res_model">arsante.cda_uyd_alimentos</field>
+
+    <record model="ir.actions.act_window" id="arsante.registro_dispositivos_medicos_action_window">
+      <field name="name">Registro Dispositivos Médicos</field>
+      <field name="res_model">arsante.registro_dispositivos_medicos</field>
       <field name="view_mode">tree,form,pivot</field>
     </record>
 
-    <record model="ir.actions.act_window" id="arsante.cda_uyd_alimentos_action_window_no_facturados">
-      <field name="name">CDA UYD Alimentos - No Facturado</field>
-      <field name="res_model">arsante.cda_uyd_alimentos</field>
+    <record model="ir.actions.act_window" id="arsante.registro_dispositivos_medicos_action_window_no_facturados">
+      <field name="name">Registro Dispositivos Médicos - No Facturado</field>
+      <field name="res_model">arsante.registro_dispositivos_medicos</field>
       <field name="view_mode">tree,form,pivot</field>
-      <field name="domain">[('facturado', '=', False)]</field>        
-    </record>    
-   
-   
+      <field name="domain">[('facturado', '=', False)]</field>
+    </record>
+
     <!-- actions -->
-    <menuitem name="CDA Alimentos" id="arsante.cda_uyd_alimento_menu_list" parent="arsante.arsante_menu_tipo_registros"
-              action="arsante.cda_uyd_alimentos_action_window"/>
-   
+    <menuitem name="Registro Dispositivos Médicos" id="arsante.registro_dispositivos_medicos_menu_list"
+              parent="arsante.arsante_menu_tipo_registros"
+              action="arsante.registro_dispositivos_medicos_action_window"/>
+
   </data>
 </odoo>

@@ -47,7 +47,8 @@
               <group>
                 <field name="tipo_registro_id" required="1"/>
                 <field name="date" required="1"/>
-                <field name="partner_id" required="1"/>
+                <field name="partner_id" required="1"
+                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
                 <field name="marca_url" invisible="1"/>
                 <label for="marca"/>
                 <div class="o_row">
@@ -60,8 +61,10 @@
                 <field name="categoria"/>
                 <field name="ref_gicona"/>
                 <field name="nro_isp"/>
-                <field name="product_id"/>
-                <field name="fabricante_id"/>
+                <field name="product_id"
+                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
+                <field name="fabricante_id"
+                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
                 <field name="nro_resolucion"/>
                 <field name="fecha_resolucion"/>
                 <field name="sale_order_id"/>   

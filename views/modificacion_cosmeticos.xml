@@ -47,7 +47,8 @@
                 <field name="tipo_registro_id" required="1"/>
                 <field name="name" invisible="1"/>
                 <field name="date" required="1"/>
-                <field name="partner_id" required="1"/>
+                <field name="partner_id" required="1"
+                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
                 <field name="marcar_url" invisible="1"/>
                 <label for="marcar"/>
                 <div class="o_row">
@@ -61,8 +62,10 @@
                 <!-- <field name="sku" /> -->
                 <field name="mc_ref_gicona"/>
                 <field name="mc_nro_registro"/>
-                <field name="product_id"/>
-                <field name="fabricante_id"/>
+                <field name="product_id"
+                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
+                <field name="fabricante_id"
+                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
                 <field name="nro_resolucion"/>
                   <field name="pdf_nro_resolucion" attrs="{'invisible': [('nro_resolucion','=',False)]}"/>
                   <field name="fecha_resolucion" attrs="{'invisible': [('nro_resolucion','=',False)]}"/>

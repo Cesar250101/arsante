@@ -19,3 +19,4 @@ access_tipo_registro,Tipo de Registro,arsante.model_arsante_tipo_registro,arsant
 access_tipo_registro_admin,Tipo de Registro Responsable,arsante.model_arsante_tipo_registro,arsante.group_arsante_manager,1,1,1,1
 access_tipo_servicio_sales_manager,Tipo de Servicio Sales Manager,arsante.model_arsante_tipo_servicio,sales_team.group_sale_manager,1,1,1,1
 access_all_record_arsante,Todos los registros,arsante.model_arsante_all_record,arsante.group_arsante_users,1,1,1,1
+access_uyd_alimentos,UYD Alimentos,arsante.model_arsante_uyd_alimentos,arsante.group_arsante_users,1,1,1,1
