@@ -45,6 +45,10 @@ class DeclaracionDispositivosMedicos(models.Model):
         comodel_name='res.partner',
         string='Nombre Fabricante',
         domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]")
+    product_id = fields.Many2one(
+        comodel_name='product.product',
+        string='Producto',
+        domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]")
     pdf_resolucion = fields.Binary(string='PDF Resolución Nro.', attachment=True)
     pdf_resolucion_url = fields.Char(string='Link de Acceso Carpeta')
     fecha_resolucion = fields.Date(string='Resolución Fecha')
