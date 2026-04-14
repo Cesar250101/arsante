@@ -136,7 +136,7 @@ class DeclaracionDispositivosMedicos(models.Model):
             if i.sale_order_id:
                 raise ValidationError("Algunos registros ya tienen asociada una nota de venta!")
         for i in ids:
-            if i.ref_isp and i.fabricante_id and i.categoria:
+            if i.ref_isp and i.fabricante_id and i.categoria and i.product_id:
                 if not sale_order_id:
                     value = {
                         'name': self.env['ir.sequence'].next_by_code('sale.order') or _('New'),
@@ -148,7 +148,9 @@ class DeclaracionDispositivosMedicos(models.Model):
                     sale_order_id = model_sale_order.create(value)
                 Value = {
                     'name': 'Ref. ISP: ' + i.ref_isp + ' Fabricante: ' + i.fabricante_id.name + ' Nro. OC: ' + i.categoria,
+                    'product_id': i.product_id.id,
                     'product_uom_qty': 1,
+                    'product_uom': i.product_id.uom_id.id,
                     'order_id': sale_order_id.id
                 }
                 if partner_id_1 != i.partner_id.id:
@@ -161,6 +163,7 @@ class DeclaracionDispositivosMedicos(models.Model):
                               -Ref. ISP
                               -Nombre Fabricante
                               -Nro. OC
+                              -Producto
                               """)
         # Crear referencia DTE con OC Facturación
         if sale_order_id:
