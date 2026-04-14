@@ -1,0 +1,152 @@
+<odoo>
+  <data>
+
+    <record id="view_arsante_inscripciones_cosmeticos_filter" model="ir.ui.view">
+      <field name="name">view.arsante.inscripciones.cosmeticos.filter</field>
+      <field name="model">arsante.inscripciones_cosmeticos</field>
+      <field name="priority" eval="15"/>
+      <field name="arch" type="xml">
+        <search string="Buscar Inscripciones Cosméticos">
+          <field name="partner_id"/>
+          <field name="ref_gicona"/>
+          <field name="nro_isp"/>
+          <field name="fabricante_id"/>
+          <field name="nro_resolucion"/>
+          <field name="fecha_resolucion"/>
+          <filter string="Activos" domain="[('active','=',True)]" name="active"/>
+          <filter string="Archivados" domain="[('active','=',False)]" name="archivados"/>
+          <filter string="Facturado" domain="[('facturado','=',True)]" name="facturado_filter"/>
+          <filter string="No Facturado" domain="[('facturado','=',False)]" name="no_facturado_filter"/>
+          <filter string="No Cotizado" domain="[('sale_order_id','=',False)]" name="no_cotizado_filter"/>
+          <filter string="Cotizado" domain="[('sale_order_id','!=',False)]" name="cotizado_filter"/>
+          <filter string="Docu. Completa" domain="[('documentacion','=','completa')]" name="completa_filter"/>
+          <filter string="Docu. Incompleta" domain="['|',('documentacion','=','incompleta'),('documentacion','=',False)]" name="incompleta_filter"/>
+          <filter string="Estado: Listo" domain="[('estado','=','listo')]" name="listo_filter"/>
+          <filter string="Estado: No Listo" domain="['|',('estado','=','no_listo'),('estado','=',False)]" name="no_listo_filter"/>
+          <filter string="Para Renovar" domain="[('alerta_renovacion','=',True)]" name="para_renovar"/>
+          <group expand="0" string="Agrupar Por">
+            <filter string="Cliente" name="partner_id" domain="[]" context="{'group_by':'partner_id'}"/>
+            <filter name="product_id" string="Producto" domain="[]" context="{'group_by':'product_id'}"/>
+          </group>
+        </search>
+      </field>
+    </record>
+
+    <!-- Vista Formulario -->
+    <record model="ir.ui.view" id="arsante.inscripciones_cosmeticos_form_view">
+      <field name="name">Inscripciones Cosméticos</field>
+      <field name="model">arsante.inscripciones_cosmeticos</field>
+      <field name="arch" type="xml">
+        <form string="">
+          <sheet>
+            <group>
+              <group>
+                <field name="tipo_registro_id" required="1"/>
+                <field name="date" required="1"/>
+                <field name="partner_id" required="1"
+                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
+
+                <!-- Marca con botón URL (mismo comportamiento que marca/marca_url) -->
+                <field name="marca_url" invisible="1"/>
+                <label for="marca"/>
+                <div class="o_row">
+                  <field name="marca" class="oe_inline"/>
+                  <button name="open_marca_link" string="URL OneDrive" type="object"
+                    icon="fa-folder-open" class="oe_link"
+                    attrs="{'invisible': [('marca_url', '=', False)]}"/>
+                </div>
+
+                <field name="categoria"/>
+                <field name="ref_gicona"/>
+                <field name="nro_isp"/>
+                <field name="product_id"
+                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
+                <field name="fabricante_id"
+                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
+
+                <!-- PDF Resolución con subir archivo y url link de acceso -->
+                <!-- <label for="pdf_resolucion"/> -->
+                <!-- <div class="o_row">
+                  <field name="pdf_resolucion" class="oe_inline" filename="pdf_resolucion_filename"/>
+                  <button name="open_pdf_resolucion_url" string="URL Link de Acceso" type="object"
+                    icon="fa-external-link" class="oe_link"
+                    attrs="{'invisible': [('pdf_resolucion_url', '=', False)]}"/>
+                </div> -->
+                <!-- <field name="pdf_resolucion_url" placeholder="https://..."/> -->
+
+                <field name="nro_resolucion"/>
+                <field name="fecha_resolucion"/>
+                <label for="sale_order_id"/>
+                <div class="o_row">
+                  <field name="sale_order_id" class="oe_inline" nolabel="1"/>
+                  <field name="oc_facturacion" class="oe_inline" placeholder="OC Facturacion" nolabel="1"/>
+                  <field name="invoice_ids" widget="many2many_tags" class="oe_inline" nolabel="1"
+                    attrs="{'invisible': [('sale_order_id', '=', False)]}"/>
+                </div>
+                <field name="correo_ids"/>
+                <field name="comentario"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- Vista Lista -->
+    <record model="ir.ui.view" id="arsante.inscripciones_cosmeticos_tree_view">
+      <field name="name">Inscripciones Cosméticos</field>
+      <field name="model">arsante.inscripciones_cosmeticos</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="date"/>
+          <field name="partner_id"/>
+          <field name="categoria"/>
+          <field name="ref_gicona"/>
+          <field name="nro_isp"/>
+          <field name="product_id"/>
+          <field name="fabricante_id"/>
+          <field name="marca"/>
+          <field name="nro_resolucion"/>
+          <field name="sale_order_id"/>
+        </tree>
+      </field>
+    </record>
+
+    <!-- Vista Pivot -->
+    <record model="ir.ui.view" id="arsante.inscripciones_cosmeticos_pivot_view">
+      <field name="name">Inscripciones Cosméticos</field>
+      <field name="model">arsante.inscripciones_cosmeticos</field>
+      <field name="arch" type="xml">
+        <pivot>
+          <field name="partner_id" type="row"/>
+        </pivot>
+      </field>
+    </record>
+
+    <!-- Acción -->
+    <record model="ir.actions.act_window" id="arsante.inscripciones_cosmeticos_action_window">
+      <field name="name">Inscripciones Cosméticos</field>
+      <field name="res_model">arsante.inscripciones_cosmeticos</field>
+      <field name="view_mode">tree,form,pivot</field>
+    </record>
+
+    <!-- Acción server para crear nota de venta -->
+    <record model="ir.actions.server" id="arsante.create_so_inscripciones_cosmeticos_action_server">
+      <field name="name">Crear Nota de Venta</field>
+      <field name="type">ir.actions.server</field>
+      <field name="model_id" ref="arsante.model_arsante_inscripciones_cosmeticos"/>
+      <field name="binding_model_id" ref="arsante.model_arsante_inscripciones_cosmeticos"/>
+      <field name="state">code</field>
+      <field name="code">
+        record.create_so()
+      </field>
+    </record>
+
+    <!-- Menú -->
+    <menuitem name="Inscripciones Cosméticos" id="arsante.inscripciones_cosmeticos_menu_list"
+              parent="arsante.arsante_menu_tipo_registros"
+              action="arsante.inscripciones_cosmeticos_action_window"/>
+
+  </data>
+</odoo>

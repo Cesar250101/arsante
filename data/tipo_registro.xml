@@ -26,6 +26,11 @@
             <field name='tipo'>eximiciones_cosmeticos</field>
             <field name='active'>True</field>
         </record>
+        <record model='arsante.tipo_registro' id='inscripciones_cosmeticos_id'>
+            <field name='name'>Inscripción Cosméticos</field>
+            <field name='tipo'>inscripciones_cosmeticos</field>
+            <field name='active'>True</field>
+        </record>        
         <record model='arsante.tipo_registro' id='hds_hechas_id'>
             <field name='name'>HDS Hechas</field>
             <field name='tipo'>hds_hechas</field>

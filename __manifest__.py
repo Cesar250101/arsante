@@ -35,6 +35,7 @@
         'views/modificacion_cosmeticos.xml',
         'views/registro_cosmetico.xml',
         'views/inscripciones.xml',
+        'views/inscripciones_cosmeticos.xml',
         'views/rectificaciones.xml',
         'views/cda_uyd_alimentos.xml',
         'views/dispositivos_medicos.xml',

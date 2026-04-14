@@ -6,6 +6,7 @@ from . import marca
 from . import modificacion_cosmeticos
 from . import registro_cosmetico
 from . import inscripciones
+from . import inscripciones_cosmeticos
 from . import rectificaciones
 from . import cda_uyd_alimentos
 from . import dispositivos_medicos

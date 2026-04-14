@@ -4,6 +4,7 @@ access_marcas,Marcas,arsante.model_arsante_marcas,arsante.group_arsante_users,1,
 access_modif_cosmeticos,Modificación Cosmeticos,arsante.model_arsante_modificacion_cosmeticos,arsante.group_arsante_users,1,1,1,1
 access_registro_cosmeticos,Registro Cosmeticos,arsante.model_arsante_registro_cosmetico,arsante.group_arsante_users,1,1,1,1
 access_inscripciones,Inscripciones,arsante.model_arsante_inscripciones,arsante.group_arsante_users,1,1,1,1
+access_inscripciones_cosmeticos,Inscripciones Cosméticos,arsante.model_arsante_inscripciones_cosmeticos,arsante.group_arsante_users,1,1,1,1
 access_rectificaciones,Rectificaciones,arsante.model_arsante_rectificaciones,arsante.group_arsante_users,1,1,1,1
 access_cda_uyd_alimentos,CDA-UYD Alimentos,arsante.model_arsante_cda_uyd_alimentos,arsante.group_arsante_users,1,1,1,1
 access_dm,Dispositivos Medicos,arsante.model_arsante_dispositivos_medicos,arsante.group_arsante_users,1,1,1,1

@@ -16,6 +16,7 @@ class TipoRegistro(models.Model):
                    ('eximiciones_cosmeticos', 'Eximiciones Cosmetico'),
                    ('hds_hechas', 'HDS Hechas'),
                    ('inscripciones', 'Inscripciones'),
+                   ('inscripciones_cosmeticos', 'Inscripción Cosméticos'),
                    ('modificacion_cosmeticos', 'Modificacion Cosmetico'),
                    ('modificaciones_desinfectantes', 'Modificaciones Defectantes'),
                    ('rectificaciones', 'Rectificaciones'),
@@ -72,6 +73,11 @@ class TipoRegistro(models.Model):
         comodel_name='arsante.inscripciones',
         inverse_name='tipo_registro_id',
         string='Inscripciones',
+        required=False)
+    inscripciones_cosmeticos_ids = fields.One2many(
+        comodel_name='arsante.inscripciones_cosmeticos',
+        inverse_name='tipo_registro_id',
+        string='Inscripciones Cosméticos',
         required=False)
     modificacion_cosmeticos_ids = fields.One2many(
         comodel_name='arsante.modificacion_cosmeticos',
@@ -139,6 +145,10 @@ class TipoRegistro(models.Model):
         if self.tipo=='inscripciones':
             act_window_id='arsante.inscripciones_action_window'
             modelo='arsante.inscripciones'
+
+        if self.tipo=='inscripciones_cosmeticos':
+            act_window_id='arsante.inscripciones_cosmeticos_action_window'
+            modelo='arsante.inscripciones_cosmeticos'
 
         if self.tipo=='modificacion_cosmeticos':
             act_window_id='arsante.modificaciones_cosmetico_action_window'
@@ -471,6 +481,39 @@ class TipoRegistro(models.Model):
                 i.documentacion_completa=documentacion_completa
                 i.documentacion_completa_no_completa=documentacion_completa_no_completa
 
+
+            # Inscripciones Cosméticos
+            if i.tipo=='inscripciones_cosmeticos':
+                for cda in i.inscripciones_cosmeticos_ids:
+                    cda_cosmeticos_count+=1
+                    if cda.facturado==True:
+                        facturados+=1
+                    else:
+                        no_facturados+=1
+                    if cda.no_cotizado==False:
+                        cotizados+=1
+                    else:
+                        no_cotizados+=1
+                    if cda.estado=="listo":
+                        estado_listos+=1
+                    else:
+                        estado_no_listos+=1
+                    if cda.documentacion=="completa":
+                        documentacion_completa+=1
+                    else:
+                        documentacion_completa_no_completa+=1
+                    if cda.alerta_renovacion:
+                        para_renovar+=1
+                i.para_renovar=para_renovar
+                i.total_record_count = cda_cosmeticos_count
+                i.facturados=facturados
+                i.no_facturados=no_facturados
+                i.cotizados=cotizados
+                i.no_cotizados=no_cotizados
+                i.estado_listos=estado_listos
+                i.estado_no_listos=estado_no_listos
+                i.documentacion_completa=documentacion_completa
+                i.documentacion_completa_no_completa=documentacion_completa_no_completa
 
             # Inscripciones
             if i.tipo=='inscripciones':
