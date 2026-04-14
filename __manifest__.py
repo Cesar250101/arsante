@@ -40,6 +40,7 @@
         'views/cda_uyd_alimentos.xml',
         'views/uyd_alimentos.xml',
         'views/registro_dispositivos_medicos.xml',
+        'views/declaracion_dispositivos_medicos.xml',
         'views/dispositivos_medicos.xml',
         'views/eximiciones_cosmeticos.xml',
         'views/renovaciones_cosmeticas.xml',
