@@ -135,7 +135,7 @@
        <!-- explicit pivot definition -->
     
     <record model="ir.ui.view" id="arsante.modificacion_cosmetico_pivot_view">
-      <field name="name">CDA Cosméticos DM</field>
+      <field name="name">CDA Cosméticos</field>
       <field name="model">arsante.modificacion_cosmeticos</field>
       <field name="arch" type="xml">
         <pivot>

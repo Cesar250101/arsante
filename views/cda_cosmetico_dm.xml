@@ -38,7 +38,7 @@
 
     <!-- explicit form view definition -->    
     <record model="ir.ui.view" id="arsante.cda_cosmetico_dm_form_view">
-      <field name="name">CDA Cosméticos DM</field>
+      <field name="name">CDA Cosméticos</field>
       <field name="model">arsante.cda_cosmetico_dm</field>
       <field name="arch" type="xml">
         <form string="">
@@ -111,7 +111,7 @@
     <!-- explicit list view definition -->
     
     <record model="ir.ui.view" id="arsante.cda_cosmetico_dm_tree_view">
-      <field name="name">CDA cosméticos DM</field>
+      <field name="name">CDA cosméticos</field>
       <field name="model">arsante.cda_cosmetico_dm</field>
       <field name="arch" type="xml">
         <tree>
@@ -145,7 +145,7 @@
        <!-- explicit pivot definition -->
     
     <record model="ir.ui.view" id="arsante.cda_cosmetico_dm_pivot_view">
-      <field name="name">CDA Cosméticos DM</field>
+      <field name="name">CDA Cosméticos</field>
       <field name="model">arsante.cda_cosmetico_dm</field>
       <field name="arch" type="xml">
         <pivot>
@@ -157,13 +157,13 @@
     <!-- actions opening views on models -->
     
     <record model="ir.actions.act_window" id="arsante.cda_cosmetico_action_window">
-      <field name="name">CDA Cosméticos DM</field>
+      <field name="name">CDA Cosméticos</field>
       <field name="res_model">arsante.cda_cosmetico_dm</field>
       <field name="view_mode">tree,form,pivot</field>
     </record>
    
     <record model="ir.actions.act_window" id="arsante.cda_cosmetico_action_window_no_facturados">
-      <field name="name">CDA Cosméticos DM - No Facturados</field>
+      <field name="name">CDA Cosméticos - No Facturados</field>
       <field name="res_model">arsante.cda_cosmetico_dm</field>
       <field name="view_mode">tree,form,pivot</field>
       <field name="domain">[('facturado', '=', False)]</field>        
@@ -182,7 +182,7 @@
       </record>
 
     <!-- actions -->
-    <menuitem name="CDA Cosméticos DM"
+    <menuitem name="CDA Cosméticos"
               id="arsante.cda_cosmetico_dm_menu_list"
               sequence="16"
               parent="arsante.arsante_menu_tipo_registros"
