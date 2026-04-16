@@ -152,6 +152,7 @@
     <!-- Menú -->
     <menuitem name="Rev. Antecedentes DM" id="arsante.rev_antecedentes_dm_menu_list"
               parent="arsante.arsante_menu_tipo_registros"
+              sequence="23"
               action="arsante.rev_antecedentes_dm_action_window"/>
 
   </data>

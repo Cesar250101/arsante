@@ -149,6 +149,7 @@
     <!-- Menú -->
     <menuitem name="Declaración Dispositivos Médicos" id="arsante.declaracion_dm_menu_list"
               parent="arsante.arsante_menu_tipo_registros"
+              sequence="22"
               action="arsante.declaracion_dm_action_window"/>
 
   </data>
