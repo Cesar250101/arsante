@@ -159,6 +159,7 @@
    
     <!-- actions -->
     <menuitem name="Eximición Cosmeticos" id="arsante.eximicion_cosmeticos_menu_list" parent="arsante.arsante_menu_tipo_registros"
+              sequence="12"
               action="arsante.eximicion_cosmeticos_action_window"/>
    
   </data>

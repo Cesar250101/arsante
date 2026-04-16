@@ -183,6 +183,7 @@
    
     <!-- actions -->
     <menuitem name="Registro Cosméticos" id="arsante.registro_cosmetico_menu_list" parent="arsante.arsante_menu_tipo_registros"
+              sequence="10"
               action="arsante.registro_cosmetico_action_window"/>
    
   </data>

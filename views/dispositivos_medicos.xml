@@ -176,6 +176,7 @@
 
     <!-- actions -->
     <menuitem name="Dispositivos Medicos" id="arsante.dm_menu_list" parent="arsante.arsante_menu_tipo_registros"
+              sequence="20"
               action="arsante.dm_action_window"/>
 
   </data>

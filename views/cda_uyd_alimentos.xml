@@ -187,6 +187,7 @@
    
     <!-- actions -->
     <menuitem name="CDA Alimentos" id="arsante.cda_uyd_alimento_menu_list" parent="arsante.arsante_menu_tipo_registros"
+              sequence="31"
               action="arsante.cda_uyd_alimentos_action_window"/>
    
   </data>

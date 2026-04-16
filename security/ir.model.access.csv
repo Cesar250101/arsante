@@ -12,14 +12,19 @@ access_rectificaciones,Rectificaciones,arsante.model_arsante_rectificaciones,ars
 access_cda_uyd_alimentos,CDA-UYD Alimentos,arsante.model_arsante_cda_uyd_alimentos,arsante.group_arsante_users,1,1,1,1
 access_dm,Dispositivos Medicos,arsante.model_arsante_dispositivos_medicos,arsante.group_arsante_users,1,1,1,1
 access_exim_cosmeticos,Eximición Cosméticos,arsante.model_arsante_eximiciones_cosmeticos,arsante.group_arsante_users,1,1,1,1
+access_exim_cosmeticos_correo,Eximición Cosméticos Correo,arsante.model_arsante_eximiciones_cosmeticos_correo,arsante.group_arsante_users,1,1,1,1
 access_renovaciones_cosmeticos,Renovaciones Cosméticos,arsante.model_arsante_renovaciones_cosmeticos,arsante.group_arsante_users,1,1,1,1
 access_registro_desinfectantes,Registro Desinfectantes,arsante.model_arsante_registro_desinfectantes,arsante.group_arsante_users,1,1,1,1
 access_modificaciones_desinfectantes,Modificaciones Desinfectantes,arsante.model_arsante_modificaciones_desinfectantes,arsante.group_arsante_users,1,1,1,1
 access_renovaciones_desinfectantes,Renovaciones Desinfectantes,arsante.model_arsante_renovaciones_desinfectantes,arsante.group_arsante_users,1,1,1,1
 access_hds_hechas,Hds Hechas,arsante.model_arsante_hds_hechas,arsante.group_arsante_users,1,1,1,1
-access_registro_isp,Registro ISP,arsante.model_arsante_exim_proceso_cosmeticos,arsante.group_arsante_users,1,1,1,1
+access_exim_proceso_cosmeticos,Exim Proceso Cosméticos,arsante.model_arsante_exim_proceso_cosmeticos,arsante.group_arsante_users,1,1,1,1
+access_registro_isp,Registro ISP,arsante.model_arsante_registro_isp,arsante.group_arsante_users,1,1,1,1
+access_registro_isp_exim_cosmeticos,Registro ISP Exim Cosméticos,arsante.model_arsante_registro_isp_exim_cosmeticos,arsante.group_arsante_users,1,1,1,1
+access_registro_dispositivos_medicos,Registro Dispositivos Medicos,arsante.model_arsante_registro_dispositivos_medicos,arsante.group_arsante_users,1,1,1,1
 access_tipo_registro,Tipo de Registro,arsante.model_arsante_tipo_registro,arsante.group_arsante_users,1,0,0,0
 access_tipo_registro_admin,Tipo de Registro Responsable,arsante.model_arsante_tipo_registro,arsante.group_arsante_manager,1,1,1,1
 access_tipo_servicio_sales_manager,Tipo de Servicio Sales Manager,arsante.model_arsante_tipo_servicio,sales_team.group_sale_manager,1,1,1,1
+access_tipo_servicio_arsante,Tipo de Servicio Arsante,arsante.model_arsante_tipo_servicio,arsante.group_arsante_users,1,1,1,1
 access_all_record_arsante,Todos los registros,arsante.model_arsante_all_record,arsante.group_arsante_users,1,1,1,1
 access_uyd_alimentos,UYD Alimentos,arsante.model_arsante_uyd_alimentos,arsante.group_arsante_users,1,1,1,1

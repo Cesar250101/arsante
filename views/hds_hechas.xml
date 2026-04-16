@@ -139,6 +139,7 @@
    
     <!-- actions -->
     <menuitem name="HDS Hechas" id="arsante.hds_hechas_menu_list" parent="arsante.arsante_menu_tipo_registros"
+              sequence="50"
               action="arsante.hds_hechas_action_window"/>
    
   </data>

@@ -1,0 +1,18 @@
+/* Separadores visuales entre grupos del menú "Tipo de Registros"
+   Odoo 16 usa data-section="<id>" en los DropdownItem del navbar.
+   Grupos: Cosméticos | DM | Alimentos | Desinfectantes | HDS | Tipo de registros
+     870  = Dispositivos Medicos      (inicio grupo DM)
+     1126 = UYD Alimentos             (inicio grupo Alimentos)
+     873  = Registro Desinfectantes   (inicio grupo Desinfectantes)
+     876  = HDS Hechas                (inicio grupo HDS)
+     886  = Todos los Registros       (inicio grupo Tipo de registros)
+*/
+.dropdown-item[data-section="870"],
+.dropdown-item[data-section="1126"],
+.dropdown-item[data-section="873"],
+.dropdown-item[data-section="876"],
+.dropdown-item[data-section="886"] {
+    border-top: 1px solid #dee2e6;
+    margin-top: 4px;
+    padding-top: 8px !important;
+}

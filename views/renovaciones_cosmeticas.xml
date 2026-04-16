@@ -175,6 +175,7 @@
 
     <!-- actions -->
     <menuitem name="Renovaciones Cosmeticos" id="arsante.renovacion_cosmeticos_menu_list" parent="arsante.arsante_menu_tipo_registros"
+              sequence="14"
               action="arsante.renovacion_cosmeticos_action_window"/>
    
   </data>

@@ -49,6 +49,10 @@
         'views/modificaciones_desinfectantes.xml',
         'views/renovaciones_desinfectantes.xml',
         'views/hds_hechas.xml',
+        'views/registro_isp_exim_cosmeticos.xml',
+        'views/registro_isp.xml',
+        'views/marcas.xml',
+        'views/tipo_servicio.xml',
         'wizard/exim_proceso_cosmeticos_wizard.xml',
         'wizard/cda_cosmetico_dm_wizard.xml',
         'wizard/modificacion_cosmeticos_wizard.xml',
@@ -76,6 +80,7 @@
     'assets': {
         'web.assets_backend': [
             'arsante/static/src/css/tipo_registro_dashboard.css',
+            'arsante/static/src/css/menu_separators.css',
             'arsante/static/src/js/tipo_registro_dashboard.js',
             'arsante/static/src/xml/tipo_registro_dashboard.xml',
         ],

@@ -155,6 +155,7 @@
 
     <!-- actions -->
     <menuitem name="Modificaciones Desinfectantes" id="arsante.modificaciones_desinfectantes_menu_list" parent="arsante.arsante_menu_tipo_registros"
+              sequence="41"
               action="arsante.modificaciones_desinfectantes_action_window"/>
    
   </data>

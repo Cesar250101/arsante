@@ -137,6 +137,7 @@
    
     <!-- actions -->
     <menuitem name="Renovaciones Desinfectantes" id="arsante.renovaciones_desinfectantes_menu_list" parent="arsante.arsante_menu_tipo_registros"
+              sequence="42"
               action="arsante.renovaciones_desinfectantes_action_window"/>
    
   </data>

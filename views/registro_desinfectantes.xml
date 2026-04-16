@@ -152,6 +152,7 @@
    
     <!-- actions -->
     <menuitem name="Registro Desinfectantes" id="arsante.registro_desinfectantes_menu_list" parent="arsante.arsante_menu_tipo_registros"
+              sequence="40"
               action="arsante.registro_desinfectantes_action_window"/>
    
   </data>

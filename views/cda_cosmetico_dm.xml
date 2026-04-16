@@ -184,7 +184,7 @@
     <!-- actions -->
     <menuitem name="CDA Cosméticos DM"
               id="arsante.cda_cosmetico_dm_menu_list"
-              sequence="2"
+              sequence="16"
               parent="arsante.arsante_menu_tipo_registros"
               action="arsante.cda_cosmetico_action_window"/>
    

@@ -180,6 +180,7 @@
     <!-- actions -->
     <menuitem name="Registro Dispositivos Médicos" id="arsante.registro_dispositivos_medicos_menu_list"
               parent="arsante.arsante_menu_tipo_registros"
+              sequence="21"
               action="arsante.registro_dispositivos_medicos_action_window"/>
 
   </data>

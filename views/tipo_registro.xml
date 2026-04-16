@@ -194,7 +194,7 @@
               parent="arsante.arsante_menu_root"
               action="action_tipo_registro_dashboard"/> -->
 
-              
+
 
   </data>
 </odoo>

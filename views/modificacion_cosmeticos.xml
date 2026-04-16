@@ -173,6 +173,7 @@
    
     <!-- actions -->
     <menuitem name="Modificaciones Cosméticos" id="arsante.modificaciones_cosmetico_menu_list" parent="arsante.arsante_menu_tipo_registros"
+              sequence="13"
               action="arsante.modificaciones_cosmetico_action_window"/>
    
   </data>

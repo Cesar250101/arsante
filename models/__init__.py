@@ -21,6 +21,9 @@ from . import modificaciones_desinfectantes
 from . import renovaciones_desinfectantes
 from . import hds_hechas
 from . import exim_proceso_cosmeticos
+from . import registro_isp
+from . import registro_isp_exim_cosmeticos
+from . import eximiciones_cosmeticos_correo
 from . import all_record
 from . import account_move
 from . import res_company

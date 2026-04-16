@@ -1,0 +1,44 @@
+<odoo>
+  <data>
+
+    <record model="ir.ui.view" id="arsante.marcas_tree_view">
+      <field name="name">arsante.marcas.tree</field>
+      <field name="model">arsante.marcas</field>
+      <field name="arch" type="xml">
+        <tree editable="bottom">
+          <field name="name"/>
+          <field name="url_onedrive"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="arsante.marcas_form_view">
+      <field name="name">arsante.marcas.form</field>
+      <field name="model">arsante.marcas</field>
+      <field name="arch" type="xml">
+        <form string="Marca">
+          <sheet>
+            <group>
+              <field name="name"/>
+              <field name="url_onedrive"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="arsante.marcas_action_window">
+      <field name="name">Marcas</field>
+      <field name="res_model">arsante.marcas</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- menuitem eliminado por solicitud del usuario -->
+    <!-- <menuitem name="Marcas"
+              id="arsante.marcas_menu_list"
+              parent="arsante.arsante_menu_tipo_registros"
+              sequence="65"
+              action="arsante.marcas_action_window"/> -->
+
+  </data>
+</odoo>

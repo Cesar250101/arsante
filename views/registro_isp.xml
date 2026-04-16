@@ -1,11 +1,11 @@
 <odoo>
   <data>
-        <record id="view_arsante_registro_isp_filter" model="ir.ui.view">
-            <field name="name">view.arsante.registro.isp.filter</field>
+        <record id="arsante.view_arsante_registro_isp_search" model="ir.ui.view">
+            <field name="name">view.arsante.registro.isp.search</field>
             <field name="model">arsante.registro_isp</field>
             <field name="priority" eval="15"/>
             <field name="arch" type="xml">
-                <search string="Search Sales Order">
+                <search string="Buscar Registro ISP">
                     <field name="partner_id"/>
                     <field name="referencia_gicona"/>
                     <field name="nro_isp"/>
@@ -23,9 +23,9 @@
             </field>
         </record>
 
-    <!-- explicit form view definition -->    
-    <record model="ir.ui.view" id="arsante.registro_isp_form_view">
-      <field name="name">Registro ISP</field>
+    <!-- explicit form view definition -->
+    <record model="ir.ui.view" id="arsante.registro_isp_model_form_view">
+      <field name="name">arsante.registro_isp.form</field>
       <field name="model">arsante.registro_isp</field>
       <field name="arch" type="xml">
         <form string="">
@@ -41,7 +41,7 @@
                 <field name="partner_id" required="1"
                   domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
                 <field name="referencia_gicona"/>
-                <field name="nro_isp"/>                
+                <field name="nro_isp"/>
                 <field name="product_id"
                   domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
                 <field name="fabricante_id"
@@ -54,28 +54,24 @@
                 <field name="comentarios"/>
                 <field name="no_cotizado"/>
                 <field name="espera_resolucion"/>
-                  <field name="estado"/>
-                  <field name="documentacion"/>
-
+                <field name="estado"/>
               </group>
               <group>
                 <field name="cotizacion_pendiente"/>
                 <field name="enviar_colilla"/>
-                <field name="facturado"/>  
+                <field name="facturado"/>
                 <field name="subir_drive"/>
-                <field name="requiere_renovacion"/>
-                <field name="fecha_renovacion" attrs="{'invisible': [('requiere_renovacion','=',False)]}"/>
+                <field name="fecha_renovacion"/>
               </group>
             </group>
           </sheet>
         </form>
       </field>
     </record>
-     
+
     <!-- explicit list view definition -->
-    
-    <record model="ir.ui.view" id="arsante.registro_isp_tree_view">
-      <field name="name">Registro ISP</field>
+    <record model="ir.ui.view" id="arsante.registro_isp_model_tree_view">
+      <field name="name">arsante.registro_isp.tree</field>
       <field name="model">arsante.registro_isp</field>
       <field name="arch" type="xml">
         <tree>
@@ -87,19 +83,16 @@
           <field name="fabricante_id"/>
           <field name="documentacion"/>
           <field name="nro_resolucion"/>
-                <field name="no_cotizado"/>
-                <field name="espera_resolucion"/>
-                  <field name="estado"/>
-                  <field name="documentacion"/>
-
+          <field name="no_cotizado"/>
+          <field name="espera_resolucion"/>
+          <field name="estado"/>
         </tree>
       </field>
     </record>
-   
-       <!-- explicit pivot definition -->
-    
-    <record model="ir.ui.view" id="arsante.registro_isp_pivot_view">
-      <field name="name">Registro ISP</field>
+
+    <!-- explicit pivot definition -->
+    <record model="ir.ui.view" id="arsante.registro_isp_model_pivot_view">
+      <field name="name">arsante.registro_isp.pivot</field>
       <field name="model">arsante.registro_isp</field>
       <field name="arch" type="xml">
         <pivot>
@@ -109,25 +102,18 @@
     </record>
 
     <!-- actions opening views on models -->
-    
-    <record model="ir.actions.act_window" id="arsante.registro_isp_action_window">
+    <record model="ir.actions.act_window" id="arsante.registro_isp_model_action_window">
       <field name="name">Registro ISP</field>
       <field name="res_model">arsante.registro_isp</field>
       <field name="view_mode">tree,form,pivot</field>
     </record>
-   
 
+    <!-- menuitem eliminado por solicitud del usuario -->
+    <!-- <menuitem name="Registro ISP"
+              id="arsante.registro_isp_model_menu_list"
+              parent="arsante.arsante_menu_tipo_registros"
+              sequence="64"
+              action="arsante.registro_isp_model_action_window"/> -->
 
-    <!-- Top menu item -->    
-    <menuitem name="Arsante" id="arsante.arsante_menu_root" parent="sale.sale_menu_root" sequence="5"/>
-   
-    <!-- menu categories -->
-    <menuitem name="Registro ISP" id="arsante.registro_isp_menu" parent="arsante.arsante_menu_root"/>
-
-   
-    <!-- actions -->
-    <menuitem name="Lista Registros ISP" id="arsante.registro_sip_menu_list" parent="arsante.registro_isp_menu"
-              action="arsante.registro_isp_action_window"/>
-   
   </data>
 </odoo>

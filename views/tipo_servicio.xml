@@ -1,0 +1,42 @@
+<odoo>
+  <data>
+
+    <record model="ir.ui.view" id="arsante.tipo_servicio_tree_view">
+      <field name="name">arsante.tipo_servicio.tree</field>
+      <field name="model">arsante.tipo_servicio</field>
+      <field name="arch" type="xml">
+        <tree editable="bottom">
+          <field name="name"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="arsante.tipo_servicio_form_view">
+      <field name="name">arsante.tipo_servicio.form</field>
+      <field name="model">arsante.tipo_servicio</field>
+      <field name="arch" type="xml">
+        <form string="Tipo de Servicio">
+          <sheet>
+            <group>
+              <field name="name"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="arsante.tipo_servicio_action_window">
+      <field name="name">Tipos de Servicio</field>
+      <field name="res_model">arsante.tipo_servicio</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- menuitem eliminado por solicitud del usuario -->
+    <!-- <menuitem name="Tipos de Servicio"
+              id="arsante.tipo_servicio_menu_list"
+              parent="arsante.arsante_menu_tipo_registros"
+              sequence="66"
+              action="arsante.tipo_servicio_action_window"/> -->
+
+  </data>
+</odoo>

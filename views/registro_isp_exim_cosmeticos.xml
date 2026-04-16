@@ -1,11 +1,11 @@
 <odoo>
   <data>
-        <record id="view_arsante_registro_isp_filter" model="ir.ui.view">
-            <field name="name">view.arsante.registro.isp.filter</field>
+        <record id="arsante.view_arsante_registro_isp_exim_search" model="ir.ui.view">
+            <field name="name">view.arsante.registro.isp.exim.search</field>
             <field name="model">arsante.registro_isp_exim_cosmeticos</field>
             <field name="priority" eval="15"/>
             <field name="arch" type="xml">
-                <search string="Search Sales Order">
+                <search string="Buscar Registro ISP Exim. Cosméticos">
                     <field name="partner_id"/>
                     <field name="referencia_gicona"/>
                     <field name="nro_isp"/>
@@ -23,9 +23,9 @@
             </field>
         </record>
 
-    <!-- explicit form view definition -->    
-    <record model="ir.ui.view" id="arsante.registro_isp_form_view">
-      <field name="name">Registro ISP</field>
+    <!-- explicit form view definition -->
+    <record model="ir.ui.view" id="arsante.registro_isp_exim_cosmeticos_form_view">
+      <field name="name">arsante.registro_isp_exim_cosmeticos.form</field>
       <field name="model">arsante.registro_isp_exim_cosmeticos</field>
       <field name="arch" type="xml">
         <form string="">
@@ -41,44 +41,38 @@
                 <field name="partner_id" required="1"
                   domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
                 <field name="referencia_gicona" />
-                <field name="nro_isp" />                
+                <field name="nro_isp" />
                 <field name="product_id"
                   domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
                 <field name="fabricante_id"
                   domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
                 <field name="documentacion"/>
-                
                 <field name="nro_resolucion"/>
                 <field name="pdf_nro_resolucion"/>
                 <field name="sale_id"/>
-
                 <field name="invoice_ids" widget="many2many_tags" attrs="{'invisible': [('facturado', '=', False)]}"/>
-              
-                <field name="comentarios"/>                              
+                <field name="comentarios"/>
                 <field name="no_cotizado"/>
                 <field name="espera_resolucion"/>
-                  <field name="estado"/>
-                  <field name="documentacion"/>
-
+                <field name="estado"/>
               </group>
               <group>
                 <field name="cotizacion_pendiente"/>
                 <field name="enviar_colilla"/>
-                <field name="facturado"/>  
+                <field name="facturado"/>
                 <field name="subir_drive"/>
-                <field name="requiere_renovacion"/>
-                <field name="fecha_renovacion" attrs="{'invisible': [('requiere_renovacion','=',False)]}"/>
+                <field name="fecha_renovacion"/>
+                <field name="importado"/>
               </group>
             </group>
           </sheet>
         </form>
       </field>
     </record>
-     
+
     <!-- explicit list view definition -->
-    
-    <record model="ir.ui.view" id="arsante.registro_isp_tree_view">
-      <field name="name">Registro ISP</field>
+    <record model="ir.ui.view" id="arsante.registro_isp_exim_cosmeticos_tree_view">
+      <field name="name">arsante.registro_isp_exim_cosmeticos.tree</field>
       <field name="model">arsante.registro_isp_exim_cosmeticos</field>
       <field name="arch" type="xml">
         <tree>
@@ -92,19 +86,16 @@
           <field name="documentacion"/>
           <field name="nro_resolucion"/>
           <field name="cotizacion_pendiente"/>
-                <field name="no_cotizado"/>
-                <field name="espera_resolucion"/>
-                  <field name="estado"/>
-                  <field name="documentacion"/>
-
+          <field name="no_cotizado"/>
+          <field name="espera_resolucion"/>
+          <field name="estado"/>
         </tree>
       </field>
     </record>
-   
-       <!-- explicit pivot definition -->
-    
-    <record model="ir.ui.view" id="arsante.registro_isp_pivot_view">
-      <field name="name">Registro ISP</field>
+
+    <!-- explicit pivot definition -->
+    <record model="ir.ui.view" id="arsante.registro_isp_exim_cosmeticos_pivot_view">
+      <field name="name">arsante.registro_isp_exim_cosmeticos.pivot</field>
       <field name="model">arsante.registro_isp_exim_cosmeticos</field>
       <field name="arch" type="xml">
         <pivot>
@@ -114,35 +105,30 @@
     </record>
 
     <!-- actions opening views on models -->
-    
-    <record model="ir.actions.act_window" id="arsante.registro_isp_action_window">
-      <field name="name">Registro ISP</field>
+    <record model="ir.actions.act_window" id="arsante.registro_isp_exim_cosmeticos_action_window">
+      <field name="name">Exim. ISP Cosméticos</field>
       <field name="res_model">arsante.registro_isp_exim_cosmeticos</field>
       <field name="view_mode">tree,form,pivot</field>
     </record>
-   
-                <!-- Accion que crear las notas de ventas de varios registros seleccionados en la vista tree -->
-                <record model="ir.actions.server" id="arsante.create_so_registro_isp_exim_cosmeticos_action_server">
-                    <field name="name">Crear Nota de Venta</field>
-                    <field name="type">ir.actions.server</field>
-                    <field name="model_id" ref="arsante.model_arsante_registro_isp_exim_cosmeticos"/>
-                    <field name="binding_model_id" ref="arsante.model_arsante_registro_isp_exim_cosmeticos"/>
-                    <field name="state">code</field>
-                    <field name="code">
-                      record.create_so()
-                    </field>
-                  </record>     
 
-    <!-- Top menu item -->    
-    <menuitem name="Arsante" id="arsante.arsante_menu_root" parent="sale.sale_menu_root" sequence="5"/>
-   
-    <!-- menu categories -->
-    <!-- <menuitem name="Exim. Cosméticos" id="arsante.registro_isp_menu" parent="arsante.arsante_menu_root"/> -->
+    <!-- Accion servidor: crear notas de ventas desde vista tree -->
+    <record model="ir.actions.server" id="arsante.create_so_registro_isp_exim_cosmeticos_action_server">
+        <field name="name">Crear Nota de Venta</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="arsante.model_arsante_registro_isp_exim_cosmeticos"/>
+        <field name="binding_model_id" ref="arsante.model_arsante_registro_isp_exim_cosmeticos"/>
+        <field name="state">code</field>
+        <field name="code">
+          record.create_so()
+        </field>
+    </record>
 
-   
-    <!-- actions -->
-    <menuitem name="Exim. ISP Cosméticos" id="arsante.registro_sip_menu_list" parent="arsante.arsante_menu_root"
-              action="arsante.registro_isp_action_window"/>
-   
+    <!-- menuitem eliminado por solicitud del usuario -->
+    <!-- <menuitem name="Exim. ISP Cosméticos"
+              id="arsante.registro_isp_exim_cosmeticos_menu_list"
+              parent="arsante.arsante_menu_tipo_registros"
+              sequence="17"
+              action="arsante.registro_isp_exim_cosmeticos_action_window"/> -->
+
   </data>
 </odoo>

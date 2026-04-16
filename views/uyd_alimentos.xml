@@ -179,6 +179,7 @@
 
     <!-- actions -->
     <menuitem name="UYD Alimentos" id="arsante.uyd_alimentos_menu_list" parent="arsante.arsante_menu_tipo_registros"
+              sequence="30"
               action="arsante.uyd_alimentos_action_window"/>
 
   </data>
