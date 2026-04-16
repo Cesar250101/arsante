@@ -24,6 +24,7 @@ class CdaCosmetico(models.Model):
     date = fields.Date(string='Fecha Registro')
     partner_id = fields.Many2one(comodel_name='res.partner', string='Cliente')
     marcar = fields.Selection([
+        ('no_aplica', 'No Aplica'),
         ('todomoda', 'Todo Moda'),
         ('isadora', 'Isadora'),
     ], string='Marca')

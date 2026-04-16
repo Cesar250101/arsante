@@ -35,6 +35,7 @@ class DeclaracionDispositivosMedicos(models.Model):
         string='Cliente',
         domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]")
     marca = fields.Selection([
+        ('no_aplica', 'No Aplica'),
         ('todomoda', 'Todo Moda'),
         ('isadora', 'Isadora'),
     ], string='Marca')

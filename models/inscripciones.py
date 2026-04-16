@@ -66,6 +66,7 @@ class CdaCosmetico(models.Model):
     importado = fields.Boolean(string='Importado en el general')
     active = fields.Boolean(string='Activo',default=True)
     marca = fields.Selection([
+        ('no_aplica', 'No Aplica'),
         ('todomoda', 'Todo Moda'),
         ('isadora', 'Isadora'),
     ], string='Marca')

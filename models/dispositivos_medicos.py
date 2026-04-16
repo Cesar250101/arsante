@@ -42,6 +42,7 @@ class EximCosmeticos(models.Model):
         ('rev_ant_dm', 'Revisión antecedentes que acompañan DM'),
     ], string='Categoría')
     marca = fields.Selection([
+        ('no_aplica', 'No Aplica'),
         ('todomoda', 'Todo Moda'),
         ('isadora', 'Isadora'),
     ], string='Marca')

@@ -38,6 +38,7 @@ class CdaCosmetico(models.Model):
     oc = fields.Char(string='OC')
     sku = fields.Char(string='SKU')
     marcar = fields.Selection([
+        ('no_aplica', 'No Aplica'),
         ('todomoda', 'Todo Moda'),
         ('isadora', 'Isadora'),
     ], string='Marca')

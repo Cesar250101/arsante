@@ -31,6 +31,7 @@ class CdaCosmetico(models.Model):
     ref_tramite = fields.Char(string='Ref. Trámite')
     proveedor_id = fields.Many2one(comodel_name='res.partner', string='Proveedor Ref. SEREMI')
     marca = fields.Selection([
+        ('no_aplica', 'No Aplica'),
         ('todomoda', 'Todo Moda'),
         ('isadora', 'Isadora'),
     ], string='Marca')
