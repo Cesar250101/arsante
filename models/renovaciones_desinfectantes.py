@@ -49,6 +49,7 @@ class CdaCosmetico(models.Model):
     sale_order_id = fields.Many2one(comodel_name='sale.order', string='Nota de Venta')
     importado = fields.Boolean(string='Importado en el general')
     active = fields.Boolean(string='Activo',default=True)
+    imagen = fields.Binary(string='Imagen', attachment=True)
 
     @api.onchange('estado','no_cotizado','documentacion','facturado','sale_order_id')
     def _compute_dashboard(self):
@@ -66,7 +67,7 @@ class CdaCosmetico(models.Model):
         except:
             pass
 
-        
+
     @api.depends('estado','no_cotizado','documentacion','facturado','fecha_renovacion','requiere_renovacion')
     def _compute_alerta_renovacion(self):
         for i in self:

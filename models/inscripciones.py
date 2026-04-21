@@ -73,6 +73,7 @@ class CdaCosmetico(models.Model):
     marca_url = fields.Char(string='URL OneDrive', compute='_compute_marcar_url')
     fecha_resolucion = fields.Date(string='Fecha Resolución')
     correo_ids = fields.Char(string='Correos Electrónicos',placeholder='correo@correo.cl,correo2@correo.cl')
+    imagen = fields.Binary(string='Imagen', attachment=True)
 
     def open_marca_link(self):
         """Abre el enlace del campo marcar_url si está disponible"""

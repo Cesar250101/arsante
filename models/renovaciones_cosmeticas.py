@@ -63,6 +63,7 @@ class CdaCosmetico(models.Model):
     active = fields.Boolean(string='Activo',default=True)
     correo_ids = fields.Char(string='Correos Electrónicos',placeholder='correo@correo.cl,correo2@correo.cl')
     comentario = fields.Text(string='Comentario')
+    imagen = fields.Binary(string='Imagen', attachment=True)
 
     @api.depends('marca')
     def _compute_marca_url(self):

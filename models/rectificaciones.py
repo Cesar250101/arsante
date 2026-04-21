@@ -57,6 +57,7 @@ class CdaCosmetico(models.Model):
     product_id = fields.Many2one(comodel_name='product.product', string='Producto',required=True)
     importado = fields.Boolean(string='Importado en el general')
     active = fields.Boolean(string='Activo',default=True)
+    imagen = fields.Binary(string='Imagen', attachment=True)
 
     @api.onchange('estado','no_cotizado','documentacion','facturado','sale_order_id')
     def _compute_dashboard(self):

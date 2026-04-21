@@ -72,6 +72,7 @@ class RevAntecedentesDm(models.Model):
         store=True)
     importado = fields.Boolean(string='Importado en el general')
     active = fields.Boolean(string='Activo', default=True)
+    imagen = fields.Binary(string='Imagen', attachment=True)
 
     @api.depends('marca')
     def _compute_marca_url(self):

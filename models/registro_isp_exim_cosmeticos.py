@@ -45,6 +45,7 @@ class EximCosmeticos(models.Model):
         string='Fecha de Renovacion',
         required=False)
     importado = fields.Boolean(string='Importado en el general')
+    imagen = fields.Binary(string='Imagen', attachment=True)
 
     def write(self, vals):
         rec= super(EximCosmeticos,self).write(vals)

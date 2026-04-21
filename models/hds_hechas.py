@@ -48,6 +48,7 @@ class CdaCosmetico(models.Model):
         )
     importado = fields.Boolean(string='Importado en el general')
     active = fields.Boolean(string='Activo',default=True)
+    imagen = fields.Binary(string='Imagen', attachment=True)
 
     @api.onchange('estado','no_cotizado','documentacion','facturado','sale_order_id')
     def _compute_dashboard(self):

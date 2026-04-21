@@ -73,6 +73,7 @@ class CdaCosmetico(models.Model):
     fecha_resolucion_nro= fields.Date(string='Fecha Resolución N°')
     correo_ids = fields.Char(string='Correos Electrónicos', placeholder='correo@correo.cl,correo2@correo.cl')
     comentario = fields.Text(string='Comentario')
+    imagen = fields.Binary(string='Imagen', attachment=True)
 
     @api.onchange('estado','no_cotizado','documentacion','facturado','sale_order_id')
     def _compute_dashboard(self):

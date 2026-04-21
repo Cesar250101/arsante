@@ -67,9 +67,12 @@
                   domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
                 <field name="nro_resolucion"/>
                 <field name="fecha_resolucion"/>
-                <field name="sale_order_id"/>   
+                <field name="sale_order_id"/>
                 <field name="correo_ids"/>
                 <field name="comentario"/>
+              </group>
+              <group>
+                <field name="imagen" widget="image" options="{'size': [300, 300]}"/>
               </group>
             </group>
           </sheet>

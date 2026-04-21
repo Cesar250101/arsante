@@ -86,6 +86,9 @@
                 <field name="correo_ids"/>
                 <field name="comentario"/>
               </group>
+              <group>
+                <field name="imagen" widget="image" options="{'size': [300, 300]}"/>
+              </group>
             </group>
           </sheet>
         </form>

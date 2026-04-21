@@ -51,6 +51,7 @@ class InscripcionesCosmeticos(models.Model):
         store=True)
     importado = fields.Boolean(string='Importado en el general')
     active = fields.Boolean(string='Activo', default=True)
+    imagen = fields.Binary(string='Imagen', attachment=True)
 
     @api.depends('partner_id', 'ref_gicona', 'nro_isp')
     def _compute_name(self):

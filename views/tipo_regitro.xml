@@ -149,22 +149,23 @@
       </field>
     </record>
 
+    <!-- Eliminar menuitems duplicados sin external ID -->
+    <delete model="ir.ui.menu" search="[('name', '=', 'Tipos de Registro'), ('parent_id.name', '=', 'Tipo de Registros')]"/>
+
     <!-- actions opening views on models -->
-    
-    <!-- <record model="ir.actions.act_window" id="arsante.tipo_registro_action_window">
+
+    <record model="ir.actions.act_window" id="arsante.tipo_registro_action_window">
       <field name="name">Tipos de Registro</field>
       <field name="res_model">arsante.tipo_registro</field>
       <field name="view_mode">kanban,tree</field>
-    </record> -->
+    </record>
 
-   
     <!-- actions -->
-    <!-- <menuitem name="DashBoard"
+    <menuitem name="Tipos de Registro"
               id="arsante.tipo_registro_menu_list"
-              sequence="1"
-              parent="arsante.arsante_menu_root"
+              sequence="99"
+              parent="arsante.arsante_menu_tipo_registros"
               action="arsante.tipo_registro_action_window"/>
- -->
               
 
   </data>

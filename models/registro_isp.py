@@ -66,6 +66,7 @@ class RegistroISP(models.Model):
     fecha_renovacion= fields.Date(
         string='Fecha de Renovacion',
         required=False)
+    imagen = fields.Binary(string='Imagen', attachment=True)
 
     def write(self, vals):
         rec= super(RegistroISP,self).write(vals)
