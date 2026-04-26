@@ -154,10 +154,10 @@
                 </field>
               </record>  
 
-    <!-- actions -->
-    <menuitem name="Rectificaciones" id="arsante.rectificaciones_menu_list" parent="arsante.arsante_menu_tipo_registros"
+    <!-- menuitem eliminado por solicitud del usuario -->
+    <!-- <menuitem name="Rectificaciones" id="arsante.rectificaciones_menu_list" parent="arsante.arsante_menu_tipo_registros"
               sequence="62"
-              action="arsante.rectificaciones_action_window"/>
+              action="arsante.rectificaciones_action_window"/> -->
    
   </data>
 </odoo>

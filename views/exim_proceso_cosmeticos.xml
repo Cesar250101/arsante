@@ -165,10 +165,10 @@
     <!-- <menuitem name="Exim. Cosméticos" id="arsante.registro_isp_menu" parent="arsante.arsante_menu_root"/> -->
 
    
-    <!-- actions -->
-    <menuitem name="Exim. en Proceso Cosméticos" id="arsante.registro_sip_menu_list" parent="arsante.arsante_menu_tipo_registros"
+    <!-- menuitem eliminado por solicitud del usuario -->
+    <!-- <menuitem name="Exim. en Proceso Cosméticos" id="arsante.registro_sip_menu_list" parent="arsante.arsante_menu_tipo_registros"
               sequence="15"
-              action="arsante.registro_isp_action_window"/>
+              action="arsante.registro_isp_action_window"/> -->
    
   </data>
 </odoo>
