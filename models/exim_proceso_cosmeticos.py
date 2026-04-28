@@ -38,7 +38,7 @@ class EximCosmeticos(models.Model):
     nro_resolucion = fields.Char(string='Nº Resolución')
     subir_drive = fields.Boolean(string='Subir Drive')
     sale_id = fields.Many2one(comodel_name='sale.order', string='Cotización', readonly=True,store=True)
-    invoice_ids = fields.Many2many(comodel_name='account.invoice',string='Facturas')
+    invoice_ids = fields.Many2many(comodel_name='account.move',string='Facturas')
     comentarios = fields.Text(string='Comentario')
     facturado = fields.Boolean(string='Facturado?')
     cotizacion_pendiente = fields.Boolean(string='Cotización Pendiente?')
