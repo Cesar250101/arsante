@@ -155,9 +155,9 @@
               </record>  
 
     <!-- menuitem eliminado por solicitud del usuario -->
-    <!-- <menuitem name="Rectificaciones" id="arsante.rectificaciones_menu_list" parent="arsante.arsante_menu_tipo_registros"
-              sequence="62"
-              action="arsante.rectificaciones_action_window"/> -->
+    <menuitem name="Rectificaciones de cosmeticos" id="arsante.rectificaciones_menu_list" parent="arsante.arsante_menu_tipo_registros"
+              sequence="4"
+              action="arsante.rectificaciones_action_window"/>
    
   </data>
 </odoo>
