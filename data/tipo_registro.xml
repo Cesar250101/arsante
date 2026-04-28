@@ -7,7 +7,7 @@
             <field name='active'>True</field>
         </record>
         <record model='arsante.tipo_registro' id='cda_uyd_alimento_id'>
-            <field name='name'>CDA UYD Alimentos</field>
+            <field name='name'>CDA Alimentos</field>
             <field name='tipo'>cda_uyd_alimentos</field>
             <field name='active'>True</field>
         </record>
@@ -46,18 +46,18 @@
             <field name='tipo'>eximiciones_cosmeticos</field>
             <field name='active'>True</field>
         </record>
-        <record model='arsante.tipo_registro' id='inscripciones_cosmeticos_id'>
+        <!-- <record model='arsante.tipo_registro' id='inscripciones_cosmeticos_id'>
             <field name='name'>Inscripción Cosméticos</field>
             <field name='tipo'>inscripciones_cosmeticos</field>
             <field name='active'>True</field>
-        </record>        
+        </record>         -->
         <record model='arsante.tipo_registro' id='hds_hechas_id'>
             <field name='name'>HDS Hechas</field>
             <field name='tipo'>hds_hechas</field>
             <field name='active'>True</field>
         </record>
         <record model='arsante.tipo_registro' id='inscripciones_id'>
-            <field name='name'>Inscripciones</field>
+            <field name='name'>Inscripción Cosméticos</field>
             <field name='tipo'>inscripciones</field>
             <field name='active'>True</field>
         </record>
@@ -72,7 +72,7 @@
             <field name='active'>True</field>
         </record>
         <record model='arsante.tipo_registro' id='rectificaciones_id'>
-            <field name='name'>Rectificaciones</field>
+            <field name='name'>Rectificaciones de Cosmeticos</field>
             <field name='tipo'>rectificaciones</field>
             <field name='active'>True</field>
         </record>

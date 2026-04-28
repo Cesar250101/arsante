@@ -70,7 +70,5 @@
         sequence="60"
         parent="arsante.arsante_menu_tipo_registros"
         action="arsante.all_record"/>
-
-
     </data>
 </odoo>
