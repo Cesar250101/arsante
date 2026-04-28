@@ -39,7 +39,7 @@
         <record model='arsante.tipo_registro' id='exim_proceso_cosmeticos_id'>
             <field name='name'>Exim. Proceso Cosméticos</field>
             <field name='tipo'>exim_proceso_cosmeticos</field>
-            <field name='active'>True</field>
+            <field name='active'>False</field>
         </record>
         <record model='arsante.tipo_registro' id='eximiciones_cosmeticos_id'>
             <field name='name'>Eximición Cosméticos</field>
