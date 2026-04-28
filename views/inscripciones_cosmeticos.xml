@@ -150,6 +150,7 @@
     <menuitem name="Inscripciones Cosméticos" id="arsante.inscripciones_cosmeticos_menu_list"
               parent="arsante.arsante_menu_tipo_registros"
               sequence="11"
+              active="0"
               action="arsante.inscripciones_cosmeticos_action_window"/>
 
   </data>

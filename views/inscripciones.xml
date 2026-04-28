@@ -149,9 +149,8 @@
                 </field>
               </record>    
    
-    <!-- menuitem eliminado por solicitud del usuario -->
-    <menuitem name="Inscripciones" id="arsante.inscripciones_menu_list" parent="arsante.arsante_menu_tipo_registros"
-              sequence="61"
+    <menuitem name="Inscripciones Cosméticos" id="arsante.inscripciones_menu_list" parent="arsante.arsante_menu_tipo_registros"
+              sequence="11"
               action="arsante.inscripciones_action_window"/>
    
   </data>
