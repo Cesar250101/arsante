@@ -150,9 +150,9 @@
               </record>    
    
     <!-- menuitem eliminado por solicitud del usuario -->
-    <!-- <menuitem name="Inscripciones" id="arsante.inscripciones_menu_list" parent="arsante.arsante_menu_tipo_registros"
+    <menuitem name="Inscripciones" id="arsante.inscripciones_menu_list" parent="arsante.arsante_menu_tipo_registros"
               sequence="61"
-              action="arsante.inscripciones_action_window"/> -->
+              action="arsante.inscripciones_action_window"/>
    
   </data>
 </odoo>
