@@ -153,7 +153,7 @@
     <!-- actions opening views on models -->
 
     <record model="ir.actions.act_window" id="arsante.dm_action_window">
-      <field name="name">Dispositivos Medicos</field>
+      <field name="name">CDA de DM</field>
       <field name="res_model">arsante.dispositivos_medicos</field>
       <field name="view_mode">tree,form,pivot</field>
     </record>
@@ -178,7 +178,7 @@
       </record>
 
     <!-- actions -->
-    <menuitem name="Dispositivos Medicos" id="arsante.dm_menu_list" parent="arsante.arsante_menu_tipo_registros"
+    <menuitem name="CDA de DM" id="arsante.dm_menu_list" parent="arsante.arsante_menu_tipo_registros"
               sequence="20"
               action="arsante.dm_action_window"/>
 
