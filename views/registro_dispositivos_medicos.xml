@@ -20,11 +20,6 @@
                     <filter string="No Facturado" domain="[('facturado','=',False)]" name="no_facturado_filter"/>
                     <filter string="No Cotizado" domain="[('sale_order_id','=',False)]" name="no_catizado_filter"/>
                     <filter string="Cotizado" domain="[('sale_order_id','!=',False)]" name="catizado_filter"/>
-                    <filter string="Docu. Completa" domain="[('documentacion','=','completa')]" name="completa_filter"/>
-                    <filter string="Docu. Incompleta" domain="['|',('documentacion','=','incompleta'),('documentacion','=',False)]" name="incompleta_filter"/>
-                    <filter string="Estado: Listo" domain="[('estado','=','listo')]" name="listo_filter"/>
-                    <filter string="Estado: No Listo" domain="['|',('estado','=','no_listo'),('estado','=',False)]" name="no_listo_filter"/>
-                    <filter string="Para Renovar" domain="[('alerta_renovacion','=',True)]" name="para_renovar"/>
 
                     <group expand="0" string="Group By">
                         <filter string="Cliente" name="cliente" domain="[]" context="{'group_by':'partner_id'}"/>
@@ -58,20 +53,19 @@
                      icon="fa-folder-open" class="oe_link"
                      attrs="{'invisible': [('marca_url', '=', False)]}"/>
                 </div>
-                <field name="proveedor_id"
+                <field name="nro_oc"/>
+                <field name="ref_gicona"/>
+                <field name="nro_registro"/>
+
+                <!-- <field name="proveedor_id" -->
                   domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
                 <field name="product_id" required="1"
                   domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
-                <field name="ref_tramite"/>
-                <field name="item"/>
-                <field name="fecha_llegada"/>
-                <field name="agente_aduana_id"
-                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
-                <field name="Bodega_llegada"/>
-                <field name="fecha_resolucion_nro"/>
-                <field name="nro_uyd"/>
+                <field name="frabrante_id"/>
                 <field name="pdf_nro_resolucion"/>
-                <field name="nro_resolucion"/>
+                <field name="nro_resolucion"/>                
+                <field name="fecha_resolucion_nro"/>
+                <field name="fecha_renovacion"/>
                 <label for="sale_order_id"/>
                 <div class="o_row">
                   <field name="sale_order_id" class="oe_inline" nolabel="1"/>
@@ -80,28 +74,10 @@
                     attrs="{'invisible': [('sale_order_id', '=', False)]}"/>
                 </div>
                 <field name="correo_ids"/>
-                <field name="comentario"/>
-                <field name="exim_ctrl_calidad" invisible="1"/>
-                <field name="espera_resolucion" invisible="1"/>
-                  <field name="estado" invisible="1"/>
-                  <field name="documentacion" invisible="1"/>
-                  <field name="alerta_renovacion" invisible="1"/>
+                <field name="comentario"/>                
               </group>
               <group>
                 <field name="imagen" widget="image" options="{'size': [300, 300]}"/>
-                <field name="va_cesmec" invisible="1"/>
-                <label for="enviar_colilla" invisible="1"/>
-                <div class="o_row" invisible="1">
-                  <field name="enviar_colilla" placeholder="Envíar colilla?" />
-                  <field name="enviar_colilla_fecha" placeholder="Fecha enviar colilla" attrs="{'invisible': [('enviar_colilla','=',False)]}"/>
-                </div>
-                <field name="enviar_cda" invisible="1"/>
-                <field name="enviar_subir" invisible="1"/>
-                <field name="facturado" invisible="1"/>
-                <field name="subir_cloud" invisible="1"/>
-                <field name="subir_drive" invisible="1"/>
-                <field name="requiere_renovacion" invisible="1"/>
-                <field name="fecha_renovacion" attrs="{'invisible': [('requiere_renovacion','=',False)]}"/>
               </group>
             </group>
           </sheet>
@@ -120,11 +96,6 @@
                 <field name="name" required="1" optional="hide"/>
                 <field name="date" required="1"/>
                 <field name="partner_id" required="1"/>
-                <field name="nro_uyd"/>
-                <field name="item"/>
-                <field name="agente_aduana_id"/>
-                <field name="ref_tramite"/>
-                <field name="proveedor_id"/>
                 <field name="marca"/>
                 <field name="fecha_llegada"/>
                 <field name="sale_order_id"/>

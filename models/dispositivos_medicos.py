@@ -90,7 +90,8 @@ class EximCosmeticos(models.Model):
     cc_cesmec= fields.Char(string='CC Cesmec')
     correo_ids = fields.Char(string='Correos Electrónicos', placeholder='correo@correo.cl,correo2@correo.cl')
     imagen = fields.Binary(string='Imagen', attachment=True)
-
+    pdf_nro_resolucion = fields.Binary('PDF Resolucion')
+    
     @api.onchange('estado','no_cotizado','documentacion','facturado','sale_order_id')
     def _compute_dashboard(self):
         try:

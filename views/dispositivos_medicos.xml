@@ -58,10 +58,10 @@
                     attrs="{'invisible': [('marca_url', '=', False)]}"/>
                 </div>
                 <field name="fabricante_id"
-                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
-                <field name="ref_gicona"/>
+                  domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]" string="Proveedor"/>
+                <field name="ref_gicona" string="Ref. Gicona (AU)"/>
                 <field name="nro_items"/>
-                <field name="fecha_ingreso"/>
+                <field name="fecha_ingreso" string="Fecha Llegada"/>
                 <field name="agente_aduana_id"
                   domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
                 <field name="nro_cda"/>
@@ -69,12 +69,14 @@
                 <!-- <field name="nro_registro"/> -->
                 <field name="product_id"
                   domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]"/>
+                 <field name="pdf_nro_resolucion" widget="binary" filename="nro_resolucion.pdf" string="PDF Resolución" />
+                <field name="fecha_resolucion"/>                
                 <field name="nro_resolucion"/>
-                <field name="fecha_resolucion"/>
                 <!-- <field name="fecha_ult_renovacion"/> -->
                 <!-- <field name="fecha_vcto"/> -->
                 <field name="au"/>
                 <field name="cc_cesmec"/>
+
                 <label for="sale_order_id"/>
                 <div class="o_row">
                   <field name="sale_order_id" class="oe_inline" nolabel="1"/>
@@ -178,7 +180,7 @@
       </record>
 
     <!-- actions -->
-    <menuitem name="Dispositivos Medicos" id="arsante.dm_menu_list" parent="arsante.arsante_menu_tipo_registros"
+    <menuitem name="CDA de DM" id="arsante.dm_menu_list" parent="arsante.arsante_menu_tipo_registros"
               sequence="20"
               action="arsante.dm_action_window"/>
 
