@@ -73,6 +73,8 @@ class RevAntecedentesDm(models.Model):
     importado = fields.Boolean(string='Importado en el general')
     active = fields.Boolean(string='Activo', default=True)
     imagen = fields.Binary(string='Imagen', attachment=True)
+    nro_oc = fields.Char(string='Nro. OC')
+    fecha_renovacion = fields.Date(string='Fecha Renovación')
 
     @api.depends('marca')
     def _compute_marca_url(self):

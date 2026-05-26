@@ -72,7 +72,8 @@ class DeclaracionDispositivosMedicos(models.Model):
     importado = fields.Boolean(string='Importado en el general')
     active = fields.Boolean(string='Activo', default=True)
     imagen = fields.Binary(string='Imagen', attachment=True)
-
+    nro_resolucion = fields.Char(string='Nro. Resolución')
+    nro_renovacion = fields.Char(string='Nro. Renovación')
     @api.depends('marca')
     def _compute_marca_url(self):
         """Asigna automáticamente el link de SharePoint según la marca seleccionada"""
