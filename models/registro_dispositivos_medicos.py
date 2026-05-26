@@ -67,6 +67,10 @@ class RegistroDispositivosMedicos(models.Model):
     correo_ids = fields.Char(string='Correos Electrónicos', placeholder='correo@correo.cl,correo2@correo.cl')
     comentario = fields.Text(string='Comentario')
     imagen = fields.Binary(string='Imagen', attachment=True)
+    nro_oc = fields.Char(string='Nro. OC')
+    ref_gicona = fields.Char(string='Ref. Gicona')
+    nro_registro = fields.Char(string='Nro. Registro')
+    frabrante_id=fields.Many2one(comodel_name='res.partner', string='Fribrante')
 
     @api.depends('marca')
     def _compute_marca_url(self):
