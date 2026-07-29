@@ -55,7 +55,16 @@ class CdaCosmetico(models.Model):
     importado = fields.Boolean(string='Importado en el general')
     active = fields.Boolean(string='Activo',default=True)
     imagen = fields.Binary(string='Imagen', attachment=True)
-
+    marca = fields.Selection([
+        ('no_aplica', 'No Aplica'),
+        ('todomoda', 'Todo Moda'),
+        ('isadora', 'Isadora'),
+    ], string='Marca')
+    nro_oc = fields.Char(string='Nro. OC')
+    ref_gicona = fields.Char(string='Referencia Gicona')
+    fabricante_id = fields.Many2one(comodel_name='res.partner', string='Fabricante')
+    fecha_resolucion = fields.Date(string='Fecha Resolución')
+    correos=fields.Char(string='Correos')
 
     @api.onchange('estado','no_cotizado','documentacion','facturado','sale_order_id')
     def _compute_dashboard(self):

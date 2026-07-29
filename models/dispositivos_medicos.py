@@ -120,7 +120,7 @@ class EximCosmeticos(models.Model):
             if i.sale_order_id:
                 raise ValidationError("Algunos registros ya tienen asociada una nota de venta!")
         for i in ids:
-            if i.ref_isp and i.fabricante_id and i.categoria and i.product_id:
+            if i.ref_gicona and i.fabricante_id  and i.product_id:
                 if not sale_order_id:
                     value={
                         'name':self.env['ir.sequence'].next_by_code('sale.order') or _('New'),
@@ -131,7 +131,7 @@ class EximCosmeticos(models.Model):
                     partner_id_1=i.partner_id.id
                     sale_order_id=model_sale_order.create(value)
                 Value={
-                    'name':'Ref. ISP: '+i.ref_isp+' Fabricante: '+i.fabricante_id.name+' Categoría: '+i.categoria,
+                    'name':'Ref. Gicona: '+i.ref_gicona+' Fabricante: '+i.fabricante_id.name,
                     'product_id':i.product_id.id,
                     'product_uom_qty':1,
                     'product_uom':i.product_id.uom_id.id,
@@ -146,8 +146,7 @@ class EximCosmeticos(models.Model):
 
             else:
                 raise ValidationError("""A algunos registros les falta uno de los siguierntes datos:
-                              -Categori
-                              -Ref. ISP
+                              -Ref. Gicona
                               -Fabricante
                               -Producto
                               """)

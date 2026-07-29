@@ -23,6 +23,15 @@ class CdaCosmetico(models.Model):
     name = fields.Char(string='Nombre Registro')
     date = fields.Date(string='Fecha Registro')
     partner_id = fields.Many2one(comodel_name='res.partner', string='Cliente')
+    marca = fields.Selection([
+        ('no_aplica', 'No Aplica'),
+        ('todomoda', 'Todo Moda'),
+        ('isadora', 'Isadora'),
+    ], string='Marca')
+    nro_oc=fields.Char(string='Nº OC')
+    ref_SAFIS = fields.Char(string='Ref. SAFIS')
+    nro_registro = fields.Char(string='Nº Registro')
+    fabricante_id = fields.Many2one(comodel_name='res.partner', string='Fabricante')
     clave_gicona = fields.Char(string='Clave Gicona')
     product_id = fields.Many2one(comodel_name='product.product', string='Nombre ISP Producto')    
     descripcion = fields.Char(string='Descripción')
@@ -50,6 +59,11 @@ class CdaCosmetico(models.Model):
     importado = fields.Boolean(string='Importado en el general')
     active = fields.Boolean(string='Activo',default=True)
     imagen = fields.Binary(string='Imagen', attachment=True)
+    pdf_resolucion = fields.Binary(string='PDF Resolución', attachment=True)
+    nro_resolucion = fields.Char(string='Nº Resolución')
+    fecha_resolucion = fields.Date(string='Fecha Resolución')
+    correos=fields.Char(string='Correos')
+    comentario=fields.Text(string='Comentario')
 
     @api.onchange('estado','no_cotizado','documentacion','facturado','sale_order_id')
     def _compute_dashboard(self):

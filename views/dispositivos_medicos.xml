@@ -59,7 +59,7 @@
                 </div>
                 <field name="fabricante_id"
                   domain="['|', ('company_id', '=', False), ('company_id', 'in', allowed_company_ids)]" string="Proveedor"/>
-                <field name="ref_gicona" string="Ref. Gicona (AU)"/>
+                <field name="ref_gicona" string="Ref. ISP"/>
                 <field name="nro_items"/>
                 <field name="fecha_ingreso" string="Fecha Llegada"/>
                 <field name="agente_aduana_id"
@@ -155,7 +155,7 @@
     <!-- actions opening views on models -->
 
     <record model="ir.actions.act_window" id="arsante.dm_action_window">
-      <field name="name">Dispositivos Medicos</field>
+      <field name="name">CDA de DM</field>
       <field name="res_model">arsante.dispositivos_medicos</field>
       <field name="view_mode">tree,form,pivot</field>
     </record>
