@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+  <data>
+
+    <!-- Formulario del campo: se abre en diálogo desde el editor del tipo. -->
+    <record id="arsante_campo_form_view" model="ir.ui.view">
+      <field name="name">arsante.campo.form</field>
+      <field name="model">arsante.campo</field>
+      <field name="arch" type="xml">
+        <form string="Campo del formulario">
+          <sheet>
+            <div class="alert alert-info" role="alert"
+                 attrs="{'invisible': [('id','=',False)]}">
+              Al guardar se recargará la aplicación para aplicar los cambios.
+            </div>
+            <group>
+              <group string="Identificación">
+                <field name="name" placeholder="Ej.: Nro. OC"/>
+                <field name="es_nucleo" invisible="1"/>
+                <field name="code" placeholder="Ej.: nro_oc"
+                       attrs="{'readonly': ['|', ('ir_field_id','!=',False),
+                                            ('es_nucleo','=',True)]}"/>
+                <field name="ttype"
+                       attrs="{'readonly': ['|', ('ir_field_id','!=',False),
+                                            ('es_nucleo','=',True)]}"/>
+                <field name="comodel_name"
+                       attrs="{'invisible': [('ttype','!=','many2one')],
+                               'required': [('ttype','=','many2one')],
+                               'readonly': [('ir_field_id','!=',False)]}"/>
+                <field name="comodel_domain"
+                       attrs="{'invisible': [('ttype','!=','many2one')]}"
+                       placeholder="[('customer_rank','&gt;',0)]"/>
+                <field name="field_name" groups="base.group_no_one"/>
+                <field name="ir_field_id" invisible="1"/>
+              </group>
+              <group string="Presentación">
+                <field name="seccion"/>
+                <field name="sequence"/>
+                <field name="requerido"/>
+                <field name="solo_lectura"/>
+                <field name="placeholder"
+                       attrs="{'invisible': [('ttype','in',('boolean','binary','many2one','selection'))]}"/>
+                <field name="widget" groups="base.group_no_one"/>
+                <field name="active" widget="boolean_toggle"/>
+              </group>
+            </group>
+            <group string="Dónde aparece">
+              <group>
+                <field name="mostrar_en_formulario"/>
+                <field name="mostrar_en_lista"/>
+              </group>
+              <group>
+                <field name="mostrar_en_busqueda"/>
+                <field name="agrupable"/>
+                <field name="indexado"/>
+              </group>
+            </group>
+            <!-- Un campo estándar (marca_bijou, etc.) ya trae sus opciones
+                 fijadas por Python: esta lista no tiene ningún efecto sobre él,
+                 por eso se oculta para no sugerir que se puede editar aquí. -->
+            <group string="Opciones"
+                   attrs="{'invisible': ['|', ('ttype','!=','selection'),
+                                              ('es_nucleo','=',True)]}">
+              <field name="opcion_ids" nolabel="1" colspan="2">
+                <tree editable="bottom">
+                  <field name="sequence" widget="handle"/>
+                  <field name="name" string="Etiqueta"/>
+                  <field name="code" string="Valor guardado"/>
+                </tree>
+              </field>
+            </group>
+            <group string="Ayuda al usuario">
+              <field name="ayuda" nolabel="1" colspan="2"
+                     placeholder="Texto que aparece al pasar el ratón por la etiqueta."/>
+            </group>
+            <div class="oe_button_box" attrs="{'invisible': [('ir_field_id','=',False)]}">
+              <button name="action_renombrar_codigo" type="object"
+                      string="Renombrar código" class="btn-secondary"
+                      icon="fa-pencil"/>
+              <button name="action_convertir_tipo" type="object"
+                      string="Convertir tipo" class="btn-secondary"
+                      icon="fa-exchange"/>
+            </div>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="arsante_campo_tree_view" model="ir.ui.view">
+      <field name="name">arsante.campo.tree</field>
+      <field name="model">arsante.campo</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="sequence" widget="handle"/>
+          <field name="name"/>
+          <field name="code"/>
+          <field name="ttype"/>
+          <field name="seccion"/>
+          <field name="requerido"/>
+          <field name="mostrar_en_formulario" optional="show"/>
+          <field name="mostrar_en_lista" optional="hide"/>
+          <field name="agrupable" optional="hide"/>
+          <field name="tipo_registro_id" optional="hide"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="arsante_campo_action_window" model="ir.actions.act_window">
+      <field name="name">Campos de Formulario</field>
+      <field name="res_model">arsante.campo</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <!--
+      Formulario del tipo de registro: es el "editor de formularios".
+      Aquí el usuario define qué campos tiene cada trámite y cómo se compone
+      el texto de su nota de venta, sin escribir código.
+    -->
+    <record id="arsante_tipo_registro_form_view" model="ir.ui.view">
+      <field name="name">arsante.tipo_registro.form</field>
+      <field name="model">arsante.tipo_registro</field>
+      <field name="arch" type="xml">
+        <form string="Tipo de Registro">
+          <header>
+            <!--
+              Odoo cachea las vistas en el navegador, así que al cambiar los
+              campos hay que recargar para verlos. Este botón lo hace sin tener
+              que refrescar a mano.
+            -->
+            <button name="action_aplicar_cambios" type="object"
+                    string="Aplicar cambios al formulario"
+                    class="oe_highlight" icon="fa-refresh"/>
+            <button name="action_open_registros" type="object"
+                    string="Ver registros"/>
+            <button name="action_regenerar_menu" type="object"
+                    string="Regenerar menú"
+                    groups="arsante.group_arsante_manager"/>
+          </header>
+          <sheet>
+            <div class="oe_title">
+              <label for="name"/>
+              <h1><field name="name" placeholder="Ej.: Revisión OC Cosméticos"/></h1>
+            </div>
+            <group>
+              <group>
+                <field name="code" placeholder="Ej.: revision_oc_cosmeticos"/>
+                <field name="active" widget="boolean_toggle"/>
+                <field name="total_record_count"/>
+              </group>
+              <group>
+                <field name="name_template"
+                       placeholder="{partner_id} - {nro_oc}"/>
+              </group>
+            </group>
+            <notebook>
+              <page string="Campos del formulario" name="campos">
+                <field name="campo_ids" nolabel="1"
+                       context="{'default_tipo_registro_id': active_id}">
+                  <!--
+                    Editable en línea: marcar y desmarcar casillas es lo que más
+                    se hace aquí, y abrir el formulario campo a campo era muy
+                    lento. Lo estructural (código y tipo de dato) queda en solo
+                    lectura una vez creada la columna, y las opciones de las
+                    listas se editan con el botón que abre la ficha.
+                  -->
+                  <tree editable="bottom" decoration-muted="es_nucleo == True">
+                    <field name="sequence" widget="handle"/>
+                    <field name="ir_field_id" column_invisible="1"/>
+                    <field name="es_nucleo" string="Estándar" readonly="1"
+                           optional="show"/>
+                    <field name="name"/>
+                    <field name="code"
+                           attrs="{'readonly': ['|', ('ir_field_id','!=',False),
+                                                ('es_nucleo','=',True)]}"/>
+                    <field name="ttype"
+                           attrs="{'readonly': ['|', ('ir_field_id','!=',False),
+                                                ('es_nucleo','=',True)]}"/>
+                    <field name="comodel_name" optional="hide"
+                           attrs="{'readonly': ['|', ('ir_field_id','!=',False),
+                                                ('es_nucleo','=',True)],
+                                   'required': [('ttype','=','many2one')]}"/>
+                    <field name="seccion"/>
+                    <field name="requerido"/>
+                    <field name="mostrar_en_formulario" optional="show"/>
+                    <field name="mostrar_en_lista" optional="show"/>
+                    <field name="mostrar_en_busqueda" optional="hide"/>
+                    <field name="agrupable" optional="hide"/>
+                    <button name="action_abrir_formulario" type="object"
+                            icon="fa-external-link" title="Abrir ficha del campo"
+                            attrs="{'invisible': [('id','=',False)]}"/>
+                  </tree>
+                </field>
+                <div class="text-muted mt-2">
+                  Aquí está TODO lo que muestra el formulario. Las filas en gris
+                  son campos estándar, comunes a todos los tipos de trámite: se
+                  pueden ocultar desmarcando «Mostrar en el formulario», pero no
+                  borrar. Los demás son propios de este tipo y se crean como
+                  columnas reales, así que se pueden filtrar, agrupar y exportar.
+                  Tras guardar, pulse «Aplicar cambios al formulario».
+                </div>
+              </page>
+              <page string="Nota de venta" name="nota_venta">
+                <group>
+                  <field name="so_line_template"
+                         placeholder="Nro. OC: {nro_oc} Fabricante: {fabricante_id}"/>
+                  <field name="so_required_codes" placeholder="nro_oc,fabricante_id"/>
+                  <field name="so_product_code"/>
+                  <field name="so_marca_code"/>
+                  <field name="so_dte_referencia"/>
+                  <field name="so_oc_codes"
+                         attrs="{'invisible': [('so_dte_referencia','=',False)]}"
+                         placeholder="oc_facturacion,nro_oc"/>
+                </group>
+                <div class="text-muted">
+                  Use <code>{codigo}</code> para insertar el valor de un campo.
+                  Los códigos que no existan se sustituyen por texto vacío.
+                </div>
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- Asistente: renombrar el código conservando los datos -->
+    <record id="arsante_campo_renombrar_form" model="ir.ui.view">
+      <field name="name">arsante.campo.renombrar.form</field>
+      <field name="model">arsante.campo.renombrar</field>
+      <field name="arch" type="xml">
+        <form string="Renombrar código">
+          <div class="alert alert-warning" role="alert"
+               attrs="{'invisible': [('compartido_con','=',False)]}">
+            <field name="compartido_con" nolabel="1" readonly="1"/>
+          </div>
+          <group>
+            <field name="campo_id" invisible="1"/>
+            <field name="code_actual"/>
+            <field name="code_nuevo" placeholder="Ej.: numero_oc"/>
+          </group>
+          <p class="text-muted">
+            Los datos ya guardados se conservan: se renombra la columna y se
+            actualizan las plantillas que usen este código.
+          </p>
+          <footer>
+            <button name="action_renombrar" type="object" string="Renombrar"
+                    class="btn-primary"/>
+            <button string="Cancelar" class="btn-secondary" special="cancel"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <!-- Asistente: convertir el tipo de dato (destructivo) -->
+    <record id="arsante_campo_convertir_form" model="ir.ui.view">
+      <field name="name">arsante.campo.convertir.form</field>
+      <field name="model">arsante.campo.convertir</field>
+      <field name="arch" type="xml">
+        <form string="Convertir tipo de dato">
+          <group>
+            <field name="campo_id" invisible="1"/>
+            <field name="ttype_actual"/>
+            <field name="ttype_nuevo"/>
+            <field name="comodel_name"
+                   attrs="{'invisible': [('ttype_nuevo','!=','many2one')],
+                           'required': [('ttype_nuevo','=','many2one')]}"/>
+          </group>
+          <group string="Impacto">
+            <field name="valores_totales"/>
+            <field name="valores_perdidos"/>
+          </group>
+          <div class="alert alert-danger" role="alert"
+               attrs="{'invisible': [('valores_perdidos','=',0)]}">
+            <field name="acepto"/>
+            <label for="acepto"/>
+          </div>
+          <footer>
+            <button name="action_convertir" type="object" string="Convertir"
+                    class="btn-primary"/>
+            <button string="Cancelar" class="btn-secondary" special="cancel"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+  </data>
+</odoo>

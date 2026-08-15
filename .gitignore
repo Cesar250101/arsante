@@ -3,3 +3,7 @@
 *.pyo
 *.Zone.Identifier
 *:Zone.Identifier
+
+# Artefacto generado por tools/inventario_arsante.py: datos reales de
+# producción (esquema + valores de muestra), no es código fuente.
+inventario_arsante.csv

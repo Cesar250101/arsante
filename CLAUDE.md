@@ -1,6 +1,31 @@
 # arsante
 
-Módulo Odoo (localización/vertical) para **Method** que gestiona trámites regulatorios ante el ISP (Instituto de Salud Pública, Chile): cosméticos, dispositivos médicos, desinfectantes y alimentos (UYD). Cada tipo de trámite es un modelo propio con su wizard de creación y vistas asociadas, y todos se agregan en un registro consolidado (`arsante.all_record`) usado para dashboard y facturación.
+Módulo Odoo (localización/vertical) para **Method** que gestiona trámites regulatorios ante el ISP (Instituto de Salud Pública, Chile): cosméticos, dispositivos médicos, desinfectantes y alimentos (UYD).
+
+> ⚠️ **Refactorización en curso (rama `refactor/arsante-generico`).** Los 22 modelos de trámite hardcodeados se están sustituyendo por **un modelo genérico con campos definidos por el usuario**. Durante la transición conviven ambos: lo descrito en "Modelo genérico" es lo nuevo; lo descrito más abajo es el legado que se eliminará. Plan completo en `~/.claude/plans/en-el-modulo-arsante-*.md`.
+
+## Modelo genérico (arquitectura nueva)
+
+- **`arsante.registro`** (`models/registro.py`): un único modelo para todos los trámites. 21 campos duros comunes (`date`, `partner_id`, `estado`, `facturado`, `sale_order_id`…) + `legacy_model`/`legacy_id` para trazar el origen tras la migración.
+- **`arsante.campo`** (`models/campo.py`): definición de campo por tipo de registro. Cada uno se materializa como un campo REAL (`ir.model.fields` con `state='manual'`, prefijo `x_arsante_`), por lo que es filtrable, agrupable y exportable. Las columnas se **comparten por código** entre tipos, así que un mismo `code` debe tener el mismo `ttype` en todos (lo garantiza `_check_coherencia_codigo`).
+- **`arsante.campo.opcion`**: opciones de los campos `selection`.
+- **`models/plantilla.py`**: motor de plantillas `{codigo}` que sustituye a los 20 `create_so()`. `{codigo|raw}` inserta el valor crudo (necesario para reproducir literalmente las líneas de venta históricas, que concatenaban el código del selection y no su etiqueta).
+
+### Reglas que no son obvias
+
+- La inyección de campos en las vistas se hace sobrescribiendo **`_get_view`** (no `get_view`, no `fields_view_get`, eliminado en 16). **Nunca** escribir un `x_arsante_*` en un `arch_db` almacenado: `ir.model.fields._prepare_update` bloquearía renombrar o borrar ese campo.
+- La clave de contexto es **`arsante_tipo_registro_id`**, no `default_...`: el `viewService` del cliente descarta las claves `default_*` al cachear la vista y serviría el formulario de otro tipo.
+- Los `ir.model.fields` dinámicos van **siempre con `required=False`**: la columna es común a todos los tipos, y un `NOT NULL` rompería los registros de los demás. La obligatoriedad se aplica en la vista y al crear la nota de venta.
+- Para las opciones de un selection en runtime hay que usar el **ORM** (`ir.model.fields.selection.create`), no `_update_selection`: ese último inserta con SQL directo y no dispara `setup_models`, dejando el campo sin opciones en el registry.
+- Crear campos **en lote**: cada `create` de `ir.model.fields` dispara un `setup_models` completo (1-3 s).
+
+## Migración
+
+`migrations/16.0.2.0.0/` (7 scripts, `pre-`/`post-`/`end-`). El manifest está en `version: 2.0.0`; **no bajarla**. `pre-10_snapshot` copia las tablas al esquema `arsante_backup` **antes** de que Odoo pueda borrarlas, y `post-60_verificar` aborta la transacción entera si los conteos no cuadran. `tools/reset_migracion.py` deshace la migración en bases `*_test` para poder repetirla.
+
+## Legado (en eliminación)
+
+Cada tipo de trámite es un modelo propio con su wizard y vistas, y todos se agregan en un registro consolidado (`arsante.all_record`) usado para dashboard y facturación.
 
 ## Dependencias
 `base`, `account`, `sale`, `contacts`.

@@ -70,34 +70,35 @@ export class TipoRegistroDashboard extends Component {
         });
     }
 
-    openRecords(record) {
-        let model = "";
-        switch (record.tipo) {
-            case 'cda_cosmetico': model = 'arsante.cda_cosmetico_dm'; break;
-            case 'cda_uyd_alimentos': model = 'arsante.cda_uyd_alimentos'; break;
-            case 'dispositivos_medicos': model = 'arsante.dispositivos_medicos'; break;
-            case 'exim_proceso_cosmeticos': model = 'arsante.exim_proceso_cosmeticos'; break;
-            case 'eximiciones_cosmeticos': model = 'arsante.eximiciones_cosmeticos'; break;
-            case 'hds_hechas': model = 'arsante.hds_hechas'; break;
-            case 'inscripciones': model = 'arsante.inscripciones'; break;
-            case 'modificacion_cosmeticos': model = 'arsante.modificacion_cosmeticos'; break;
-            case 'modificaciones_desinfectantes': model = 'arsante.modificaciones_desinfectantes'; break;
-            case 'rectificaciones': model = 'arsante.rectificaciones'; break;
-            case 'registro_cosmetico': model = 'arsante.registro_cosmetico'; break;
-            case 'registro_desinfectantes': model = 'arsante.registro_desinfectantes'; break;
-            case 'renovaciones_cosmeticas': model = 'arsante.renovaciones_cosmeticos'; break;
-            case 'renovaciones_desinfectantes': model = 'arsante.renovaciones_desinfectantes'; break;
-        }
+    /**
+     * Abre los registros de un tipo.
+     *
+     * Antes había aquí un switch de 14 casos que mapeaba el tipo a su modelo,
+     * y que dejaba fuera a 8 tipos por no haberse actualizado. Ahora la acción
+     * la construye el servidor, que es la única fuente de verdad.
+     */
+    async openRecords(record) {
+        await this._abrir(record, "action_open_registros");
+    }
 
-        if (model) {
-            this.action.doAction({
-                type: "ir.actions.act_window",
-                name: record.name,
-                res_model: model,
-                views: [[false, "list"], [false, "form"]],
-                domain: [["tipo_registro_id", "=", record.id]],
-                target: "current",
-            });
+    async openNoFacturados(record) {
+        await this._abrir(record, "action_open_no_facturados");
+    }
+
+    async openNoCotizados(record) {
+        await this._abrir(record, "action_open_no_cotizados");
+    }
+
+    async openParaRenovar(record) {
+        await this._abrir(record, "action_open_para_renovar");
+    }
+
+    async _abrir(record, metodo) {
+        const action = await this.orm.call(
+            "arsante.tipo_registro", metodo, [[record.id]]
+        );
+        if (action) {
+            this.action.doAction(action);
         }
     }
 }
