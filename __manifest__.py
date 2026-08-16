@@ -20,7 +20,7 @@
     # 2.0.0 -> Odoo ejecuta migrations/16.0.2.0.0/ (modelo genérico con campos
     # dinámicos). NO bajar esta versión: los scripts de migración sólo corren
     # una vez, al detectar que la instalada es anterior.
-    'version': '2.1.4',
+    'version': '2.1.5',
 
     # any module necessary for this one to work correctly
     'depends': ['base','account','sale','contacts'],
