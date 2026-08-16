@@ -17,7 +17,10 @@
     # Check https://github.com/odoo/odoo/blob/12.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Uncategorized',
-    'version': '0.1',
+    # 2.0.0 -> Odoo ejecuta migrations/16.0.2.0.0/ (modelo genérico con campos
+    # dinámicos). NO bajar esta versión: los scripts de migración sólo corren
+    # una vez, al detectar que la instalada es anterior.
+    'version': '2.1.17',
 
     # any module necessary for this one to work correctly
     'depends': ['base','account','sale','contacts'],
@@ -25,51 +28,22 @@
     # always loaded
     'data': [
         'data/groups.xml',
-        'data/cron.xml',
         'security/ir.model.access.csv',
-         'data/tipo_registro.xml',
-        'views/exim_proceso_cosmeticos.xml',
-        'views/all_record.xml',
+        'data/tipo_registro.xml',
+        'data/tipo_registro_plantillas.xml',
+        # Menús raíz: deben cargarse antes que cualquier vista que cuelgue de
+        # ellos. Los menús de cada tipo de trámite ya no se declaran en XML,
+        # los genera arsante.tipo_registro._sync_menu().
+        'views/menus.xml',
+        # Modelo genérico con campos definidos por el usuario
+        'views/registro.xml',
+        'views/campo.xml',
+        'views/tipo_registro_grupo.xml',
         'views/templates.xml',
-        'views/cda_cosmetico_dm.xml',
-        'views/modificacion_cosmeticos.xml',
-        'views/registro_cosmetico.xml',
-        'views/inscripciones.xml',
-        'views/inscripciones_cosmeticos.xml',
-        'views/rectificaciones.xml',
-        'views/cda_uyd_alimentos.xml',
-        'views/uyd_alimentos.xml',
-        'views/registro_dispositivos_medicos.xml',
-        'views/declaracion_dispositivos_medicos.xml',
-        'views/rev_antecedentes_dm.xml',
-        'views/dispositivos_medicos.xml',
-        'views/eximiciones_cosmeticos.xml',
-        'views/renovaciones_cosmeticas.xml',
-        'views/registro_desinfectantes.xml',
-        'views/modificaciones_desinfectantes.xml',
-        'views/renovaciones_desinfectantes.xml',
-        'views/hds_hechas.xml',
-        'views/registro_isp_exim_cosmeticos.xml',
-        'views/registro_isp.xml',
         'views/marcas.xml',
         'views/tipo_servicio.xml',
-        'wizard/exim_proceso_cosmeticos_wizard.xml',
-        'wizard/cda_cosmetico_dm_wizard.xml',
-        'wizard/modificacion_cosmeticos_wizard.xml',
-        'wizard/registro_cosmetico_wizard.xml',
-        'wizard/inscripciones_wizard.xml',
-        'wizard/cda_uyd_alimentos_wizard.xml',
-        'wizard/dispositivos_medicos_wizard.xml',
         'views/dashboard.xml',
-        'wizard/eximiciones_cosmeticos_wizard.xml',
-        'wizard/hds_hechas_wizard.xml',
-        'wizard/rectificaciones_wizard.xml',
-        'wizard/renovaciones_cosmeticas_wizard.xml',
-        'wizard/registro_desinfectantes_wizard.xml',
-        'wizard/modificaciones_desinfectantes_wizard.xml',
-        'wizard/renovaciones_desinfectantes_wizard.xml',
         'views/tipo_registro.xml',
-        'views/tipo_regitro.xml',
         'views/res_company.xml',
         'views/sale_order.xml',
         'report/sale_order_report.xml',

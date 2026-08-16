@@ -34,36 +34,35 @@ class AccountMove(models.Model):
 
 
     def action_post(self):
-        company_context=self.env.context.get('allowed_company_ids')
-        company=self.env['res.company'].search([('id','=',company_context[0])])
+        """Al validar una factura, marca como facturados sus registros arsante.
 
-        super().action_post()
-        if company.es_arsante:
-            for rec in self:
-                if rec.move_type=='out_invoice':
-                    sale_order_id=self.env['sale.order'].search([('company_id','=',company.id),
-                                                                ('name','=',rec.invoice_origin)
-                                                                ],limit=1)
-                    if sale_order_id:
-                        cda_cosmetico_ids=self.env['arsante.cda_cosmetico_dm'].search([('sale_order_id','=',sale_order_id.id)])
-                        rec.facturado('arsante.cda_cosmetico_dm',sale_order_id)
-                        rec.facturado('arsante.cda_uyd_alimentos',sale_order_id)
-                        rec.facturado('arsante.dispositivos_medicos',sale_order_id)
-                        rec.facturado('arsante.exim_proceso_cosmeticos',sale_order_id)
-                        rec.facturado('arsante.eximiciones_cosmeticos',sale_order_id)
-                        rec.facturado('arsante.hds_hechas',sale_order_id)
-                        rec.facturado('arsante.inscripciones',sale_order_id)
-                        rec.facturado('arsante.modificacion_cosmeticos',sale_order_id)
-                        rec.facturado('arsante.modificaciones_desinfectantes',sale_order_id)
-                        rec.facturado('arsante.rectificaciones',sale_order_id)
-                        rec.facturado('arsante.registro_cosmetico',sale_order_id)
-                        rec.facturado('arsante.registro_desinfectantes',sale_order_id)
-                        rec.facturado('arsante.renovaciones_cosmeticos',sale_order_id)
-                        rec.facturado('arsante.renovaciones_desinfectantes',sale_order_id)
+        Antes eran 14 llamadas hardcodeadas, una por modelo de trámite, que
+        había que ampliar a mano con cada tipo nuevo: por eso 8 de los 22 tipos
+        no se facturaban. Con un solo modelo basta un write.
 
+        Se corrigen además dos fallos del código anterior: no devolvía el
+        resultado de super() y reventaba con IndexError cuando el contexto no
+        traía allowed_company_ids (llamadas desde cron o API).
+        """
+        res = super().action_post()
 
-    def facturado(self,modelo=False,sale_order_id=False):
-        record_ids=self.env[modelo].search([('sale_order_id','=',sale_order_id.id)])
-        if record_ids:
-            for i in record_ids:
-                i.facturado=True
+        facturas = self.filtered(
+            lambda m: m.move_type == 'out_invoice'
+            and m.invoice_origin
+            and m.company_id.es_arsante)
+        for factura in facturas:
+            orden = self.env['sale.order'].search([
+                ('company_id', '=', factura.company_id.id),
+                ('name', '=', factura.invoice_origin),
+            ], limit=1)
+            if not orden:
+                continue
+            registros = self.env['arsante.registro'].with_context(
+                active_test=False).search([
+                    ('sale_order_id', '=', orden.id),
+                    ('facturado', '=', False),
+                ])
+            if registros:
+                registros.write({'facturado': True})
+
+        return res

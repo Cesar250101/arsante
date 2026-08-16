@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+  <data>
+
+    <!--
+      Menús raíz del módulo.
+
+      Vivían en views/exim_proceso_cosmeticos.xml, que se eliminó junto con el
+      resto del código por trámite. Los external ID se conservan EXACTAMENTE
+      igual: todos los menús de los tipos de registro (que ahora se generan
+      solos desde arsante.tipo_registro._sync_menu) cuelgan de ellos, y
+      cambiarlos dejaría huérfanos los que ya existen en la base.
+
+      Los menús de cada tipo de trámite ya no se declaran aquí: los crea el
+      propio tipo de registro al guardarse, que es el objetivo de todo esto.
+    -->
+
+    <menuitem name="Arsante" id="arsante.arsante_menu_root" sequence="5"/>
+
+    <menuitem name="Tipo de Registros" id="arsante.arsante_menu_tipo_registros"
+              sequence="5" parent="arsante.arsante_menu_root"/>
+
+  </data>
+</odoo>

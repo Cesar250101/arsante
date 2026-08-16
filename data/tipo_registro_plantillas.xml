@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+  <!--
+    Plantillas de la línea de nota de venta, una por tipo de registro.
+
+    Sustituyen a los 20 métodos create_so() que concatenaban campos a mano.
+    Cada plantilla reproduce LITERALMENTE el texto que generaba el método
+    original, incluidas sus erratas ("FARICANTE", "Faricante"): cambiarlas
+    alteraría el formato de documentos comerciales ya emitidos, y esa decisión
+    es del usuario, no de la migración. Se pueden editar desde la interfaz.
+
+    {codigo}     -> valor formateado
+    {codigo|raw} -> valor tal cual (un selection da su código, no su etiqueta),
+                    que es lo que hacía la concatenación original.
+
+    noupdate="0" a propósito: al reinstalar se recuperan estos valores de
+    referencia; los cambios del usuario se hacen sobre ellos conscientemente.
+  -->
+  <data>
+
+    <record model="arsante.tipo_registro" id="cda_cosmetico_id">
+      <field name="code">cda_cosmetico</field>
+      <field name="so_line_template">AU: {au} Nº CDA: {nro_cda} ITEM: {item} PROVEEDOR: {proveedor_id} MARCA:{marca|raw}</field>
+      <field name="so_required_codes">au,nro_cda,proveedor_id,marca,product_id</field>
+      <field name="so_marca_code">marca</field>
+    </record>
+
+    <record model="arsante.tipo_registro" id="cda_uyd_alimento_id">
+      <field name="code">cda_uyd_alimentos</field>
+      <field name="so_line_template">Nº CDA: {nro_cda} ITEM: {item} PROVEEDOR: {proveedor_id} MARCA:{marca|raw}</field>
+      <field name="so_required_codes">nro_cda,proveedor_id,product_id</field>
+      <field name="so_marca_code">marca</field>
+    </record>
+
+    <record model="arsante.tipo_registro" id="uyd_alimentos_id">
+      <field name="code">uyd_alimentos</field>
+      <field name="so_line_template">Nº UYD: {nro_uyd} ITEM: {item} PROVEEDOR: {proveedor_id} MARCA:{marca|raw}</field>
+      <field name="so_required_codes">nro_uyd,proveedor_id,product_id</field>
+      <field name="so_marca_code">marca</field>
+    </record>
+
+    <record model="arsante.tipo_registro" id="registro_dispositivos_medicos_id">
+      <field name="code">registro_dispositivos_medicos</field>
+      <field name="so_line_template">Nº UYD: {nro_uyd} ITEM: {item} PROVEEDOR: {proveedor_id} MARCA:{marca|raw}</field>
+      <field name="so_required_codes">nro_uyd,proveedor_id,product_id</field>
+      <field name="so_marca_code">marca</field>
+    </record>
+
+    <record model="arsante.tipo_registro" id="dispositivos_medicos_id">
+      <field name="code">dispositivos_medicos</field>
+      <field name="so_line_template">Ref. Gicona: {ref_gicona} Fabricante: {fabricante_id}</field>
+      <field name="so_required_codes">ref_gicona,fabricante_id,product_id</field>
+      <field name="so_marca_code">marca</field>
+    </record>
+
+    <record model="arsante.tipo_registro" id="declaracion_dispositivos_medicos_id">
+      <field name="code">declaracion_dispositivos_medicos</field>
+      <!-- Sí, el original rotula la categoría como "Nro. OC". Se conserva. -->
+      <field name="so_line_template">Ref. ISP: {ref_isp} Fabricante: {fabricante_id} Nro. OC: {categoria|raw}</field>
+      <field name="so_required_codes">ref_isp,fabricante_id,categoria,product_id</field>
+      <field name="so_marca_code">marca</field>
+    </record>
+
+    <record model="arsante.tipo_registro" id="rev_antecedentes_dm_id">
+      <field name="code">rev_antecedentes_dm</field>
+      <field name="so_line_template">Ref. Gicona ISP: {ref_gicona_isp} Fabricante: {fabricante_id} Nro. Registro: {nro_registro}</field>
+      <field name="so_required_codes">ref_gicona_isp,fabricante_id,product_id</field>
+      <field name="so_marca_code">marca</field>
+      <field name="so_dte_referencia">1</field>
+      <field name="so_oc_codes">oc_facturacion,ref_gicona_isp</field>
+    </record>
+
+    <record model="arsante.tipo_registro" id="revision_oc_cosmeticos_id">
+      <field name="code">revision_oc_cosmeticos</field>
+      <field name="so_line_template">Nro. OC: {nro_oc} Fabricante: {fabricante_id} N° Productos revisados: {nro_productos_revisados}</field>
+      <field name="so_required_codes">nro_oc,fabricante_id,product_id</field>
+      <field name="so_marca_code">marca</field>
+      <field name="so_dte_referencia">1</field>
+      <field name="so_oc_codes">oc_facturacion,nro_oc</field>
+    </record>
+
+    <record model="arsante.tipo_registro" id="exim_proceso_cosmeticos_id">
+      <field name="code">exim_proceso_cosmeticos</field>
+      <!-- "FARICANTE" es la errata del original; se conserva. -->
+      <field name="so_line_template">GICONA: {referencia_gicona} Nº isp: {nro_isp} PRODUCTO: {product_id} FARICANTE: {fabricante_id}</field>
+      <field name="so_required_codes">referencia_gicona,nro_isp,product_id,fabricante_id</field>
+    </record>
+
+    <record model="arsante.tipo_registro" id="eximiciones_cosmeticos_id">
+      <field name="code">eximiciones_cosmeticos</field>
+      <field name="so_line_template">GICONA: {clave_gicona} Nº reg./inscrip ISP: {nro_reg_insc_isp}</field>
+      <field name="so_required_codes">clave_gicona,product_id</field>
+      <field name="so_marca_code">marcar</field>
+    </record>
+
+    <record model="arsante.tipo_registro" id="hds_hechas_id">
+      <field name="code">hds_hechas</field>
+      <!-- El original usaba sólo el nombre del producto. -->
+      <field name="so_line_template">{product_id}</field>
+      <field name="so_required_codes">product_id</field>
+    </record>
+
+    <record model="arsante.tipo_registro" id="inscripciones_id">
+      <field name="code">inscripciones</field>
+      <!-- "Faricante" es la errata del original; se conserva. -->
+      <field name="so_line_template">Nro.Gicona: {ref_gicona} Nro.Isp: {nro_isp} Producto: {product_id} Faricante: {fabricante_id} Nro.Resolución:{nro_resolucion}</field>
+      <field name="so_required_codes">ref_gicona,nro_isp,product_id,fabricante_id,nro_resolucion</field>
+      <field name="so_marca_code">marca</field>
+    </record>
+
+    <record model="arsante.tipo_registro" id="modificacion_cosmeticos_id">
+      <field name="code">modificacion_cosmeticos</field>
+      <field name="so_line_template">NRO.GICONA: {mc_ref_gicona} NRO.REGISTRO: {mc_nro_registro} PRODUCTO: {product_id} FABRICANTE: {fabricante_id} NRO.RESOLUCION:{nro_resolucion}</field>
+      <field name="so_required_codes">mc_ref_gicona,mc_nro_registro,product_id,fabricante_id,nro_resolucion</field>
+      <field name="so_marca_code">marcar</field>
+    </record>
+
+    <record model="arsante.tipo_registro" id="modificaciones_desinfectantes_id">
+      <field name="code">modificaciones_desinfectantes</field>
+      <field name="so_line_template">Ref. ISP: {ref_isp} Nº Registro: {nro_registro} Nro. Resolución: {nro_resolucion}</field>
+      <field name="so_required_codes">ref_isp,nro_registro,product_id,nro_resolucion</field>
+      <field name="so_marca_code">marca</field>
+    </record>
+
+    <record model="arsante.tipo_registro" id="rectificaciones_id">
+      <field name="code">rectificaciones</field>
+      <field name="so_line_template">Ref. Solicitud: {ref_solicitud} Nro. UYD Rechazado: {nro_uyd_rechazado} Nro. UYD Aceptado: {nro_uyd_aceptado} Nro. CDA: {nro_cda} MARCA:{marca|raw}</field>
+      <field name="so_required_codes">ref_solicitud,nro_uyd_rechazado,nro_uyd_aceptado,nro_cda,marca,product_id</field>
+      <field name="so_marca_code">marca</field>
+    </record>
+
+    <record model="arsante.tipo_registro" id="registro_cosmetico_id">
+      <field name="code">registro_cosmetico</field>
+      <field name="so_line_template">NRO.GICONA: {ref_gicona} NRO.REGISTRO: {nro_registro} PRODUCTO: {product_id} FABRICANTE: {fabricante_id} NRO.RESOLUCION:{nro_resolucion}</field>
+      <field name="so_required_codes">ref_gicona,nro_registro,product_id,fabricante_id,nro_resolucion</field>
+      <field name="so_marca_code">marcar</field>
+    </record>
+
+    <record model="arsante.tipo_registro" id="registro_desinfectantes_id">
+      <field name="code">registro_desinfectantes</field>
+      <field name="so_line_template">Nro. Registro: {nro_registro} Nro. Resolución: {nro_resolucion}</field>
+      <field name="so_required_codes">nro_registro,product_id</field>
+      <field name="so_marca_code">marca</field>
+    </record>
+
+    <record model="arsante.tipo_registro" id="renovaciones_cosmeticas_id">
+      <field name="code">renovaciones_cosmeticas</field>
+      <field name="so_line_template">Referencia Gicona: {clave_gicona} Nº Registro: {nro_registro} Nro. Resolución: {nro_resolucion}</field>
+      <field name="so_required_codes">clave_gicona,nro_registro,product_id,nro_resolucion</field>
+      <field name="so_marca_code">marca</field>
+    </record>
+
+    <record model="arsante.tipo_registro" id="renovaciones_desinfectantes_id">
+      <field name="code">renovaciones_desinfectantes</field>
+      <field name="so_line_template">Nº reg./Insc. ISP: {reg_insc_isp} Clave Gicona: {clave_gicona}</field>
+      <field name="so_required_codes">product_id,clave_gicona</field>
+      <field name="so_marca_code">marca</field>
+    </record>
+
+    <!--
+      arsante.inscripciones_cosmeticos no tiene entrada activa en
+      data/tipo_registro.xml (está comentada) y su tabla no tiene registros,
+      así que no se le define plantilla: hacerlo crearía un tipo huérfano sin
+      nombre, con su propio menú vacío.
+    -->
+
+  </data>
+</odoo>
