@@ -139,6 +139,26 @@ def migrate(cr, version):
         _logger.warning("arsante: no se generó ninguna definición de campo")
         return
 
+    # Idempotente: si una ejecución anterior de esta misma migración llegó a
+    # crear parte del catálogo y se interrumpió después (p. ej. por un fallo
+    # ajeno más adelante en la carga de módulos, con el commit intermedio ya
+    # hecho), un segundo intento no debe reventar por duplicados — se salta lo
+    # que ya existe y sólo crea lo que falta.
+    existentes = set(
+        env['arsante.campo'].with_context(active_test=False)
+        .search([]).mapped(lambda c: (c.tipo_registro_id.id, c.code)))
+    if existentes:
+        antes = len(plan)
+        plan = [v for v in plan
+                if (v['tipo_registro_id'], v['code']) not in existentes]
+        if antes != len(plan):
+            _logger.info("arsante: %d definiciones ya existían de una "
+                         "ejecución anterior, se omiten", antes - len(plan))
+
+    if not plan:
+        _logger.info("arsante: el catálogo de campos ya estaba completo")
+        return
+
     # Un solo create en lote: cada create de ir.model.fields dispara un
     # setup_models completo (1-3 s), así que hacerlo campo a campo costaría
     # varios minutos.

@@ -83,9 +83,15 @@ def migrate(cr, version):
 
     # Mapa legacy -> nuevo, que rellenará post-40. Se crea aquí para que exista
     # aunque la migración de datos falle a mitad.
-    cr.execute("DROP TABLE IF EXISTS %s.mapa_ids" % ESQUEMA)
+    #
+    # NUNCA se borra si ya existe (a diferencia de las demás tablas de este
+    # esquema, que sí se recrean en cada intento): post-40 es idempotente y
+    # OMITE los registros que ya estén migrados de un intento anterior, así
+    # que no vuelve a insertar su fila en mapa_ids. Si aquí se vaciara el mapa
+    # en cada corrida, esos registros ya migrados quedarían sin mapeo y
+    # post-60 fallaría con "mapa de ids completo" aunque los datos estén bien.
     cr.execute("""
-        CREATE TABLE %s.mapa_ids (
+        CREATE TABLE IF NOT EXISTS %s.mapa_ids (
             legacy_model text, legacy_id integer, nuevo_id integer)
     """ % ESQUEMA)
 

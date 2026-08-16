@@ -72,9 +72,17 @@ def migrate(cr, version):
 
 
 def _catalogo_por_tipo(env):
-    """{tipo_registro_id: {code: field_name}} de los campos ya creados."""
+    """{tipo_registro_id: {code: field_name}} de los campos ESPECÍFICOS.
+
+    Se excluyen los de núcleo (es_nucleo=True, ej. 'date'/'estado'): su dato ya
+    lo copia el bloque NUCLEO de _migrar_tabla con su propio mapeo de columnas
+    legacy. Incluirlos aquí también duplicaría la columna en el INSERT (y, si
+    esta migración ya corrió una vez —16.0.2.1.0 ya sembró esos campos—,
+    revienta con "column specified more than once").
+    """
     catalogo = {}
-    for campo in env['arsante.campo'].search([]):
+    campos = env['arsante.campo'].search([('es_nucleo', '=', False)])
+    for campo in campos:
         catalogo.setdefault(campo.tipo_registro_id.id, {})[campo.code] = campo.field_name
     return catalogo
 
@@ -153,9 +161,17 @@ def _migrar_tabla(cr, tabla, tipo_id, campos, empresa):
         destino.append(field_name)
         origen.append('t."%s"' % columna)
 
+    # Idempotente: si una ejecución anterior ya migró esta tabla (commit
+    # intermedio de Odoo + fallo posterior ajeno, más adelante en la carga de
+    # módulos), un segundo intento no debe violar legacy_uniq — se omiten las
+    # filas cuyo (legacy_model, legacy_id) ya están en arsante_registro.
     consulta = """
         INSERT INTO arsante_registro (%s)
-        SELECT %s FROM public."%s" t ORDER BY t.id
+        SELECT %s FROM public."%s" t
+        WHERE NOT EXISTS (
+            SELECT 1 FROM arsante_registro r
+             WHERE r.legacy_model = %%(modelo)s AND r.legacy_id = t.id)
+        ORDER BY t.id
         RETURNING id, legacy_id
     """ % (', '.join('"%s"' % c for c in destino), ', '.join(origen), tabla)
 
