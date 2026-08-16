@@ -97,8 +97,10 @@ def _borrar_servidor(env, obsoletos):
 
     # El cron de importación a all_record (pre-20 sólo lo desactiva, no lo
     # borra) referencia su propia ir.actions.server por clave foránea: hay que
-    # quitar esa referencia antes de poder borrar la acción.
-    crones = env['ir.cron'].sudo().search(
+    # quitar esa referencia antes de poder borrar la acción. Al estar
+    # desactivado, una búsqueda normal no lo encuentra (ir.cron tiene 'active'
+    # y Odoo filtra active=True por defecto) — de ahí active_test=False.
+    crones = env['ir.cron'].sudo().with_context(active_test=False).search(
         [('ir_actions_server_id', 'in', acciones.ids)])
     if crones:
         crones.unlink()
