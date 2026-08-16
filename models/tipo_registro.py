@@ -256,6 +256,7 @@ class TipoRegistro(models.Model):
     CAMPOS_NUCLEO = [
         ('date', 'izq', 10), ('partner_id', 'izq', 20),
         ('product_id', 'izq', 30), ('nro_resolucion', 'izq', 40),
+        ('nro_uyd', 'izq', 45),
         ('estado', 'der', 10), ('documentacion', 'der', 20),
         ('facturado', 'der', 30), ('no_cotizado', 'der', 40),
         ('espera_resolucion', 'der', 50), ('requiere_renovacion', 'der', 60),

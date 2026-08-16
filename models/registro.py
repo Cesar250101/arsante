@@ -91,6 +91,7 @@ class ArsanteRegistro(models.Model):
         store=True)
 
     nro_resolucion = fields.Char(string='Nro. Resolución')
+    nro_uyd = fields.Char(string='Nº UYD')
     comentario = fields.Text(string='Comentario')
     imagen = fields.Binary(string='Imagen', attachment=True)
 
