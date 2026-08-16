@@ -18,3 +18,19 @@ class TipoRegistroGrupo(models.Model):
 
     name = fields.Char(string='Nombre', required=True)
     sequence = fields.Integer(string='Secuencia', default=10)
+    menu_id = fields.Many2one(
+        comodel_name='ir.ui.menu', string='Submenú', readonly=True,
+        copy=False, ondelete='set null',
+        help="Submenú generado en el menú lateral, con los tipos de "
+             "registro de este grupo colgando debajo.")
+
+    def write(self, vals):
+        res = super().write(vals)
+        if 'name' in vals:
+            for grupo in self.filtered('menu_id'):
+                grupo.menu_id.name = grupo.name
+        return res
+
+    def unlink(self):
+        self.mapped('menu_id').sudo().unlink()
+        return super().unlink()

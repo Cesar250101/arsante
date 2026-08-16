@@ -190,7 +190,9 @@ class TipoRegistro(models.Model):
         """Crea o actualiza la acción y el menú de cada tipo de registro.
 
         Es lo que permite que crear un tipo desde la interfaz genere su propio
-        menú, sin escribir XML ni reiniciar el servidor.
+        menú, sin escribir XML ni reiniciar el servidor. Si el tipo tiene
+        ``grupo_id``, su menú cuelga de un submenú por grupo (creado aquí
+        mismo si hace falta) en vez de ir directo bajo «Tipo de Registros».
         """
         Act = self.env['ir.actions.act_window'].sudo()
         Menu = self.env['ir.ui.menu'].sudo()
@@ -198,8 +200,10 @@ class TipoRegistro(models.Model):
                              raise_if_not_found=False)
         if not padre:
             return
-        grupo = self.env.ref('arsante.group_arsante_users',
-                             raise_if_not_found=False)
+        grupo_acceso = self.env.ref('arsante.group_arsante_users',
+                                     raise_if_not_found=False)
+
+        padres_por_grupo = self._asegurar_submenus_grupo(Menu, padre)
 
         for tipo in self:
             vals_act = {
@@ -219,16 +223,34 @@ class TipoRegistro(models.Model):
 
             vals_menu = {
                 'name': tipo.name or _('Registros'),
-                'parent_id': padre.id,
+                'parent_id': padres_por_grupo.get(tipo.grupo_id.id, padre.id),
                 'action': 'ir.actions.act_window,%d' % tipo.action_id.id,
                 'active': tipo.active,
             }
-            if grupo:
-                vals_menu['groups_id'] = [(6, 0, [grupo.id])]
+            if grupo_acceso:
+                vals_menu['groups_id'] = [(6, 0, [grupo_acceso.id])]
             if tipo.menu_id:
                 tipo.menu_id.write(vals_menu)
             else:
                 tipo.menu_id = Menu.create(vals_menu).id
+
+    def _asegurar_submenus_grupo(self, Menu, padre):
+        """{grupo_id: id del submenú} para los grupos usados en ``self``.
+
+        Crea el submenú la primera vez que un tipo de ese grupo se guarda; las
+        veces siguientes reutiliza el que ya está en ``grupo.menu_id``.
+        """
+        grupos = self.mapped('grupo_id')
+        resultado = {}
+        for grupo in grupos:
+            if not grupo.menu_id:
+                grupo.menu_id = Menu.create({
+                    'name': grupo.name,
+                    'parent_id': padre.id,
+                    'sequence': grupo.sequence,
+                }).id
+            resultado[grupo.id] = grupo.menu_id.id
+        return resultado
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -240,7 +262,7 @@ class TipoRegistro(models.Model):
 
     def write(self, vals):
         res = super().write(vals)
-        if {'name', 'active'} & set(vals):
+        if {'name', 'active', 'grupo_id'} & set(vals):
             self._sync_menu()
         return res
 
