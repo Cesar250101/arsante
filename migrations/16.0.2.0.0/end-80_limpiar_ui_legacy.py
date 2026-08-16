@@ -41,9 +41,9 @@ def migrate(cr, version):
 
     borrados = {
         'menús': _borrar_menus(env, obsoletos),
-        'acciones de ventana': _borrar(env, 'ir.actions.act_window', obsoletos),
+        'acciones de ventana': _borrar(env, 'ir.actions.act_window', 'res_model', obsoletos),
         'acciones de servidor': _borrar_servidor(env, obsoletos),
-        'vistas': _borrar(env, 'ir.ui.view', obsoletos),
+        'vistas': _borrar(env, 'ir.ui.view', 'model', obsoletos),
         'permisos': _borrar_acl(env, obsoletos),
     }
     _logger.info("arsante: eliminados %s",
@@ -75,9 +75,14 @@ def _borrar_menus(env, obsoletos):
     return n
 
 
-def _borrar(env, modelo, obsoletos):
+def _borrar(env, modelo, campo, obsoletos):
+    """Borra registros de ``modelo`` cuyo ``campo`` apunte a un modelo retirado.
+
+    ir.ui.view usa el campo 'model'; ir.actions.act_window usa 'res_model' —
+    de ahí el parámetro en vez de asumir el mismo nombre para ambos.
+    """
     registros = env[modelo].sudo().with_context(active_test=False).search(
-        [('model', 'in', list(obsoletos))])
+        [(campo, 'in', list(obsoletos))])
     n = len(registros)
     if registros:
         registros.unlink()
