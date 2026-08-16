@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Catálogo de tipos de trámite y su definición de campos.
+from . import tipo_registro_grupo
 from . import tipo_registro
 from . import plantilla
 from . import campo

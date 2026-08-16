@@ -144,6 +144,7 @@
             <group>
               <group>
                 <field name="code" placeholder="Ej.: revision_oc_cosmeticos"/>
+                <field name="grupo_id" options="{'no_quick_create': True}"/>
                 <field name="active" widget="boolean_toggle"/>
                 <field name="total_record_count"/>
               </group>

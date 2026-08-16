@@ -43,6 +43,10 @@ class TipoRegistro(models.Model):
         string='Código',
         help="Identificador estable del tipo de registro. Reemplaza al campo "
              "«Tipo», que quedará obsoleto.")
+    grupo_id = fields.Many2one(
+        comodel_name='arsante.tipo_registro.grupo', string='Grupo',
+        help="Agrupa este tipo con otros en el menú lateral (ej. "
+             "«Cosméticos», «Dispositivos Médicos»).")
     campo_ids = fields.One2many(
         comodel_name='arsante.campo', inverse_name='tipo_registro_id',
         string='Campos del formulario',

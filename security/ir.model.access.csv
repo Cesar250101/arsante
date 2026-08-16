@@ -11,3 +11,5 @@ access_campo_opcion_user,Opciones de campo (lectura),arsante.model_arsante_campo
 access_campo_opcion_manager,Opciones de campo (gestión),arsante.model_arsante_campo_opcion,arsante.group_arsante_manager,1,1,1,1
 access_campo_renombrar,Asistente renombrar campo,arsante.model_arsante_campo_renombrar,arsante.group_arsante_manager,1,1,1,1
 access_campo_convertir,Asistente convertir campo,arsante.model_arsante_campo_convertir,arsante.group_arsante_manager,1,1,1,1
+access_tipo_registro_grupo_user,Grupos de Tipo de Registro (lectura),arsante.model_arsante_tipo_registro_grupo,arsante.group_arsante_users,1,0,0,0
+access_tipo_registro_grupo_manager,Grupos de Tipo de Registro (gestión),arsante.model_arsante_tipo_registro_grupo,arsante.group_arsante_manager,1,1,1,1
