@@ -92,9 +92,19 @@ def _borrar(env, modelo, campo, obsoletos):
 def _borrar_servidor(env, obsoletos):
     Servidor = env['ir.actions.server'].sudo()
     acciones = Servidor.search([('model_id.model', 'in', list(obsoletos))])
+    if not acciones:
+        return 0
+
+    # El cron de importación a all_record (pre-20 sólo lo desactiva, no lo
+    # borra) referencia su propia ir.actions.server por clave foránea: hay que
+    # quitar esa referencia antes de poder borrar la acción.
+    crones = env['ir.cron'].sudo().search(
+        [('ir_actions_server_id', 'in', acciones.ids)])
+    if crones:
+        crones.unlink()
+
     n = len(acciones)
-    if acciones:
-        acciones.unlink()
+    acciones.unlink()
     return n
 
 
