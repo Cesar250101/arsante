@@ -9,7 +9,7 @@ export class TipoRegistroDashboard extends Component {
         this.action = useService("action");
         this.orm = useService("orm");
         this.state = useState({
-            records: [],
+            groups: [],
             total_global: 0,
             total_facturados: 0,
             total_no_facturados: 0,
@@ -29,7 +29,7 @@ export class TipoRegistroDashboard extends Component {
                 "arsante.tipo_registro",
                 [],
                 [
-                    "name", "tipo", "total_record_count", "facturados", "no_facturados",
+                    "name", "tipo", "grupo_id", "total_record_count", "facturados", "no_facturados",
                     "cotizados", "no_cotizados", "estado_listos", "estado_no_listos",
                     "documentacion_completa", "documentacion_completa_no_completa", "para_renovar"
                 ]
@@ -47,17 +47,60 @@ export class TipoRegistroDashboard extends Component {
                 total_para_renovar += r.para_renovar || 0;
             });
 
-            this.state.records = records;
+            this.state.groups = await this._agruparPorGrupo(records);
             this.state.total_global = total_global;
             this.state.total_facturados = total_facturados;
             this.state.total_no_facturados = total_no_facturados;
             this.state.total_para_renovar = total_para_renovar;
         } catch (error) {
             console.error("Error loading Tipo Registro Dashboard data:", error);
-            this.state.records = [];
+            this.state.groups = [];
         } finally {
             this.state.loading = false;
         }
+    }
+
+    /**
+     * Junta las tarjetas por arsante.tipo_registro.grupo, en el mismo orden
+     * (sequence, name) que la pantalla de administración de grupos. Los
+     * tipos sin grupo van al final, bajo "Sin grupo". Si nadie usa grupos
+     * todavía, no tiene sentido mostrar encabezados de sección: se deja como
+     * una sola lista plana, igual que antes.
+     */
+    async _agruparPorGrupo(records) {
+        const idsGrupo = [...new Set(
+            records.filter(r => r.grupo_id).map(r => r.grupo_id[0])
+        )];
+
+        let ordenGrupos = [];
+        if (idsGrupo.length) {
+            ordenGrupos = await this.orm.searchRead(
+                "arsante.tipo_registro.grupo",
+                [["id", "in", idsGrupo]],
+                ["name"],
+                { order: "sequence, name" },
+            );
+        }
+
+        const porId = new Map();
+        for (const g of ordenGrupos) {
+            porId.set(g.id, { id: g.id, name: g.name, records: [] });
+        }
+        const sinGrupo = { id: false, name: "Sin grupo", records: [] };
+
+        for (const record of records) {
+            if (record.grupo_id && porId.has(record.grupo_id[0])) {
+                porId.get(record.grupo_id[0]).records.push(record);
+            } else {
+                sinGrupo.records.push(record);
+            }
+        }
+
+        const grupos = [...porId.values()];
+        if (sinGrupo.records.length) {
+            grupos.push(sinGrupo);
+        }
+        return grupos;
     }
 
     openTipoRegistro(recordId) {

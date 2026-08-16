@@ -62,49 +62,55 @@
                         </div>
                     </div>
 
-                    <!-- Individual Cards Grid -->
-                    <div class="row o_arsante_cards_grid">
-                        <t t-foreach="state.records" t-as="record" t-key="record.id">
-                            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
-                                <div class="card o_arsante_record_card shadow-sm border-0 h-100">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-start mb-3">
-                                            <h5 class="card-title text-dark font-weight-bold mb-0 text-truncate" t-att-title="record.name" t-esc="record.name"/>
-                                            <span class="badge badge-primary badge-pill px-3" t-esc="record.total_record_count"/>
-                                        </div>
-                                        
-                                        <div class="row no-gutters mb-3">
-                                            <div class="col-6 mb-2">
-                                                <div class="small text-muted mb-1">Facturados</div>
-                                                <div class="font-weight-bold text-success" t-esc="record.facturados"/>
+                    <!-- Secciones por grupo (sólo con encabezado si hay más de una) -->
+                    <t t-foreach="state.groups" t-as="grupo" t-key="grupo.id || 'sin_grupo'">
+                        <div t-if="state.groups.length > 1" class="o_arsante_grupo_header d-flex align-items-center mb-3 mt-1">
+                            <h4 class="mb-0 mr-2" t-esc="grupo.name"/>
+                            <span class="badge badge-pill badge-light" t-esc="grupo.records.length"/>
+                        </div>
+                        <div class="row o_arsante_cards_grid mb-4">
+                            <t t-foreach="grupo.records" t-as="record" t-key="record.id">
+                                <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                                    <div class="card o_arsante_record_card shadow-sm border-0 h-100">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                                <h5 class="card-title text-dark font-weight-bold mb-0 text-truncate" t-att-title="record.name" t-esc="record.name"/>
+                                                <span class="badge badge-primary badge-pill px-3" t-esc="record.total_record_count"/>
                                             </div>
-                                            <div class="col-6 mb-2">
-                                                <div class="small text-muted mb-1">No Fact.</div>
-                                                <div class="font-weight-bold text-warning" t-esc="record.no_facturados"/>
+
+                                            <div class="row no-gutters mb-3">
+                                                <div class="col-6 mb-2">
+                                                    <div class="small text-muted mb-1">Facturados</div>
+                                                    <div class="font-weight-bold text-success" t-esc="record.facturados"/>
+                                                </div>
+                                                <div class="col-6 mb-2">
+                                                    <div class="small text-muted mb-1">No Fact.</div>
+                                                    <div class="font-weight-bold text-warning" t-esc="record.no_facturados"/>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="small text-muted mb-1">Listos</div>
+                                                    <div class="font-weight-bold text-info" t-esc="record.estado_listos"/>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="small text-muted mb-1">Renovación</div>
+                                                    <div t-attf-class="font-weight-bold #{record.para_renovar > 0 ? 'text-danger' : 'text-muted'}" t-esc="record.para_renovar"/>
+                                                </div>
                                             </div>
-                                            <div class="col-6">
-                                                <div class="small text-muted mb-1">Listos</div>
-                                                <div class="font-weight-bold text-info" t-esc="record.estado_listos"/>
+
+                                            <div class="d-flex border-top pt-3">
+                                                <button class="btn btn-sm btn-primary flex-grow-1 mr-2" t-on-click="() => this.openRecords(record)">
+                                                    <i class="fa fa-list-ul mr-1"/> Ver
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.openTipoRegistro(record.id)" title="Configuración">
+                                                    <i class="fa fa-cog"/>
+                                                </button>
                                             </div>
-                                            <div class="col-6">
-                                                <div class="small text-muted mb-1">Renovación</div>
-                                                <div t-attf-class="font-weight-bold #{record.para_renovar > 0 ? 'text-danger' : 'text-muted'}" t-esc="record.para_renovar"/>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="d-flex border-top pt-3">
-                                            <button class="btn btn-sm btn-primary flex-grow-1 mr-2" t-on-click="() => this.openRecords(record)">
-                                                <i class="fa fa-list-ul mr-1"/> Ver
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.openTipoRegistro(record.id)" title="Configuración">
-                                                <i class="fa fa-cog"/>
-                                            </button>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </t>
-                    </div>
+                            </t>
+                        </div>
+                    </t>
                 </t>
             </div>
         </div>
