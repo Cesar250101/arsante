@@ -164,6 +164,12 @@ class TipoRegistro(models.Model):
             'name': self.name,
             'res_model': 'arsante.registro',
             'view_mode': 'tree,form,pivot',
+            # `views` es obligatorio al devolver la acción como diccionario:
+            # sólo lo calcula ir.actions.act_window al leerse de la base, y
+            # _preprocessAction() del cliente hace action.views.map() sin
+            # comprobar si existe. Sin esto el botón «Ver» del dashboard
+            # revienta con "Cannot read properties of undefined (reading 'map')".
+            'views': [(False, 'tree'), (False, 'form'), (False, 'pivot')],
             'domain': [('tipo_registro_id', '=', self.id)] + (dominio_extra or []),
             'context': {
                 'default_tipo_registro_id': self.id,
