@@ -57,7 +57,15 @@
       <field name="name">arsante.registro.tree</field>
       <field name="model">arsante.registro</field>
       <field name="arch" type="xml">
-        <!-- Ancla: las columnas dinámicas se añaden al final de este tree -->
+        <!--
+          Ancla: cuando se abre un tipo de registro concreto (menús "CDA
+          Cosméticos", etc.), _inyectar_tree() quita estas columnas núcleo del
+          arch y las vuelve a insertar en el orden de "sequence" configurado
+          en ese tipo, junto con sus columnas propias. Se dejan aquí también,
+          en un orden razonable por defecto, para el modo "Todos los
+          Registros" (sin tipo concreto), donde no hay una única secuencia que
+          aplicar y la lista se queda con los campos comunes.
+        -->
         <tree>
           <field name="name"/>
           <field name="date"/>

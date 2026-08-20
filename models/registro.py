@@ -145,18 +145,46 @@ class ArsanteRegistro(models.Model):
     @api.depends('tipo_registro_id', 'date', 'partner_id')
     def _compute_name(self):
         for rec in self:
+            # El tipo de registro va siempre primero, sin importar si el resto
+            # del nombre sale de una plantilla configurada o del valor por
+            # defecto: una name_template no tiene por qué acordarse de
+            # incluir {tipo_registro_id} y el usuario necesita distinguir el
+            # tipo de un vistazo en listas y búsquedas.
             tpl = rec.tipo_registro_id.name_template
-            if tpl:
-                rec.name = plantilla.render(rec, tpl)
-                continue
-            # Un Char vacío en Odoo vale False, no '': hay que filtrarlos o el
-            # join revienta con un contacto o un tipo sin nombre.
-            partes = [
-                rec.tipo_registro_id.name,
-                rec.date.strftime('%d/%m/%Y') if rec.date else None,
-                rec.partner_id.name,
-            ]
+            resto = plantilla.render(rec, tpl) if tpl else rec._name_por_defecto()
+            partes = [rec.tipo_registro_id.name, resto]
             rec.name = ' - '.join(p for p in partes if p) or ''
+
+    def _campos_obligatorios(self):
+        """arsante.campo con requerido=True del tipo de este registro, en el
+        orden de «Campos del formulario» (sequence). Fuente única para el
+        nombre por defecto, la descripción de la línea de venta y la
+        validación antes de facturar: todos usan lo que el formulario ya
+        marca con «*», sin duplicar la lista en otro campo de configuración.
+        """
+        self.ensure_one()
+        return self.env['arsante.campo'].sudo().search([
+            ('tipo_registro_id', '=', self.tipo_registro_id.id),
+            ('requerido', '=', True),
+        ], order='sequence, id')
+
+    def _name_por_defecto(self):
+        """Resto del nombre cuando el tipo no tiene «Plantilla del nombre»: el
+        valor de cada campo obligatorio. El nombre del tipo de registro lo
+        antepone _compute_name."""
+        self.ensure_one()
+        # Un Char vacío en Odoo vale False, no '': hay que filtrarlos o el
+        # join revienta con un campo sin dato.
+        valores = [plantilla.valor_str(self, c.code)
+                   for c in self._campos_obligatorios()]
+        return ' - '.join(v for v in valores if v)
+
+    def _descripcion_linea_so(self):
+        """Descripción de la línea de venta: tipo de registro + valor de cada
+        campo obligatorio, igual para todos los tipos de trámite."""
+        self.ensure_one()
+        partes = [self.tipo_registro_id.name, self._name_por_defecto()]
+        return ' - '.join(p for p in partes if p) or self.display_name
 
     @api.depends('marca_bijou')
     def _compute_marca_bijou_url(self):
@@ -379,6 +407,19 @@ class ArsanteRegistro(models.Model):
             if not encontrado:
                 return
             raiz = encontrado[0]
+
+        # Los campos núcleo (date, partner_id, product_id...) están fijos en el
+        # arch estático de registro.xml para que el formulario los tenga
+        # aunque el catálogo esté vacío, pero también son configurables (ubicación
+        # y secuencia) desde arsante.tipo_registro. Si se dejan ambas copias,
+        # la columna sale duplicada y el orden configurado se ignora porque las
+        # fijas nunca se mueven. Se quitan aquí y se reinyectan todas en el
+        # orden de "sequence" del catálogo, junto con el resto de columnas.
+        nombres_catalogo = {datos[1] for datos in catalogo}
+        for nodo in list(raiz):
+            if nodo.tag == 'field' and nodo.get('name') in nombres_catalogo:
+                raiz.remove(nodo)
+
         for datos in catalogo:
             if datos[11]:  # mostrar_en_lista
                 raiz.append(self._nodo_field(datos, 'tree'))
@@ -473,7 +514,8 @@ class ArsanteRegistro(models.Model):
         """Crea una nota de venta con una línea por registro seleccionado.
 
         Sustituye a los 20 métodos create_so() distintos: el texto de cada línea
-        sale ahora de la plantilla configurada en el tipo de registro.
+        sale ahora del tipo de registro más sus campos obligatorios, igual para
+        todos los tipos de trámite (ver _descripcion_linea_so).
 
         Se usa ``self`` directamente, no ``context['active_ids']``: ese patrón
         venía del código legacy, pensado para acciones de servidor sin
@@ -501,7 +543,7 @@ class ArsanteRegistro(models.Model):
             raise ValidationError(_("Los registros no tienen cliente asignado."))
 
         tipo = registros.tipo_registro_id
-        registros._check_campos_so(tipo)
+        registros._check_campos_so()
 
         orden = self.env['sale.order'].create({
             'name': self.env['ir.sequence'].next_by_code('sale.order') or _('New'),
@@ -515,7 +557,7 @@ class ArsanteRegistro(models.Model):
         for rec in registros:
             producto = rec._resolver_producto(tipo)
             self.env['sale.order.line'].create({
-                'name': plantilla.render(rec, tipo.so_line_template) or rec.display_name,
+                'name': rec._descripcion_linea_so(),
                 'product_id': producto.id,
                 'product_uom_qty': 1,
                 'product_uom': producto.uom_id.id,
@@ -534,21 +576,21 @@ class ArsanteRegistro(models.Model):
             'target': 'current',
         }
 
-    def _check_campos_so(self, tipo):
-        """Valida los campos que el tipo declara obligatorios para facturar.
+    def _check_campos_so(self):
+        """Valida los campos obligatorios del tipo (arsante.campo con
+        requerido=True) antes de facturar: son los mismos que el formulario
+        marca con «*», así que no hace falta duplicarlos aparte en
+        «Campos obligatorios para facturar».
 
         Se comprueba aquí y no con un @api.constrains porque los 1.926 registros
         históricos ya facturados pueden estar incompletos: un constraint genérico
         impediría reabrirlos o modificarlos.
         """
-        codigos = [c.strip() for c in (tipo.so_required_codes or '').split(',') if c.strip()]
-        if not codigos:
-            return
-        etiquetas = {c.code: c.name for c in tipo.campo_ids}
         faltantes = {}
         for rec in self:
-            faltan = [etiquetas.get(c, c) for c in codigos
-                      if not plantilla.valor_bruto(rec, c)]
+            obligatorios = rec._campos_obligatorios()
+            faltan = [c.name for c in obligatorios
+                      if not plantilla.valor_bruto(rec, c.code)]
             if faltan:
                 faltantes[rec.display_name or _('(sin nombre)')] = faltan
         if faltantes:

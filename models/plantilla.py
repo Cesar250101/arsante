@@ -115,7 +115,8 @@ def valor_raw_str(record, code):
 
 def render(record, plantilla):
     """Renderiza ``plantilla`` sobre ``record``. Colapsa los huecos que dejan los
-    códigos vacíos para no producir textos con espacios dobles."""
+    códigos vacíos para no producir textos con espacios dobles ni separadores
+    « - » sueltos cuando el campo que separaban queda vacío."""
     if not plantilla:
         return ''
 
@@ -125,7 +126,15 @@ def render(record, plantilla):
                 else valor_str(record, code))
 
     texto = PATRON.sub(_sub, plantilla)
-    return re.sub(r'\s{2,}', ' ', texto).strip()
+    texto = re.sub(r'\s{2,}', ' ', texto).strip()
+    # Un código vacío entre dos separadores " - " deja "algo -  - algo": se
+    # colapsan los guiones sueltos resultantes, repitiendo hasta que no queden
+    # huecos encadenados (varios campos vacíos seguidos).
+    anterior = None
+    while anterior != texto:
+        anterior = texto
+        texto = re.sub(r'\s*-\s*-\s*', ' - ', texto)
+    return re.sub(r'^\s*-\s*|\s*-\s*$', '', texto).strip()
 
 
 def codigos_usados(plantilla):

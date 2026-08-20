@@ -125,6 +125,20 @@ def migrate(cr, version):
         return
     env = api.Environment(cr, SUPERUSER_ID, {})
 
+    # NUCLEO es la foto de los campos duros tal como eran en 2.0.0. Migraciones
+    # posteriores ascienden más columnas a campo duro (nro_uyd en 2.1.3,
+    # marca_bijou en 2.1.2), y esta migración se ejecuta antes que ellas: sin
+    # esto intentaría catalogar como dinámico un código que el modelo actual ya
+    # define, y _check_code aborta la carga del registro entero. Se consulta el
+    # modelo en vivo para que cualquier ascenso futuro quede cubierto solo.
+    duros = set(env['arsante.registro']._fields) - NUCLEO
+    if duros:
+        NUCLEO.update(duros)
+        _logger.info(
+            "arsante: %d columnas son ya campos duros del registro y no se "
+            "catalogan como dinámicas (%s)",
+            len(duros), ", ".join(sorted(duros)))
+
     tablas = _tablas_tramite(cr)
     if not tablas:
         _logger.warning("arsante: no hay tablas de trámite que catalogar")

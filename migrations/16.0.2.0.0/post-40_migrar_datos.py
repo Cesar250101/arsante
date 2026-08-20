@@ -51,6 +51,26 @@ def migrate(cr, version):
         return
     env = api.Environment(cr, SUPERUSER_ID, {})
 
+    # Igual que en post-30: los campos que migraciones posteriores ascienden a
+    # duros (nro_uyd, marca_bijou) no están en la lista NUCLEO de arriba —
+    # escrita para el modelo de 2.0.0— y tampoco aparecen en el catálogo de
+    # campos dinámicos, porque post-30 ya los omite. Sin añadirlos aquí sus
+    # datos no los copiaría nadie. _fuente() se encarga de saltar las tablas
+    # que no tengan la columna.
+    fijas = {'tipo_registro_id', 'company_id', 'legacy_model', 'legacy_id',
+             'create_uid', 'create_date', 'write_uid', 'write_date', 'id'}
+    legacy = _columnas_legacy(cr)
+    ascendidos = [
+        nombre for nombre, campo in env['arsante.registro']._fields.items()
+        if nombre not in NUCLEO and nombre not in fijas and nombre in legacy
+        # Sólo columnas reales: un computed sin store no se puede insertar.
+        and campo.store and not campo.compute and campo.type != 'binary'
+    ]
+    if ascendidos:
+        NUCLEO.extend(sorted(ascendidos))
+        _logger.info("arsante: se copian también %d columnas ascendidas a "
+                     "campo duro (%s)", len(ascendidos), ", ".join(ascendidos))
+
     campos = _catalogo_por_tipo(env)
     if not campos:
         _logger.warning("arsante: no hay catálogo de campos; nada que migrar")
@@ -187,6 +207,14 @@ def _migrar_tabla(cr, tabla, tipo_id, campos, empresa):
 
     _logger.info("arsante: %-45s -> %4d registros", tabla, len(filas))
     return len(filas)
+
+
+def _columnas_legacy(cr):
+    """Todas las columnas existentes en las tablas de trámite legacy."""
+    cr.execute("""SELECT DISTINCT column_name FROM information_schema.columns
+                   WHERE table_schema='public' AND table_name LIKE 'arsante\\_%%'
+                     AND table_name NOT IN %s""", (EXCLUIDAS,))
+    return {r[0] for r in cr.fetchall()}
 
 
 def _fuente(columna, existentes):
