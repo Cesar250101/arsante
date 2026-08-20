@@ -20,15 +20,16 @@
     # 2.0.0 -> Odoo ejecuta migrations/16.0.2.0.0/ (modelo genérico con campos
     # dinámicos). NO bajar esta versión: los scripts de migración sólo corren
     # una vez, al detectar que la instalada es anterior.
-    'version': '2.1.17',
+    'version': '2.1.18',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','account','sale','contacts'],
+    'depends': ['base', 'account', 'sale', 'contacts', 'mail'],
 
     # always loaded
     'data': [
         'data/groups.xml',
         'security/ir.model.access.csv',
+        'data/alerta_cron.xml',
         'data/tipo_registro.xml',
         'data/tipo_registro_plantillas.xml',
         # Menús raíz: deben cargarse antes que cualquier vista que cuelgue de

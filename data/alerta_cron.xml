@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+  <!-- 12:00 UTC equivale a las 08:00 de Chile durante el horario estándar. -->
+  <record id="ir_cron_procesar_alertas" model="ir.cron">
+    <field name="name">Arsante: procesar alertas de registros</field>
+    <field name="model_id" ref="model_arsante_alerta"/>
+    <field name="state">code</field>
+    <field name="code">model._cron_procesar_alertas()</field>
+    <field name="user_id" ref="base.user_root"/>
+    <field name="interval_number">1</field>
+    <field name="interval_type">days</field>
+    <field name="numbercall">-1</field>
+    <field name="doall">False</field>
+    <field name="nextcall"
+           eval="(DateTime.now().replace(hour=12, minute=0, second=0, microsecond=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')"/>
+  </record>
+</odoo>

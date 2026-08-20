@@ -52,6 +52,10 @@ class TipoRegistro(models.Model):
         string='Campos del formulario',
         help="Campos propios de este tipo de trámite. Se crean como campos "
              "reales, por lo que se pueden filtrar, agrupar y exportar.")
+    alerta_ids = fields.One2many(
+        comodel_name='arsante.alerta', inverse_name='tipo_registro_id',
+        string='Alertas',
+        help="Avisos basados en campos de fecha de este tipo de trámite.")
     registro_ids = fields.One2many(
         comodel_name='arsante.registro', inverse_name='tipo_registro_id',
         string='Registros')

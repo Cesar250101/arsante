@@ -217,6 +217,29 @@
                   Los códigos que no existan se sustituyen por texto vacío.
                 </div>
               </page>
+              <page string="Alertas" name="alertas">
+                <field name="alerta_ids" nolabel="1"
+                       context="{'default_tipo_registro_id': active_id}">
+                  <tree editable="bottom">
+                    <field name="campo_id"
+                           domain="[('tipo_registro_id', '=', parent.id),
+                                    ('ttype', '=', 'date'), ('active', '=', True)]"/>
+                    <field name="dias_anticipacion"/>
+                    <field name="avisar_correo_cliente"/>
+                    <field name="email_template_id"
+                           domain="[('model', '=', 'arsante.registro')]"
+                           attrs="{'invisible': [('avisar_correo_cliente', '=', False)],
+                                   'required': [('avisar_correo_cliente', '=', True)]}"/>
+                  </tree>
+                </field>
+                <div class="text-muted mt-2">
+                  Configure un aviso por cada campo de tipo Fecha. El aviso se
+                  publica diariamente en el centro de mensajes de los usuarios
+                  Arsante mientras la fecha siga pendiente. Si activa el correo,
+                  la plantilla se envía una vez por cada nueva fecha al email del
+                  cliente del registro.
+                </div>
+              </page>
             </notebook>
           </sheet>
         </form>

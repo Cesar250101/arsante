@@ -54,6 +54,7 @@ CAMPOS_CON_BOTON = {
 
 class ArsanteRegistro(models.Model):
     _name = 'arsante.registro'
+    _inherit = ['mail.thread']
     _description = 'Registro / Trámite Arsante'
     _order = 'date desc, id desc'
 
