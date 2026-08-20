@@ -20,5 +20,44 @@
     <menuitem name="Tipo de Registros" id="arsante.arsante_menu_tipo_registros"
               sequence="5" parent="arsante.arsante_menu_root"/>
 
+    <record id="arsante_administrador_form_view" model="ir.ui.view">
+      <field name="name">arsante.administrador.form</field>
+      <field name="model">arsante.administrador</field>
+      <field name="arch" type="xml">
+        <form string="Grupo Administrador" create="0" delete="0">
+          <sheet>
+            <div class="oe_title">
+              <h1><field name="name" readonly="1"/></h1>
+            </div>
+            <group>
+              <field name="usuario_ids" widget="many2many_tags"
+                     domain="[('active', '=', True), ('share', '=', False)]"
+                     options="{'no_create': True, 'no_create_edit': True}"/>
+            </group>
+            <div class="text-muted">
+              Los usuarios de este grupo son los únicos que pueden recibir
+              asignaciones de registros y eliminar registros Arsante.
+            </div>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="arsante_administrador_action" model="ir.actions.act_window">
+      <field name="name">Grupo Administrador</field>
+      <field name="res_model">arsante.administrador</field>
+      <field name="view_mode">form</field>
+      <field name="res_id" ref="arsante.arsante_administrador_config"/>
+      <field name="target">current</field>
+    </record>
+
+    <menuitem name="Configuración" id="arsante.arsante_menu_configuracion"
+              sequence="90" parent="arsante.arsante_menu_root"
+              groups="arsante.group_arsante_administrador,base.group_system"/>
+    <menuitem name="Grupo Administrador" id="arsante.arsante_menu_administrador"
+              sequence="10" parent="arsante.arsante_menu_configuracion"
+              action="arsante.arsante_administrador_action"
+              groups="arsante.group_arsante_administrador,base.group_system"/>
+
   </data>
 </odoo>

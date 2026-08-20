@@ -13,6 +13,8 @@ export class TipoRegistroDashboard extends Component {
             total_global: 0,
             total_facturados: 0,
             total_no_facturados: 0,
+            total_con_nota_venta: 0,
+            total_sin_nota_venta: 0,
             total_para_renovar: 0,
             loading: true,
         });
@@ -38,12 +40,24 @@ export class TipoRegistroDashboard extends Component {
             let total_global = 0;
             let total_facturados = 0;
             let total_no_facturados = 0;
+            let total_con_nota_venta = 0;
+            let total_sin_nota_venta = 0;
             let total_para_renovar = 0;
 
             records.forEach(r => {
+                // El complemento de las notas de venta se calcula desde la
+                // misma fuente: total de registros menos sale_order_id.
+                // También evita un valor vacío si el navegador conserva una
+                // respuesta anterior sin no_cotizados.
+                r.no_cotizados = Math.max(
+                    0,
+                    (r.total_record_count || 0) - (r.cotizados || 0)
+                );
                 total_global += r.total_record_count || 0;
                 total_facturados += r.facturados || 0;
                 total_no_facturados += r.no_facturados || 0;
+                total_con_nota_venta += r.cotizados || 0;
+                total_sin_nota_venta += r.no_cotizados || 0;
                 total_para_renovar += r.para_renovar || 0;
             });
 
@@ -51,6 +65,8 @@ export class TipoRegistroDashboard extends Component {
             this.state.total_global = total_global;
             this.state.total_facturados = total_facturados;
             this.state.total_no_facturados = total_no_facturados;
+            this.state.total_con_nota_venta = total_con_nota_venta;
+            this.state.total_sin_nota_venta = total_sin_nota_venta;
             this.state.total_para_renovar = total_para_renovar;
         } catch (error) {
             console.error("Error loading Tipo Registro Dashboard data:", error);

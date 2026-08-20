@@ -15,9 +15,11 @@ guardada. Por eso se sobrescribe ``_get_view`` en vez de generar vistas.
 import logging
 
 from lxml import etree
+from markupsafe import Markup
 
 from odoo import _, api, fields, models, tools
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.tools import html_escape
 
 from . import plantilla
 
@@ -108,6 +110,11 @@ class ArsanteRegistro(models.Model):
     company_id = fields.Many2one(
         comodel_name='res.company', string='Compañía', index=True,
         default=lambda self: self.env.company)
+    assigned_user_id = fields.Many2one(
+        comodel_name='res.users', string='Asignado a', index=True,
+        ondelete='set null', domain=lambda self: self._domain_usuarios_asignables(),
+        help='Se puede asignar a cualquier usuario interno activo de la '
+             'compañía actual.')
 
     # Clasificación bijoutería (Todo Moda / Isadora), con el enlace a la
     # carpeta de colillas de pago correspondiente — mismo comportamiento que
@@ -137,6 +144,177 @@ class ArsanteRegistro(models.Model):
         ('legacy_uniq', 'unique(legacy_model, legacy_id)',
          'Ya existe un registro migrado desde ese origen.'),
     ]
+
+    # Campos técnicos de mail y de auditoría que no representan una modificación
+    # funcional del trámite. Todo el resto, incluidos los x_arsante_* creados
+    # desde el configurador, queda registrado en el chatter.
+    CAMPOS_SIN_AUDITORIA = frozenset({
+        'message_follower_ids', 'message_ids', 'message_main_attachment_id',
+        'message_partner_ids', 'message_attachment_count', 'message_has_error',
+        'message_has_error_counter', 'message_has_sms_error', 'message_needaction',
+        'message_needaction_counter', 'message_unread', 'message_unread_counter',
+        'activity_ids', 'activity_state', 'activity_user_id', 'activity_type_id',
+        'activity_date_deadline', 'name', 'write_date', 'write_uid',
+    })
+
+    @api.model
+    def _domain_usuarios_asignables(self):
+        return [
+            ('active', '=', True),
+            ('share', '=', False),
+            ('company_ids', 'in', [self.env.company.id]),
+        ]
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        registros = super().create(vals_list)
+        for registro, vals in zip(registros, vals_list):
+            registro._arsante_registrar_creacion(vals)
+        return registros
+
+    def write(self, vals):
+        campos = self._arsante_campos_auditar(vals)
+        asignados_antes = (
+            {registro.id: registro.assigned_user_id.id for registro in self}
+            if 'assigned_user_id' in vals else {}
+        )
+        antes = {
+            registro.id: {
+                nombre: registro._arsante_valor_auditoria(nombre)
+                for nombre in campos
+            }
+            for registro in self
+        }
+        resultado = super().write(vals)
+        for registro in self:
+            cambios = []
+            for nombre in campos:
+                anterior = antes[registro.id][nombre]
+                actual = registro._arsante_valor_auditoria(nombre)
+                if anterior != actual:
+                    cambios.append((registro._fields[nombre].string or nombre,
+                                    anterior, actual))
+            if cambios:
+                registro._arsante_registrar_actualizacion(cambios, vals)
+            if ('assigned_user_id' in vals
+                    and asignados_antes.get(registro.id)
+                    != registro.assigned_user_id.id):
+                registro._arsante_notificar_asignacion()
+        return resultado
+
+    def unlink(self):
+        if not self.env.user.has_group('arsante.group_arsante_administrador'):
+            raise AccessError(_(
+                'Solo los usuarios del grupo arsante.administrador pueden '
+                'eliminar registros.'))
+        return super().unlink()
+
+    @api.constrains('assigned_user_id', 'company_id')
+    def _check_usuario_asignado(self):
+        for registro in self:
+            usuario = registro.assigned_user_id.sudo()
+            if usuario and (not usuario.active or usuario.share):
+                raise ValidationError(_(
+                    'El usuario asignado debe ser un usuario interno activo.'))
+            if (usuario and registro.company_id
+                    and registro.company_id not in usuario.company_ids):
+                raise ValidationError(_(
+                    'El usuario asignado debe pertenecer a la compañía del '
+                    'registro.'))
+
+    @api.model
+    def _arsante_campos_auditar(self, vals):
+        return [
+            nombre for nombre in vals
+            if nombre in self._fields and nombre not in self.CAMPOS_SIN_AUDITORIA
+        ]
+
+    def _arsante_valor_auditoria(self, nombre):
+        self.ensure_one()
+        campo = self._fields[nombre]
+        valor = self[nombre]
+        if campo.type == 'binary':
+            return _('Archivo adjunto') if valor else _('Sin valor')
+        valor = campo.convert_to_export(valor, self)
+        return str(valor) if valor not in (False, None, '') else _('Sin valor')
+
+    def _arsante_registrar_creacion(self, vals):
+        campos = self._arsante_campos_auditar(vals)
+        detalle = [
+            (self._fields[nombre].string or nombre,
+             self._arsante_valor_auditoria(nombre))
+            for nombre in campos
+        ]
+        cuerpo = self._arsante_cuerpo_evento(_('Registro creado'), detalle)
+        self.with_context(mail_create_nosubscribe=True).message_post(
+            body=cuerpo, message_type='comment', subtype_xmlid='mail.mt_note')
+
+    def _arsante_registrar_actualizacion(self, cambios, vals):
+        titulo = (_('Registro asignado') if 'assigned_user_id' in vals
+                 else _('Registro actualizado'))
+        cuerpo = self._arsante_cuerpo_evento(titulo, cambios)
+        self.with_context(mail_create_nosubscribe=True).message_post(
+            body=cuerpo, message_type='comment', subtype_xmlid='mail.mt_note')
+
+    def _arsante_notificar_asignacion(self):
+        """Envía al nuevo responsable una notificación interna de Odoo."""
+        self.ensure_one()
+        usuario = self.assigned_user_id
+        if not usuario or not usuario.partner_id:
+            return
+        cuerpo = Markup(
+            '<p><strong>%s</strong></p><p>%s <strong>%s</strong>.</p>') % (
+                html_escape(_('Registro asignado')),
+                html_escape(_('Se te ha asignado el registro')),
+                html_escape(self.display_name),
+            )
+        # Si el asignador y el asignado son la misma persona, Odoo descarta
+        # al autor de los destinatarios. OdooBot actúa como autor técnico para
+        # que la notificación siempre llegue al usuario responsable.
+        odoobot = self.env.ref('base.partner_root', raise_if_not_found=False)
+        self.with_context(
+            mail_create_nosubscribe=True,
+            arsante_force_inbox_partner_ids=[usuario.partner_id.id],
+        ).message_post(
+            body=cuerpo,
+            message_type='notification',
+            author_id=odoobot.id if odoobot else False,
+            partner_ids=[usuario.partner_id.id],
+        )
+
+    def _notify_get_recipients(self, message, msg_vals, **kwargs):
+        """Fuerza el inbox para avisos internos de asignación Arsante.
+
+        Los usuarios pueden tener configurado que sus notificaciones se
+        manejen por correo. Las asignaciones son operativas y deben verse en
+        el centro de mensajes de Odoo, por lo que este contexto acotado cambia
+        solo esos destinatarios al canal inbox.
+        """
+        destinatarios = super()._notify_get_recipients(message, msg_vals, **kwargs)
+        inbox_partner_ids = set(
+            self.env.context.get('arsante_force_inbox_partner_ids', []))
+        for destinatario in destinatarios:
+            if destinatario['id'] in inbox_partner_ids:
+                destinatario['notif'] = 'inbox'
+        return destinatarios
+
+    @staticmethod
+    def _arsante_cuerpo_evento(titulo, detalles):
+        lineas = []
+        for detalle in detalles:
+            etiqueta = html_escape(detalle[0])
+            if len(detalle) == 2:
+                lineas.append(Markup('<li><strong>%s:</strong> %s</li>') %
+                              (etiqueta, html_escape(detalle[1])))
+            else:
+                lineas.append(Markup('<li><strong>%s:</strong> %s → %s</li>') %
+                              (etiqueta, html_escape(detalle[1]),
+                               html_escape(detalle[2])))
+        lista = Markup('').join(lineas) if lineas else Markup('')
+        return Markup('<p><strong>%s</strong></p>%s') % (
+            html_escape(titulo),
+            Markup('<ul>%s</ul>') % lista if lista else Markup(''),
+        )
 
     # ------------------------------------------------------------------
     # Cálculos
@@ -325,29 +503,31 @@ class ArsanteRegistro(models.Model):
             return
 
         # Modo B: sin tipo en contexto (Todos los Registros, enlace directo).
-        # Un grupo por tipo, visible sólo cuando el registro es de ese tipo.
-        destino = arch.xpath("//*[@name='%s']" % ANCLAS_FORM['izq'])
-        if not destino:
+        # Los campos se agregan a SUS anclas izquierda/derecha, no como grupos
+        # hermanos. Un grupo hermano es una columna más para el renderer de
+        # Odoo y terminaba enviando todos los campos al lado derecho.
+        destinos = {
+            seccion: (arch.xpath("//*[@name='%s']" % ancla) or [None])[0]
+            for seccion, ancla in ANCLAS_FORM.items()
+        }
+        if destinos['izq'] is None:
             return
-        destino = destino[0]
         self._asegurar_campo_invisible(arch, 'tipo_registro_id')
 
         por_tipo = {}
         for datos in catalogo:
             por_tipo.setdefault(datos[0], []).append(datos)
 
-        Tipo = self.env['arsante.tipo_registro'].sudo()
         for tid, campos in por_tipo.items():
-            grupo = etree.Element('group')
-            grupo.set(MARCA, '1')
-            grupo.set('string', Tipo.browse(tid).name or '')
-            grupo.set('attrs', str({'invisible': [('tipo_registro_id', '!=', tid)]}))
             for datos in campos:
-                for nodo in self._nodos_form(datos):
-                    grupo.append(nodo)
-            destino.addnext(grupo)
+                destino = destinos.get(datos[4])
+                if destino is None:
+                    continue
+                invisible = [('tipo_registro_id', '!=', tid)]
+                for nodo in self._nodos_form(datos, invisible=invisible):
+                    destino.append(nodo)
 
-    def _nodos_form(self, datos):
+    def _nodos_form(self, datos, invisible=None):
         """Nodos a insertar en el form para un campo del catálogo.
 
         Normalmente uno solo (el <field>). Algunos campos (marca_bijou) llevan
@@ -359,10 +539,11 @@ class ArsanteRegistro(models.Model):
         field_name = datos[1]
         config_boton = CAMPOS_CON_BOTON.get(field_name)
         if not config_boton:
-            return [self._nodo_field(datos, 'form')]
-        return self._nodos_campo_con_boton(datos, config_boton)
+            return [self._nodo_field(datos, 'form', invisible=invisible)]
+        return self._nodos_campo_con_boton(
+            datos, config_boton, invisible=invisible)
 
-    def _nodos_campo_con_boton(self, datos, config):
+    def _nodos_campo_con_boton(self, datos, config, invisible=None):
         (_tid, field_name, etiqueta, _ttype, _seccion, requerido, solo_lectura,
          ayuda, _placeholder, _widget, _dominio, _lista, _busq, _agr,
          _form, _nucleo) = datos
@@ -371,10 +552,14 @@ class ArsanteRegistro(models.Model):
         label.set('for', field_name)
         label.set('string', etiqueta)
         label.set(MARCA, '1')
+        if invisible:
+            label.set('attrs', str({'invisible': invisible}))
 
         fila = etree.Element('div')
         fila.set('class', 'o_row')
         fila.set(MARCA, '1')
+        if invisible:
+            fila.set('attrs', str({'invisible': invisible}))
 
         campo = etree.SubElement(fila, 'field')
         campo.set('name', field_name)
@@ -387,6 +572,8 @@ class ArsanteRegistro(models.Model):
             attrs['required'] = [(1, '=', 1)]
         if solo_lectura:
             attrs['readonly'] = [(1, '=', 1)]
+        if invisible:
+            attrs['invisible'] = invisible
         if attrs:
             campo.set('attrs', str(attrs))
 
@@ -396,7 +583,9 @@ class ArsanteRegistro(models.Model):
         boton.set('type', 'object')
         boton.set('icon', config['icono'])
         boton.set('class', 'oe_link')
-        boton.set('attrs', str({'invisible': [(config['campo_url'], '=', False)]}))
+        ocultar_boton = list(invisible or [])
+        ocultar_boton.append((config['campo_url'], '=', False))
+        boton.set('attrs', str({'invisible': ocultar_boton}))
 
         return [label, fila]
 
@@ -453,7 +642,7 @@ class ArsanteRegistro(models.Model):
                 filtro.set(MARCA, '1')
                 grupo[0].append(filtro)
 
-    def _nodo_field(self, datos, view_type):
+    def _nodo_field(self, datos, view_type, invisible=None):
         """Construye el <field>. Siempre con etree, nunca concatenando texto:
         las etiquetas las escribe el usuario y podrían inyectar XML."""
         (_tid, field_name, etiqueta, ttype, _seccion, requerido, solo_lectura,
@@ -485,6 +674,8 @@ class ArsanteRegistro(models.Model):
             attrs['required'] = [(1, '=', 1)]
         if solo_lectura:
             attrs['readonly'] = [(1, '=', 1)]
+        if invisible:
+            attrs['invisible'] = invisible
         if attrs:
             nodo.set('attrs', str(attrs))
         return nodo
@@ -509,6 +700,39 @@ class ArsanteRegistro(models.Model):
 
     def action_desarchivar(self):
         self.write({'active': True})
+
+    def action_abrir_asignacion(self):
+        """Abre el asistente para asignar uno o varios registros."""
+        if not self._puede_asignar_registro():
+            raise AccessError(_(
+                'Solo los administradores Arsante o usuarios con permisos de '
+                'Ajustes pueden asignar registros.'))
+        if not self:
+            return False
+        if len(self.company_id) != 1 or self.company_id != self.env.company:
+            raise ValidationError(_(
+                'Seleccione registros que pertenezcan a la compañía actual '
+                'para asignarlos en conjunto.'))
+        return {
+            'name': _('Asignar registros'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'arsante.registro.asignar',
+            'view_mode': 'form',
+            'view_id': self.env.ref(
+                'arsante.arsante_registro_asignar_form_view').id,
+            'target': 'new',
+            'context': {
+                'default_registro_ids': [(6, 0, self.ids)],
+                'default_company_id': self.company_id.id,
+            },
+        }
+
+    @api.model
+    def _puede_asignar_registro(self):
+        return (
+            self.env.user.has_group('arsante.group_arsante_administrador')
+            or self.env.user.has_group('base.group_system')
+        )
 
     def action_create_so(self):
         """Crea una nota de venta con una línea por registro seleccionado.

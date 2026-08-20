@@ -20,7 +20,7 @@
     # 2.0.0 -> Odoo ejecuta migrations/16.0.2.0.0/ (modelo genérico con campos
     # dinámicos). NO bajar esta versión: los scripts de migración sólo corren
     # una vez, al detectar que la instalada es anterior.
-    'version': '2.1.18',
+    'version': '2.1.23',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'account', 'sale', 'contacts', 'mail'],
@@ -29,6 +29,8 @@
     'data': [
         'data/groups.xml',
         'security/ir.model.access.csv',
+        'data/administrador.xml',
+        'wizard/registro_asignar.xml',
         'data/alerta_cron.xml',
         'data/tipo_registro.xml',
         'data/tipo_registro_plantillas.xml',
@@ -58,6 +60,7 @@
             'arsante/static/src/css/menu_separators.css',
             'arsante/static/src/js/tipo_registro_dashboard.js',
             'arsante/static/src/xml/tipo_registro_dashboard.xml',
+            'arsante/static/src/js/registro_notificacion.js',
         ],
     },
     # only loaded in demonstration mode

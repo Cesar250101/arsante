@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from datetime import timedelta
 
 from odoo import models, fields, api, exceptions, _
+from odoo.osv import expression
 
 _logger = logging.getLogger(__name__)
 
@@ -109,9 +111,12 @@ class TipoRegistro(models.Model):
 
 
 
-    @api.depends('registro_ids.facturado', 'registro_ids.no_cotizado',
+    @api.depends('registro_ids.invoice_ids', 'registro_ids.sale_order_id',
                  'registro_ids.estado', 'registro_ids.documentacion',
-                 'registro_ids.alerta_renovacion', 'registro_ids.active')
+                 'registro_ids.active', 'alerta_ids.campo_id',
+                 'alerta_ids.campo_id.active', 'alerta_ids.campo_id.ttype',
+                 'alerta_ids.campo_id.field_name',
+                 'alerta_ids.dias_anticipacion')
     def _compute_registros(self):
         """Contadores del dashboard.
 
@@ -131,12 +136,13 @@ class TipoRegistro(models.Model):
                     for g in grupos}
 
         total = contar([])
-        facturados = contar([('facturado', '=', True)])
+        # La fuente de verdad de facturación es la relación con las facturas,
+        # no el booleano histórico facturado. Este último puede estar
+        # desactualizado en migraciones o ante anulaciones de documentos.
+        facturados = contar([('invoice_ids', '!=', False)])
         cotizados = contar([('sale_order_id', '!=', False)])
         listos = contar([('estado', '=', 'listo')])
         completa = contar([('documentacion', '=', 'completa')])
-        renovar = contar([('alerta_renovacion', '=', True)])
-
         for tipo in self:
             n = total.get(tipo.id, 0)
             tipo.total_record_count = n
@@ -148,7 +154,14 @@ class TipoRegistro(models.Model):
             tipo.estado_no_listos = n - tipo.estado_listos
             tipo.documentacion_completa = completa.get(tipo.id, 0)
             tipo.documentacion_completa_no_completa = n - tipo.documentacion_completa
-            tipo.para_renovar = renovar.get(tipo.id, 0)
+            # No se usa el booleano histórico ``alerta_renovacion``: cada
+            # tipo define en la pestaña Alertas cuál(es) fecha(s) observar y
+            # con cuánta anticipación. Un registro cuenta una sola vez aunque
+            # cumpla más de una regla.
+            dominio_alerta = tipo._dominio_para_renovar()
+            tipo.para_renovar = Registro.search_count(
+                [('tipo_registro_id', '=', tipo.id), ('active', '=', True)]
+                + dominio_alerta) if dominio_alerta else 0
 
         return True
 
@@ -185,16 +198,54 @@ class TipoRegistro(models.Model):
         }
 
     def action_open_no_facturados(self):
-        return self.action_open_registros([('facturado', '=', False)])
+        return self.action_open_registros([
+            '|',
+            ('sale_order_id', '=', False),
+            ('invoice_ids', '=', False),
+        ])
 
     def action_open_facturados(self):
-        return self.action_open_registros([('facturado', '=', True)])
+        return self.action_open_registros([('invoice_ids', '!=', False)])
+
+    def action_open_cotizados(self):
+        return self.action_open_registros([('sale_order_id', '!=', False)])
 
     def action_open_no_cotizados(self):
         return self.action_open_registros([('sale_order_id', '=', False)])
 
     def action_open_para_renovar(self):
-        return self.action_open_registros([('alerta_renovacion', '=', True)])
+        self.ensure_one()
+        dominio_alerta = self._dominio_para_renovar()
+        if not dominio_alerta:
+            # Un dominio explícitamente vacío evita mostrar registros de un
+            # tipo que aún no tenga fechas configuradas para alertar.
+            dominio_alerta = [('id', '=', 0)]
+        return self.action_open_registros([('active', '=', True)] + dominio_alerta)
+
+    def _dominio_para_renovar(self):
+        """Dominio de registros cubiertos por las alertas configuradas.
+
+        La condición de cada regla es ``fecha <= hoy + anticipación``; no se
+        establece límite inferior, por lo que una fecha vencida sigue siendo
+        una alerta pendiente, igual que en el cron diario. ``expression.OR``
+        compone correctamente reglas sobre distintos campos de fecha.
+        """
+        self.ensure_one()
+        hoy = fields.Date.context_today(self)
+        Registro = self.env['arsante.registro']
+        dominios = []
+        for alerta in self.alerta_ids:
+            campo = alerta.campo_id
+            if (not campo.active or campo.ttype != 'date'
+                    or campo.tipo_registro_id != self
+                    or campo.field_name not in Registro._fields):
+                continue
+            limite = hoy + timedelta(days=alerta.dias_anticipacion)
+            dominios.append([
+                (campo.field_name, '!=', False),
+                (campo.field_name, '<=', limite),
+            ])
+        return expression.OR(dominios) if dominios else []
 
     def _sync_menu(self):
         """Crea o actualiza la acción y el menú de cada tipo de registro.

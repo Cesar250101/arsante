@@ -5,6 +5,10 @@ access_tipo_registro_admin,Tipo de Registro Responsable,arsante.model_arsante_ti
 access_alerta_user,Alertas (lectura),arsante.model_arsante_alerta,arsante.group_arsante_users,1,0,0,0
 access_alerta_manager,Alertas (gestión),arsante.model_arsante_alerta,arsante.group_arsante_manager,1,1,1,1
 access_alerta_historial_manager,Historial de Alertas,arsante.model_arsante_alerta_historial,arsante.group_arsante_manager,1,0,0,0
+access_administrador_arsante,Grupo Administrador,arsante.model_arsante_administrador,arsante.group_arsante_administrador,1,1,0,0
+access_administrador_system,Grupo Administrador Ajustes,arsante.model_arsante_administrador,base.group_system,1,1,0,0
+access_registro_asignar_admin,Asistente asignar registro,arsante.model_arsante_registro_asignar,arsante.group_arsante_administrador,1,1,1,1
+access_registro_asignar_system,Asistente asignar registro Ajustes,arsante.model_arsante_registro_asignar,base.group_system,1,1,1,1
 access_tipo_servicio_sales_manager,Tipo de Servicio Sales Manager,arsante.model_arsante_tipo_servicio,sales_team.group_sale_manager,1,1,1,1
 access_tipo_servicio_arsante,Tipo de Servicio Arsante,arsante.model_arsante_tipo_servicio,arsante.group_arsante_users,1,1,1,1
 access_registro_user,Registros,arsante.model_arsante_registro,arsante.group_arsante_users,1,1,1,1

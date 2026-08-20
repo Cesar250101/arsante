@@ -32,28 +32,43 @@
                 <t t-else="">
                     <!-- Global Summary Panels -->
                     <div class="row mb-5">
-                        <div class="col-md-3">
+                        <div class="col-xl-2 col-md-4">
                             <div class="o_arsante_stat_card card shadow-sm border-0 bg-white p-3 border-left border-primary">
                                 <div class="text-muted small font-weight-bold text-uppercase">Total Global</div>
                                 <div class="h2 mb-0 text-primary font-weight-bold" t-esc="state.total_global"/>
                                 <i class="fa fa-database stat-icon"/>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-xl-2 col-md-4">
                             <div class="o_arsante_stat_card card shadow-sm border-0 bg-white p-3 border-left border-success">
                                 <div class="text-muted small font-weight-bold text-uppercase">Total Facturados</div>
                                 <div class="h2 mb-0 text-success font-weight-bold" t-esc="state.total_facturados"/>
                                 <i class="fa fa-money stat-icon"/>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-xl-2 col-md-4">
                             <div class="o_arsante_stat_card card shadow-sm border-0 bg-white p-3 border-left border-warning">
                                 <div class="text-muted small font-weight-bold text-uppercase">No Facturados</div>
                                 <div class="h2 mb-0 text-warning font-weight-bold" t-esc="state.total_no_facturados"/>
                                 <i class="fa fa-exclamation-circle stat-icon"/>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-xl-2 col-md-4">
+                            <div class="o_arsante_stat_card card shadow-sm border-0 bg-white p-3 border-left border-info">
+                                <div class="text-muted small font-weight-bold text-uppercase">Con Nota de Venta</div>
+                                <div class="h2 mb-0 text-info font-weight-bold" t-esc="state.total_con_nota_venta"/>
+                                <i class="fa fa-file-text-o stat-icon"/>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-4">
+                            <div class="o_arsante_stat_card card shadow-sm border-0 bg-white p-3 border-left border-warning">
+                                <div class="text-muted small font-weight-bold text-uppercase">Sin Nota de Venta</div>
+                                <div class="h2 mb-0 text-warning font-weight-bold"
+                                     t-esc="state.total_sin_nota_venta"/>
+                                <i class="fa fa-file-o stat-icon"/>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-4">
                             <div class="o_arsante_stat_card card shadow-sm border-0 bg-white p-3 border-left border-danger">
                                 <div class="text-muted small font-weight-bold text-uppercase">Para Renovar</div>
                                 <div class="h2 mb-0 text-danger font-weight-bold" t-esc="state.total_para_renovar"/>
@@ -110,6 +125,15 @@
                     <div class="col-6 mb-2">
                         <div class="small text-muted mb-1">No Fact.</div>
                         <div class="font-weight-bold text-warning" t-esc="record.no_facturados"/>
+                    </div>
+                    <div class="col-6">
+                        <div class="small text-muted mb-1">Con Nota de Venta</div>
+                        <div class="font-weight-bold text-info" t-esc="record.cotizados"/>
+                    </div>
+                    <div class="col-6">
+                        <div class="small text-muted mb-1">Sin Nota de Venta</div>
+                        <div class="font-weight-bold text-warning"
+                             t-esc="record.no_cotizados"/>
                     </div>
                     <div class="col-6">
                         <div class="small text-muted mb-1">Listos</div>
