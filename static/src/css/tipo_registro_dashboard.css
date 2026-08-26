@@ -144,6 +144,22 @@
     border-left-color: var(--method-orange) !important;
 }
 
+/* Section header (grouped cards) */
+.o_arsante_grupo_header h4 {
+    border-left: 4px solid var(--method-orange);
+    padding-left: 10px;
+}
+
+/* Grupos como columnas (tablero horizontal) */
+.o_arsante_grupos_board {
+    overflow-x: auto;
+    padding-bottom: 1rem;
+}
+
+.o_arsante_grupo_columna {
+    width: 300px;
+}
+
 /* Record Cards (Grid) */
 .o_arsante_record_card {
     transition: all 0.3s ease;

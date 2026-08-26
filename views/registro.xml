@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+  <data>
+
+    <!--
+      Vista única para todos los tipos de trámite.
+
+      Los campos propios de cada tipo NO se declaran aquí: se inyectan en
+      tiempo de ejecución desde arsante.registro._get_view() en las anclas
+      marcadas más abajo. Escribirlos en este arch impediría después
+      renombrarlos o borrarlos (ir.model.fields._prepare_update bloquea
+      cualquier campo que aparezca en una vista almacenada).
+    -->
+
+    <record id="arsante_registro_search_view" model="ir.ui.view">
+      <field name="name">arsante.registro.search</field>
+      <field name="model">arsante.registro</field>
+      <field name="arch" type="xml">
+        <search string="Buscar Registros">
+          <field name="name"/>
+          <field name="partner_id"/>
+          <field name="tipo_registro_id"/>
+          <field name="nro_resolucion"/>
+          <field name="sale_order_id"/>
+          <filter string="Activos" name="active" domain="[('active','=',True)]"/>
+          <filter string="Archivados" name="archivados" domain="[('active','=',False)]"/>
+          <separator/>
+          <filter string="Facturado" name="facturado_filter" domain="[('facturado','=',True)]"/>
+          <filter string="No Facturado" name="no_facturado_filter" domain="[('facturado','=',False)]"/>
+          <separator/>
+          <filter string="Cotizado" name="cotizado_filter" domain="[('sale_order_id','!=',False)]"/>
+          <filter string="No Cotizado" name="no_cotizado_filter" domain="[('sale_order_id','=',False)]"/>
+          <separator/>
+          <filter string="Docu. Completa" name="completa_filter" domain="[('documentacion','=','completa')]"/>
+          <filter string="Docu. Incompleta" name="incompleta_filter" domain="['|',('documentacion','=','incompleta'),('documentacion','=',False)]"/>
+          <separator/>
+          <filter string="Estado: Listo" name="listo_filter" domain="[('estado','=','listo')]"/>
+          <filter string="Estado: No Listo" name="no_listo_filter" domain="['|',('estado','=','no_listo'),('estado','=',False)]"/>
+          <separator/>
+          <filter string="Para Renovar" name="para_renovar" domain="[('alerta_renovacion','=',True)]"/>
+          <!-- Ancla: los filtros de agrupación por campo dinámico entran aquí -->
+          <group expand="0" string="Agrupar Por" name="arsante_group_by">
+            <filter string="Tipo de Registro" name="gb_tipo" domain="[]"
+                    context="{'group_by':'tipo_registro_id'}"/>
+            <filter string="Cliente" name="gb_partner" domain="[]"
+                    context="{'group_by':'partner_id'}"/>
+            <filter string="Estado" name="gb_estado" domain="[]"
+                    context="{'group_by':'estado'}"/>
+            <filter string="Fecha Registro" name="gb_date" domain="[]"
+                    context="{'group_by':'date'}"/>
+          </group>
+        </search>
+      </field>
+    </record>
+
+    <record id="arsante_registro_tree_view" model="ir.ui.view">
+      <field name="name">arsante.registro.tree</field>
+      <field name="model">arsante.registro</field>
+      <field name="arch" type="xml">
+        <!--
+          Ancla: cuando se abre un tipo de registro concreto (menús "CDA
+          Cosméticos", etc.), _inyectar_tree() quita estas columnas núcleo del
+          arch y las vuelve a insertar en el orden de "sequence" configurado
+          en ese tipo, junto con sus columnas propias. Se dejan aquí también,
+          en un orden razonable por defecto, para el modo "Todos los
+          Registros" (sin tipo concreto), donde no hay una única secuencia que
+          aplicar y la lista se queda con los campos comunes.
+        -->
+        <tree>
+          <field name="name"/>
+          <field name="assigned_user_id" string="Usuario asignado"/>
+          <field name="date"/>
+          <field name="partner_id"/>
+          <field name="tipo_registro_id" optional="hide"/>
+          <field name="product_id" optional="hide"/>
+          <field name="nro_resolucion" optional="hide"/>
+          <field name="sale_order_id"/>
+          <field name="facturado" optional="hide"/>
+          <field name="estado" optional="hide"/>
+          <field name="documentacion" optional="hide"/>
+          <field name="alerta_renovacion" optional="hide"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="arsante_registro_form_view" model="ir.ui.view">
+      <field name="name">arsante.registro.form</field>
+      <field name="model">arsante.registro</field>
+      <field name="arch" type="xml">
+        <form>
+          <header>
+            <button name="action_create_so" string="Crear Nota de Venta"
+                    type="object" class="oe_highlight"
+                    attrs="{'invisible': [('sale_order_id','!=',False)]}"/>
+            <button name="action_abrir_asignacion" string="Asignar"
+                    type="object" class="oe_highlight" icon="fa-user"
+                    groups="arsante.group_arsante_administrador,base.group_system"
+                    attrs="{'invisible': [('id','=',False)]}"/>
+          </header>
+          <sheet>
+            <widget name="web_ribbon" title="Archivado" bg_color="bg-danger"
+                    attrs="{'invisible': [('active','=',True)]}"/>
+            <!--
+              Patrón estándar de Odoo (el mismo de Contactos/Empleados): la
+              imagen va como hijo directo de <sheet>, no dentro del <group> de
+              dos columnas. Un <field> sin etiqueta (nolabel) dentro de un
+              <group> rompe el emparejamiento automático etiqueta/valor de TODO
+              lo que venga después en ese grupo — el mismo problema que ya
+              habíamos visto con los campos de ISP. class="oe_avatar" es lo que
+              la fija en la esquina superior derecha del sheet.
+            -->
+            <field name="imagen" widget="image" class="oe_avatar"
+                   options="{'size': [128, 128]}"/>
+            <!-- widget="image" sólo permite ampliar o reemplazar el archivo,
+                 no descargarlo: se añade el botón aparte, bajo la imagen. -->
+            <div style="float:right;clear:right;"
+                 attrs="{'invisible': [('imagen','=',False)]}">
+              <button name="action_descargar_imagen" type="object"
+                      class="btn btn-sm btn-link" icon="fa-download"
+                      string="Descargar" title="Descargar imagen"/>
+            </div>
+            <div class="oe_title">
+              <h1><field name="name" placeholder="Se genera automáticamente"/></h1>
+            </div>
+            <field name="alerta_renovacion" invisible="1"/>
+            <field name="active" invisible="1"/>
+            <!-- El botón de marca_bijou necesita esto disponible sin importar
+                 dónde caiga marca_bijou según su «Ubicación» configurada. -->
+            <field name="marca_bijou_url" invisible="1"/>
+
+            <!--
+              ANCLA DE INYECCIÓN: no borrar ni renombrar. arsante.registro
+              ._arsante_inyectar() añade aquí los campos configurados con
+              «Ubicación: Columna izquierda/derecha», en el orden de su
+              secuencia — tanto los estándar (Cliente, Estado, Facturado…)
+              como los propios de cada tipo. tipo_registro_id es la única
+              excepción fija: siempre primero en la columna izquierda, no
+              configurable, por eso está escrito aquí directamente.
+            -->
+            <group>
+              <group name="arsante_campos_izq">
+                <field name="tipo_registro_id" required="1" readonly="1"
+                       options="{'no_create': True}"/>
+              </group>
+              <group name="arsante_campos_der"/>
+            </group>
+
+            <group string="Facturación">
+              <field name="sale_order_id"/>
+              <field name="oc_facturacion"
+                     attrs="{'invisible': [('sale_order_id','=',False)]}"/>
+              <field name="invoice_ids" widget="many2many_tags"
+                     attrs="{'invisible': [('sale_order_id','=',False)]}"/>
+            </group>
+
+            <notebook>
+              <page string="Comentario" name="comentario">
+                <field name="comentario" nolabel="1" placeholder="Notas internas…"/>
+              </page>
+              <!-- ANCLA DE INYECCIÓN -->
+              <page string="Información adicional" name="arsante_campos_extra"/>
+              <page string="Origen" name="origen" groups="base.group_no_one">
+                <group>
+                  <field name="legacy_model"/>
+                  <field name="legacy_id"/>
+                </group>
+              </page>
+            </notebook>
+          </sheet>
+          <div class="oe_chatter">
+            <field name="message_follower_ids"/>
+            <field name="message_ids"/>
+          </div>
+        </form>
+      </field>
+    </record>
+
+    <record id="arsante_registro_pivot_view" model="ir.ui.view">
+      <field name="name">arsante.registro.pivot</field>
+      <field name="model">arsante.registro</field>
+      <field name="arch" type="xml">
+        <pivot>
+          <field name="tipo_registro_id" type="row"/>
+          <field name="partner_id" type="row"/>
+        </pivot>
+      </field>
+    </record>
+
+    <record id="arsante_registro_action_window" model="ir.actions.act_window">
+      <field name="name">Todos los Registros</field>
+      <field name="res_model">arsante.registro</field>
+      <field name="view_mode">tree,form,pivot</field>
+    </record>
+
+    <!--
+      Sustituye al menú que apuntaba a arsante.all_record. Aquella tabla era una
+      copia parcial de los 22 modelos y vivía desincronizada (2.397 filas frente
+      a 2.434 reales, y 8 tipos que no aparecían). Ahora es el propio modelo, sin
+      dominio, así que no puede desincronizarse.
+    -->
+    <menuitem name="Todos los Registros" id="arsante.all_record_menu_list"
+              sequence="60" parent="arsante.arsante_menu_tipo_registros"
+              action="arsante.arsante_registro_action_window"/>
+
+    <record id="arsante_registro_archivar_server" model="ir.actions.server">
+      <field name="name">Archivar</field>
+      <field name="type">ir.actions.server</field>
+      <field name="model_id" ref="arsante.model_arsante_registro"/>
+      <field name="binding_model_id" ref="arsante.model_arsante_registro"/>
+      <field name="binding_view_types">list</field>
+      <field name="state">code</field>
+      <field name="code">records.action_archivar()</field>
+    </record>
+
+    <record id="arsante_registro_asignar_server" model="ir.actions.server">
+      <field name="name">Asignar</field>
+      <field name="type">ir.actions.server</field>
+      <field name="model_id" ref="arsante.model_arsante_registro"/>
+      <field name="binding_model_id" ref="arsante.model_arsante_registro"/>
+      <field name="binding_view_types">list</field>
+      <field name="groups_id" eval="[(4, ref('arsante.group_arsante_administrador')),
+                                    (4, ref('base.group_system'))]"/>
+      <field name="state">code</field>
+      <field name="code">action = records.action_abrir_asignacion()</field>
+    </record>
+
+    <record id="arsante_registro_create_so_server" model="ir.actions.server">
+      <field name="name">Crear Nota de Venta</field>
+      <field name="type">ir.actions.server</field>
+      <field name="model_id" ref="arsante.model_arsante_registro"/>
+      <field name="binding_model_id" ref="arsante.model_arsante_registro"/>
+      <field name="binding_view_types">list</field>
+      <field name="state">code</field>
+      <field name="code">action = records.action_create_so()</field>
+    </record>
+
+  </data>
+</odoo>

@@ -96,6 +96,11 @@
             <field name='tipo'>renovaciones_desinfectantes</field>
             <field name='active'>True</field>
         </record>
+        <record model='arsante.tipo_registro' id='revision_oc_cosmeticos_id'>
+            <field name='name'>Revisión OC Cosméticos</field>
+            <field name='tipo'>revision_oc_cosmeticos</field>
+            <field name='active'>True</field>
+        </record>
 
      </data>
 </odoo>

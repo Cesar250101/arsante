@@ -1,30 +1,22 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_cda_cosmeticos,CDA Cosmeticos,arsante.model_arsante_cda_cosmetico_dm,arsante.group_arsante_users,1,1,1,1
 access_marcas,Marcas,arsante.model_arsante_marcas,arsante.group_arsante_users,1,1,1,1
-access_modif_cosmeticos,Modificación Cosmeticos,arsante.model_arsante_modificacion_cosmeticos,arsante.group_arsante_users,1,1,1,1
-access_registro_cosmeticos,Registro Cosmeticos,arsante.model_arsante_registro_cosmetico,arsante.group_arsante_users,1,1,1,1
-access_inscripciones,Inscripciones,arsante.model_arsante_inscripciones,arsante.group_arsante_users,1,1,1,1
-access_inscripciones_cosmeticos,Inscripciones Cosméticos,arsante.model_arsante_inscripciones_cosmeticos,arsante.group_arsante_users,1,1,1,1
-access_registro_dispositivos_medicos,Registro Dispositivos Médicos,arsante.model_arsante_registro_dispositivos_medicos,arsante.group_arsante_users,1,1,1,1
-access_declaracion_dispositivos_medicos,Declaración Dispositivos Médicos,arsante.model_arsante_declaracion_dispositivos_medicos,arsante.group_arsante_users,1,1,1,1
-access_rev_antecedentes_dm,Rev. Antecedentes DM,arsante.model_arsante_rev_antecedentes_dm,arsante.group_arsante_users,1,1,1,1
-access_rectificaciones,Rectificaciones,arsante.model_arsante_rectificaciones,arsante.group_arsante_users,1,1,1,1
-access_cda_uyd_alimentos,CDA-UYD Alimentos,arsante.model_arsante_cda_uyd_alimentos,arsante.group_arsante_users,1,1,1,1
-access_dm,Dispositivos Medicos,arsante.model_arsante_dispositivos_medicos,arsante.group_arsante_users,1,1,1,1
-access_exim_cosmeticos,Eximición Cosméticos,arsante.model_arsante_eximiciones_cosmeticos,arsante.group_arsante_users,1,1,1,1
-access_exim_cosmeticos_correo,Eximición Cosméticos Correo,arsante.model_arsante_eximiciones_cosmeticos_correo,arsante.group_arsante_users,1,1,1,1
-access_renovaciones_cosmeticos,Renovaciones Cosméticos,arsante.model_arsante_renovaciones_cosmeticos,arsante.group_arsante_users,1,1,1,1
-access_registro_desinfectantes,Registro Desinfectantes,arsante.model_arsante_registro_desinfectantes,arsante.group_arsante_users,1,1,1,1
-access_modificaciones_desinfectantes,Modificaciones Desinfectantes,arsante.model_arsante_modificaciones_desinfectantes,arsante.group_arsante_users,1,1,1,1
-access_renovaciones_desinfectantes,Renovaciones Desinfectantes,arsante.model_arsante_renovaciones_desinfectantes,arsante.group_arsante_users,1,1,1,1
-access_hds_hechas,Hds Hechas,arsante.model_arsante_hds_hechas,arsante.group_arsante_users,1,1,1,1
-access_exim_proceso_cosmeticos,Exim Proceso Cosméticos,arsante.model_arsante_exim_proceso_cosmeticos,arsante.group_arsante_users,1,1,1,1
-access_registro_isp,Registro ISP,arsante.model_arsante_registro_isp,arsante.group_arsante_users,1,1,1,1
-access_registro_isp_exim_cosmeticos,Registro ISP Exim Cosméticos,arsante.model_arsante_registro_isp_exim_cosmeticos,arsante.group_arsante_users,1,1,1,1
-access_registro_dispositivos_medicos,Registro Dispositivos Medicos,arsante.model_arsante_registro_dispositivos_medicos,arsante.group_arsante_users,1,1,1,1
 access_tipo_registro,Tipo de Registro,arsante.model_arsante_tipo_registro,arsante.group_arsante_users,1,0,0,0
 access_tipo_registro_admin,Tipo de Registro Responsable,arsante.model_arsante_tipo_registro,arsante.group_arsante_manager,1,1,1,1
+access_alerta_user,Alertas (lectura),arsante.model_arsante_alerta,arsante.group_arsante_users,1,0,0,0
+access_alerta_manager,Alertas (gestión),arsante.model_arsante_alerta,arsante.group_arsante_manager,1,1,1,1
+access_alerta_historial_manager,Historial de Alertas,arsante.model_arsante_alerta_historial,arsante.group_arsante_manager,1,0,0,0
+access_administrador_arsante,Grupo Administrador,arsante.model_arsante_administrador,arsante.group_arsante_administrador,1,1,0,0
+access_administrador_system,Grupo Administrador Ajustes,arsante.model_arsante_administrador,base.group_system,1,1,0,0
+access_registro_asignar_admin,Asistente asignar registro,arsante.model_arsante_registro_asignar,arsante.group_arsante_administrador,1,1,1,1
+access_registro_asignar_system,Asistente asignar registro Ajustes,arsante.model_arsante_registro_asignar,base.group_system,1,1,1,1
 access_tipo_servicio_sales_manager,Tipo de Servicio Sales Manager,arsante.model_arsante_tipo_servicio,sales_team.group_sale_manager,1,1,1,1
 access_tipo_servicio_arsante,Tipo de Servicio Arsante,arsante.model_arsante_tipo_servicio,arsante.group_arsante_users,1,1,1,1
-access_all_record_arsante,Todos los registros,arsante.model_arsante_all_record,arsante.group_arsante_users,1,1,1,1
-access_uyd_alimentos,UYD Alimentos,arsante.model_arsante_uyd_alimentos,arsante.group_arsante_users,1,1,1,1
+access_registro_user,Registros,arsante.model_arsante_registro,arsante.group_arsante_users,1,1,1,1
+access_campo_user,Campos (lectura),arsante.model_arsante_campo,arsante.group_arsante_users,1,0,0,0
+access_campo_manager,Campos (gestión),arsante.model_arsante_campo,arsante.group_arsante_manager,1,1,1,1
+access_campo_opcion_user,Opciones de campo (lectura),arsante.model_arsante_campo_opcion,arsante.group_arsante_users,1,0,0,0
+access_campo_opcion_manager,Opciones de campo (gestión),arsante.model_arsante_campo_opcion,arsante.group_arsante_manager,1,1,1,1
+access_campo_renombrar,Asistente renombrar campo,arsante.model_arsante_campo_renombrar,arsante.group_arsante_manager,1,1,1,1
+access_campo_convertir,Asistente convertir campo,arsante.model_arsante_campo_convertir,arsante.group_arsante_manager,1,1,1,1
+access_tipo_registro_grupo_user,Grupos de Tipo de Registro (lectura),arsante.model_arsante_tipo_registro_grupo,arsante.group_arsante_users,1,0,0,0
+access_tipo_registro_grupo_manager,Grupos de Tipo de Registro (gestión),arsante.model_arsante_tipo_registro_grupo,arsante.group_arsante_manager,1,1,1,1

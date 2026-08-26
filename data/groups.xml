@@ -10,4 +10,12 @@
         <!-- <field name="category_id" ref="module_category_connector" /> -->
         <field name="users" eval="[(4, ref('base.user_root'))]" />
     </record>
+    <record id="group_arsante_administrador" model="res.groups">
+        <field name="name">arsante.administrador</field>
+        <field name="implied_ids" eval="[(4, ref('arsante.group_arsante_manager')),
+                                          (4, ref('arsante.group_arsante_users'))]" />
+        <!-- El administrador inicial evita que la configuración quede sin
+             usuarios capaces de administrarla tras actualizar el módulo. -->
+        <field name="users" eval="[(4, ref('base.user_root'))]" />
+    </record>
 </odoo>

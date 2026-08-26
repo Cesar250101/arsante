@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+  <data>
+
+    <!--
+      Agrupador de tipos de registro. Por ahora sólo el catálogo (crear,
+      nombrar, ordenar); el anidado real de los menús por grupo es un paso
+      posterior en arsante.tipo_registro._sync_menu().
+    -->
+
+    <record id="arsante.tipo_registro_grupo_tree_view" model="ir.ui.view">
+      <field name="name">arsante.tipo_registro.grupo.tree</field>
+      <field name="model">arsante.tipo_registro.grupo</field>
+      <field name="arch" type="xml">
+        <tree editable="bottom">
+          <field name="sequence" widget="handle"/>
+          <field name="name"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="arsante.tipo_registro_grupo_action_window" model="ir.actions.act_window">
+      <field name="name">Grupos de Tipos de Registro</field>
+      <field name="res_model">arsante.tipo_registro.grupo</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Grupos"
+              id="arsante.tipo_registro_grupo_menu_list"
+              sequence="100"
+              parent="arsante.arsante_menu_tipo_registros"
+              action="arsante.tipo_registro_grupo_action_window"
+              groups="arsante.group_arsante_manager"/>
+
+  </data>
+</odoo>

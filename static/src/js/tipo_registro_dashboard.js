@@ -9,10 +9,12 @@ export class TipoRegistroDashboard extends Component {
         this.action = useService("action");
         this.orm = useService("orm");
         this.state = useState({
-            records: [],
+            groups: [],
             total_global: 0,
             total_facturados: 0,
             total_no_facturados: 0,
+            total_con_nota_venta: 0,
+            total_sin_nota_venta: 0,
             total_para_renovar: 0,
             loading: true,
         });
@@ -29,7 +31,7 @@ export class TipoRegistroDashboard extends Component {
                 "arsante.tipo_registro",
                 [],
                 [
-                    "name", "tipo", "total_record_count", "facturados", "no_facturados",
+                    "name", "tipo", "grupo_id", "total_record_count", "facturados", "no_facturados",
                     "cotizados", "no_cotizados", "estado_listos", "estado_no_listos",
                     "documentacion_completa", "documentacion_completa_no_completa", "para_renovar"
                 ]
@@ -38,26 +40,83 @@ export class TipoRegistroDashboard extends Component {
             let total_global = 0;
             let total_facturados = 0;
             let total_no_facturados = 0;
+            let total_con_nota_venta = 0;
+            let total_sin_nota_venta = 0;
             let total_para_renovar = 0;
 
             records.forEach(r => {
+                // El complemento de las notas de venta se calcula desde la
+                // misma fuente: total de registros menos sale_order_id.
+                // También evita un valor vacío si el navegador conserva una
+                // respuesta anterior sin no_cotizados.
+                r.no_cotizados = Math.max(
+                    0,
+                    (r.total_record_count || 0) - (r.cotizados || 0)
+                );
                 total_global += r.total_record_count || 0;
                 total_facturados += r.facturados || 0;
                 total_no_facturados += r.no_facturados || 0;
+                total_con_nota_venta += r.cotizados || 0;
+                total_sin_nota_venta += r.no_cotizados || 0;
                 total_para_renovar += r.para_renovar || 0;
             });
 
-            this.state.records = records;
+            this.state.groups = await this._agruparPorGrupo(records);
             this.state.total_global = total_global;
             this.state.total_facturados = total_facturados;
             this.state.total_no_facturados = total_no_facturados;
+            this.state.total_con_nota_venta = total_con_nota_venta;
+            this.state.total_sin_nota_venta = total_sin_nota_venta;
             this.state.total_para_renovar = total_para_renovar;
         } catch (error) {
             console.error("Error loading Tipo Registro Dashboard data:", error);
-            this.state.records = [];
+            this.state.groups = [];
         } finally {
             this.state.loading = false;
         }
+    }
+
+    /**
+     * Junta las tarjetas por arsante.tipo_registro.grupo, en el mismo orden
+     * (sequence, name) que la pantalla de administración de grupos. Los
+     * tipos sin grupo van al final, bajo "Sin grupo". Si nadie usa grupos
+     * todavía, no tiene sentido mostrar encabezados de sección: se deja como
+     * una sola lista plana, igual que antes.
+     */
+    async _agruparPorGrupo(records) {
+        const idsGrupo = [...new Set(
+            records.filter(r => r.grupo_id).map(r => r.grupo_id[0])
+        )];
+
+        let ordenGrupos = [];
+        if (idsGrupo.length) {
+            ordenGrupos = await this.orm.searchRead(
+                "arsante.tipo_registro.grupo",
+                [["id", "in", idsGrupo]],
+                ["name"],
+                { order: "sequence, name" },
+            );
+        }
+
+        const porId = new Map();
+        for (const g of ordenGrupos) {
+            porId.set(g.id, { id: g.id, name: g.name, records: [] });
+        }
+        const sinGrupo = { id: false, name: "Sin grupo", records: [] };
+
+        for (const record of records) {
+            if (record.grupo_id && porId.has(record.grupo_id[0])) {
+                porId.get(record.grupo_id[0]).records.push(record);
+            } else {
+                sinGrupo.records.push(record);
+            }
+        }
+
+        const grupos = [...porId.values()];
+        if (sinGrupo.records.length) {
+            grupos.push(sinGrupo);
+        }
+        return grupos;
     }
 
     openTipoRegistro(recordId) {
@@ -70,34 +129,35 @@ export class TipoRegistroDashboard extends Component {
         });
     }
 
-    openRecords(record) {
-        let model = "";
-        switch (record.tipo) {
-            case 'cda_cosmetico': model = 'arsante.cda_cosmetico_dm'; break;
-            case 'cda_uyd_alimentos': model = 'arsante.cda_uyd_alimentos'; break;
-            case 'dispositivos_medicos': model = 'arsante.dispositivos_medicos'; break;
-            case 'exim_proceso_cosmeticos': model = 'arsante.exim_proceso_cosmeticos'; break;
-            case 'eximiciones_cosmeticos': model = 'arsante.eximiciones_cosmeticos'; break;
-            case 'hds_hechas': model = 'arsante.hds_hechas'; break;
-            case 'inscripciones': model = 'arsante.inscripciones'; break;
-            case 'modificacion_cosmeticos': model = 'arsante.modificacion_cosmeticos'; break;
-            case 'modificaciones_desinfectantes': model = 'arsante.modificaciones_desinfectantes'; break;
-            case 'rectificaciones': model = 'arsante.rectificaciones'; break;
-            case 'registro_cosmetico': model = 'arsante.registro_cosmetico'; break;
-            case 'registro_desinfectantes': model = 'arsante.registro_desinfectantes'; break;
-            case 'renovaciones_cosmeticas': model = 'arsante.renovaciones_cosmeticos'; break;
-            case 'renovaciones_desinfectantes': model = 'arsante.renovaciones_desinfectantes'; break;
-        }
+    /**
+     * Abre los registros de un tipo.
+     *
+     * Antes había aquí un switch de 14 casos que mapeaba el tipo a su modelo,
+     * y que dejaba fuera a 8 tipos por no haberse actualizado. Ahora la acción
+     * la construye el servidor, que es la única fuente de verdad.
+     */
+    async openRecords(record) {
+        await this._abrir(record, "action_open_registros");
+    }
 
-        if (model) {
-            this.action.doAction({
-                type: "ir.actions.act_window",
-                name: record.name,
-                res_model: model,
-                views: [[false, "list"], [false, "form"]],
-                domain: [["tipo_registro_id", "=", record.id]],
-                target: "current",
-            });
+    async openNoFacturados(record) {
+        await this._abrir(record, "action_open_no_facturados");
+    }
+
+    async openNoCotizados(record) {
+        await this._abrir(record, "action_open_no_cotizados");
+    }
+
+    async openParaRenovar(record) {
+        await this._abrir(record, "action_open_para_renovar");
+    }
+
+    async _abrir(record, metodo) {
+        const action = await this.orm.call(
+            "arsante.tipo_registro", metodo, [[record.id]]
+        );
+        if (action) {
+            this.action.doAction(action);
         }
     }
 }

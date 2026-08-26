@@ -32,28 +32,43 @@
                 <t t-else="">
                     <!-- Global Summary Panels -->
                     <div class="row mb-5">
-                        <div class="col-md-3">
+                        <div class="col-xl-2 col-md-4">
                             <div class="o_arsante_stat_card card shadow-sm border-0 bg-white p-3 border-left border-primary">
                                 <div class="text-muted small font-weight-bold text-uppercase">Total Global</div>
                                 <div class="h2 mb-0 text-primary font-weight-bold" t-esc="state.total_global"/>
                                 <i class="fa fa-database stat-icon"/>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-xl-2 col-md-4">
                             <div class="o_arsante_stat_card card shadow-sm border-0 bg-white p-3 border-left border-success">
                                 <div class="text-muted small font-weight-bold text-uppercase">Total Facturados</div>
                                 <div class="h2 mb-0 text-success font-weight-bold" t-esc="state.total_facturados"/>
                                 <i class="fa fa-money stat-icon"/>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-xl-2 col-md-4">
                             <div class="o_arsante_stat_card card shadow-sm border-0 bg-white p-3 border-left border-warning">
                                 <div class="text-muted small font-weight-bold text-uppercase">No Facturados</div>
                                 <div class="h2 mb-0 text-warning font-weight-bold" t-esc="state.total_no_facturados"/>
                                 <i class="fa fa-exclamation-circle stat-icon"/>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-xl-2 col-md-4">
+                            <div class="o_arsante_stat_card card shadow-sm border-0 bg-white p-3 border-left border-info">
+                                <div class="text-muted small font-weight-bold text-uppercase">Con Nota de Venta</div>
+                                <div class="h2 mb-0 text-info font-weight-bold" t-esc="state.total_con_nota_venta"/>
+                                <i class="fa fa-file-text-o stat-icon"/>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-4">
+                            <div class="o_arsante_stat_card card shadow-sm border-0 bg-white p-3 border-left border-warning">
+                                <div class="text-muted small font-weight-bold text-uppercase">Sin Nota de Venta</div>
+                                <div class="h2 mb-0 text-warning font-weight-bold"
+                                     t-esc="state.total_sin_nota_venta"/>
+                                <i class="fa fa-file-o stat-icon"/>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-4">
                             <div class="o_arsante_stat_card card shadow-sm border-0 bg-white p-3 border-left border-danger">
                                 <div class="text-muted small font-weight-bold text-uppercase">Para Renovar</div>
                                 <div class="h2 mb-0 text-danger font-weight-bold" t-esc="state.total_para_renovar"/>
@@ -62,50 +77,82 @@
                         </div>
                     </div>
 
-                    <!-- Individual Cards Grid -->
-                    <div class="row o_arsante_cards_grid">
-                        <t t-foreach="state.records" t-as="record" t-key="record.id">
+                    <!-- Sin grupos en uso: grilla plana de siempre -->
+                    <div t-if="state.groups.length &lt;= 1" class="row o_arsante_cards_grid">
+                        <t t-foreach="state.groups.length ? state.groups[0].records : []" t-as="record" t-key="record.id">
                             <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
-                                <div class="card o_arsante_record_card shadow-sm border-0 h-100">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-start mb-3">
-                                            <h5 class="card-title text-dark font-weight-bold mb-0 text-truncate" t-att-title="record.name" t-esc="record.name"/>
-                                            <span class="badge badge-primary badge-pill px-3" t-esc="record.total_record_count"/>
-                                        </div>
-                                        
-                                        <div class="row no-gutters mb-3">
-                                            <div class="col-6 mb-2">
-                                                <div class="small text-muted mb-1">Facturados</div>
-                                                <div class="font-weight-bold text-success" t-esc="record.facturados"/>
-                                            </div>
-                                            <div class="col-6 mb-2">
-                                                <div class="small text-muted mb-1">No Fact.</div>
-                                                <div class="font-weight-bold text-warning" t-esc="record.no_facturados"/>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="small text-muted mb-1">Listos</div>
-                                                <div class="font-weight-bold text-info" t-esc="record.estado_listos"/>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="small text-muted mb-1">Renovación</div>
-                                                <div t-attf-class="font-weight-bold #{record.para_renovar > 0 ? 'text-danger' : 'text-muted'}" t-esc="record.para_renovar"/>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="d-flex border-top pt-3">
-                                            <button class="btn btn-sm btn-primary flex-grow-1 mr-2" t-on-click="() => this.openRecords(record)">
-                                                <i class="fa fa-list-ul mr-1"/> Ver
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.openTipoRegistro(record.id)" title="Configuración">
-                                                <i class="fa fa-cog"/>
-                                            </button>
-                                        </div>
-                                    </div>
+                                <t t-call="arsante.TipoRegistroDashboard.Card"/>
+                            </div>
+                        </t>
+                    </div>
+
+                    <!-- Con grupos: un tablero de columnas, una por grupo -->
+                    <div t-else="" class="o_arsante_grupos_board d-flex align-items-start">
+                        <t t-foreach="state.groups" t-as="grupo" t-key="grupo.id || 'sin_grupo'">
+                            <div class="o_arsante_grupo_columna flex-shrink-0 mr-4">
+                                <div class="o_arsante_grupo_header d-flex align-items-center mb-3">
+                                    <h4 class="mb-0 mr-2" t-esc="grupo.name"/>
+                                    <span class="badge badge-pill badge-light" t-esc="grupo.records.length"/>
                                 </div>
+                                <t t-foreach="grupo.records" t-as="record" t-key="record.id">
+                                    <div class="mb-3">
+                                        <t t-call="arsante.TipoRegistroDashboard.Card"/>
+                                    </div>
+                                </t>
                             </div>
                         </t>
                     </div>
                 </t>
+            </div>
+        </div>
+    </t>
+
+    <!-- Tarjeta de un tipo de registro: la misma en la grilla plana y en el
+         tablero por columnas, para no mantener el marcado duplicado. -->
+    <t t-name="arsante.TipoRegistroDashboard.Card" owl="1">
+        <div class="card o_arsante_record_card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h5 class="card-title text-dark font-weight-bold mb-0 text-truncate" t-att-title="record.name" t-esc="record.name"/>
+                    <span class="badge badge-primary badge-pill px-3" t-esc="record.total_record_count"/>
+                </div>
+
+                <div class="row no-gutters mb-3">
+                    <div class="col-6 mb-2">
+                        <div class="small text-muted mb-1">Facturados</div>
+                        <div class="font-weight-bold text-success" t-esc="record.facturados"/>
+                    </div>
+                    <div class="col-6 mb-2">
+                        <div class="small text-muted mb-1">No Fact.</div>
+                        <div class="font-weight-bold text-warning" t-esc="record.no_facturados"/>
+                    </div>
+                    <div class="col-6">
+                        <div class="small text-muted mb-1">Con Nota de Venta</div>
+                        <div class="font-weight-bold text-info" t-esc="record.cotizados"/>
+                    </div>
+                    <div class="col-6">
+                        <div class="small text-muted mb-1">Sin Nota de Venta</div>
+                        <div class="font-weight-bold text-warning"
+                             t-esc="record.no_cotizados"/>
+                    </div>
+                    <div class="col-6">
+                        <div class="small text-muted mb-1">Listos</div>
+                        <div class="font-weight-bold text-info" t-esc="record.estado_listos"/>
+                    </div>
+                    <div class="col-6">
+                        <div class="small text-muted mb-1">Renovación</div>
+                        <div t-attf-class="font-weight-bold #{record.para_renovar > 0 ? 'text-danger' : 'text-muted'}" t-esc="record.para_renovar"/>
+                    </div>
+                </div>
+
+                <div class="d-flex border-top pt-3">
+                    <button class="btn btn-sm btn-primary flex-grow-1 mr-2" t-on-click="() => this.openRecords(record)">
+                        <i class="fa fa-list-ul mr-1"/> Ver
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.openTipoRegistro(record.id)" title="Configuración">
+                        <i class="fa fa-cog"/>
+                    </button>
+                </div>
             </div>
         </div>
     </t>

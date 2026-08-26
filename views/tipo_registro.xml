@@ -22,11 +22,16 @@
           <field name="para_renovar"/>
 
           <templates>
-            <t t-name="kanban-box" t-on-click="arsante.cda_cosmetico_action_window">
+            <t t-name="kanban-box">
               <div t-attf-class="oe_kanban_global_click">
                 <div class="oe_kanban_details">
-                  <a name="open_tree_cda_cosmeticos" title="Placeholder" type="object" class="text-center">
-<!--                    context="{'tipo_registro':tipo }"-->
+                  <!--
+                    Antes apuntaba a open_tree_cda_cosmeticos, que mapeaba a mano
+                    cada tipo con su modelo mediante 20 ifs. Ahora hay un solo
+                    modelo y la acción la construye action_open_registros.
+                  -->
+                  <a name="action_open_registros" title="Ver registros"
+                     type="object" class="text-center">
                       <h3><field name="name"/></h3>
                   </a><br></br>
 
@@ -178,23 +183,29 @@
       </field>
     </record>
 
-    <!-- actions opening views on models -->
-    
-    <!-- <record model="ir.actions.act_window" id="arsante.tipo_registro_action_window">
+    <!--
+      Este archivo absorbe el contenido de views/tipo_regitro.xml (errata en el
+      nombre), que era el que realmente estaba activo: aquí la acción y el menú
+      estaban comentados, y ambos ficheros declaraban los mismos external ID
+      pisándose el uno al otro.
+    -->
+
+    <!-- Limpia menús duplicados creados a mano, sin external ID -->
+    <delete model="ir.ui.menu"
+            search="[('name', '=', 'Tipos de Registro'), ('parent_id.name', '=', 'Tipo de Registros')]"/>
+
+    <record model="ir.actions.act_window" id="arsante.tipo_registro_action_window">
       <field name="name">Tipos de Registro</field>
       <field name="res_model">arsante.tipo_registro</field>
-      <field name="view_mode">kanban,tree,pivot,graph</field>
-    </record> -->
+      <!-- form incluido: es donde el usuario define los campos de cada trámite -->
+      <field name="view_mode">kanban,tree,form,pivot,graph</field>
+    </record>
 
-   
-    <!-- actions -->
-    <!-- <menuitem name="DashBoard"
+    <menuitem name="Tipos de Registro"
               id="arsante.tipo_registro_menu_list"
-              sequence="1"
-              parent="arsante.arsante_menu_root"
-              action="action_tipo_registro_dashboard"/> -->
-
-
+              sequence="99"
+              parent="arsante.arsante_menu_tipo_registros"
+              action="arsante.tipo_registro_action_window"/>
 
   </data>
 </odoo>
