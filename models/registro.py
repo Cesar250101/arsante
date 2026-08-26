@@ -358,9 +358,16 @@ class ArsanteRegistro(models.Model):
         return ' - '.join(v for v in valores if v)
 
     def _descripcion_linea_so(self):
-        """Descripción de la línea de venta: tipo de registro + valor de cada
-        campo obligatorio, igual para todos los tipos de trámite."""
+        """Descripción de la línea de venta.
+
+        Si el tipo de registro tiene configurada «Plantilla de la línea de
+        venta» (so_line_template), se usa esa plantilla. Si no, se cae al
+        comportamiento por defecto: tipo de registro + valor de cada campo
+        obligatorio, igual para todos los tipos de trámite."""
         self.ensure_one()
+        tpl = self.tipo_registro_id.so_line_template
+        if tpl:
+            return plantilla.render(self, tpl) or self.display_name
         partes = [self.tipo_registro_id.name, self._name_por_defecto()]
         return ' - '.join(p for p in partes if p) or self.display_name
 
